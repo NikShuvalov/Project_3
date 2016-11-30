@@ -1,7 +1,9 @@
-package shuvalov.nikita.restaurantroulette;
+package shuvalov.nikita.restaurantroulette.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import shuvalov.nikita.restaurantroulette.R;
 
 public class MainActivity extends AppCompatActivity {
 

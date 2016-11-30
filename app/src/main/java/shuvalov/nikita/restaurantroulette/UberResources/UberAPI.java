@@ -1,4 +1,4 @@
-package shuvalov.nikita.restaurantroulette;
+package shuvalov.nikita.restaurantroulette.UberResources;
 
 /**
  * Created by NikitaShuvalov on 11/30/16.
@@ -28,7 +28,8 @@ public class UberAPI {
     public static String estimateAsString(String estimate){return estimate;}
     public static int estimateAsInt(int highEst, int lowEst) {
         /**
-         * Logic to clean up text
+         * Not sure if we need this
+         * Logic to return value(s)
          */
         return 123123123;
     }
