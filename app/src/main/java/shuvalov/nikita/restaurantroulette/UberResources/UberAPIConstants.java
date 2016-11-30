@@ -5,4 +5,6 @@ package shuvalov.nikita.restaurantroulette.UberResources;
  */
 
 public class UberAPIConstants {
+    public static final String UBER_REQUEST_URL = "https://api.uber.com/v1/estimates/";
+    public static final String UBER_SERVER_ID = "rakjhtrHSW8CNEn9S8v-dGeS-WmPPyRrcUAyZJdI";
 }
