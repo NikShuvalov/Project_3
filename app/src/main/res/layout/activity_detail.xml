@@ -36,35 +36,35 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:src="@drawable/grey_star"/>
+            android:src="@drawable/blank_star_rating"/>
 
         <ImageView
             android:id="@+id/second_star"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:src="@drawable/grey_star"/>
+            android:src="@drawable/blank_star_rating"/>
 
         <ImageView
             android:id="@+id/third_star"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:src="@drawable/grey_star"/>
+            android:src="@drawable/blank_star_rating"/>
 
         <ImageView
             android:id="@+id/fourth_star"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:src="@drawable/grey_star"/>
+            android:src="@drawable/blank_star_rating"/>
 
         <ImageView
             android:id="@+id/fifth_star"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:src="@drawable/grey_star"/>
+            android:src="@drawable/blank_star_rating"/>
     </LinearLayout>
 
     <LinearLayout
