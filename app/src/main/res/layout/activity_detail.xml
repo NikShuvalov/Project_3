@@ -32,42 +32,40 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <!--TODO: Change to Actual Stars-->
-
         <ImageView
             android:id="@+id/first_star"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:background="@android:color/holo_red_dark"/>
+            android:src="@drawable/grey_star"/>
 
         <ImageView
             android:id="@+id/second_star"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:background="@android:color/holo_red_dark"/>
+            android:src="@drawable/grey_star"/>
 
         <ImageView
             android:id="@+id/third_star"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:background="@android:color/holo_red_dark"/>
+            android:src="@drawable/grey_star"/>
 
         <ImageView
             android:id="@+id/fourth_star"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:background="@android:color/holo_red_dark"/>
+            android:src="@drawable/grey_star"/>
 
         <ImageView
             android:id="@+id/fifth_star"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:background="@android:color/holo_red_dark"/>
+            android:src="@drawable/grey_star"/>
     </LinearLayout>
 
     <LinearLayout
