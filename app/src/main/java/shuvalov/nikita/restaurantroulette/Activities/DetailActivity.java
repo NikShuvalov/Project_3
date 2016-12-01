@@ -2,15 +2,14 @@ package shuvalov.nikita.restaurantroulette.Activities;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
-import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Category;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Location;
 
 public class DetailActivity extends AppCompatActivity {
