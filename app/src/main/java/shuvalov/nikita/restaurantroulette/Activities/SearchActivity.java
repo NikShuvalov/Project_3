@@ -1,5 +1,6 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
+import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,8 +17,10 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.SearchActivityRecyclerAdapter;
+import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPI;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 
 public class SearchActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -90,8 +93,14 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         mSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //ToDo: Use values that are put into the spinners to make a search.
+                //ToDo: Use values that are put into the spinners to perform a search.
+                //ToDo: Move options and parameters off-screen
                 inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
+                Location mockLocation = new Location(LOCATION_SERVICE);
+                mockLocation.setLongitude(OurAppConstants.GA_LONGITUDE);
+                mockLocation.setLatitude(OurAppConstants.GA_LATITUDE);
+                YelpAPI yelpApi = new YelpAPI(view.getContext(),mockLocation);
+                yelpApi.getRestaurants(mQueryEntry.getText().toString(),Integer.parseInt(mRadius));
             }
         });
         mRandom.setOnClickListener(new View.OnClickListener() {
