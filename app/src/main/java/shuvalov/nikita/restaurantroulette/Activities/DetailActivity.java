@@ -14,9 +14,10 @@ import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Category;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Location;
 
 public class DetailActivity extends AppCompatActivity {
-    public TextView mBusinessName, mRating, mPrice,
+    public TextView mBusinessName, mPrice,
             mPhoneNumber, mAddress, mOpenOrClosed;
-    public ImageView mBusinessImage, mShare, mPhoneButton, mMapFrame;
+    public ImageView mBusinessImage, mShare, mPhoneButton, mMapFrame,
+            mFirstStar, mSecondStar, mThirdStar, mFourthStar, mFifthStar;
     public Business mBusiness;
 
     @Override
@@ -26,18 +27,25 @@ public class DetailActivity extends AppCompatActivity {
 
         // Reference to Views
         mBusinessName = (TextView) findViewById(R.id.business_name);
-        mRating = (TextView) findViewById(R.id.rating);
         mPrice = (TextView) findViewById(R.id.pricing);
         mPhoneNumber = (TextView) findViewById(R.id.phone_number);
         mAddress = (TextView) findViewById(R.id.address);
         mOpenOrClosed = (TextView) findViewById(R.id.open_or_closed);
 
-        // TODO: add bindDataToView() method
-
         mBusinessImage = (ImageView) findViewById(R.id.business_image);
         mShare = (ImageView) findViewById(R.id.share_image_view);
         mPhoneButton = (ImageView) findViewById(R.id.call_image_view);
         mMapFrame = (ImageView) findViewById(R.id.map_frame);
+
+        // Review Stars
+        // TODO: Create Logic for Review Stars
+        mFirstStar = (ImageView) findViewById(R.id.first_star);
+        mSecondStar = (ImageView) findViewById(R.id.second_star);
+        mThirdStar = (ImageView) findViewById(R.id.third_star);
+        mFourthStar = (ImageView) findViewById(R.id.fourth_star);
+        mFifthStar = (ImageView) findViewById(R.id.fifth_star);
+
+        // TODO: add bindDataToView() method
 
         // Phone Button OnClickListener to Open Dialer Intent
         mPhoneButton.setOnClickListener(new View.OnClickListener() {
@@ -55,7 +63,6 @@ public class DetailActivity extends AppCompatActivity {
 
     public void bindDataToView(Business business){
         mBusinessName.setText(business.getName());
-        mRating.setText(String.valueOf(business.getRating()));
         mPrice.setText(business.getPrice());
         mPhoneNumber.setText(business.getPhone());
 

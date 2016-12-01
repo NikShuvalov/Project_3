@@ -32,18 +32,42 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:text="Rating:"/>
+        <!--TODO: Change to Actual Stars-->
 
-        <TextView
-            android:id="@+id/rating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:text="(Rating Goes Here)"/>
+        <ImageView
+            android:id="@+id/first_star"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="8dp"
+            android:background="@android:color/holo_red_dark"/>
+
+        <ImageView
+            android:id="@+id/second_star"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="8dp"
+            android:background="@android:color/holo_red_dark"/>
+
+        <ImageView
+            android:id="@+id/third_star"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="8dp"
+            android:background="@android:color/holo_red_dark"/>
+
+        <ImageView
+            android:id="@+id/fourth_star"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="8dp"
+            android:background="@android:color/holo_red_dark"/>
+
+        <ImageView
+            android:id="@+id/fifth_star"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="8dp"
+            android:background="@android:color/holo_red_dark"/>
     </LinearLayout>
 
     <LinearLayout
