@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 
 import shuvalov.nikita.restaurantroulette.R;
@@ -175,6 +176,39 @@ public class UserSettingsActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
                 //Do nothing
+            }
+        });
+
+        Button buttonHome = (Button) findViewById(R.id.button_home);
+        Button buttonWork = (Button) findViewById(R.id.button_work);
+
+        buttonHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences sharedPreferences =  getSharedPreferences("user_preferences",
+                        Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                //ToDo: Change the 1f, 2f with actual location data from Google Location API.
+
+                editor.putFloat("lat_home", 1f);
+                editor.putFloat("lon_home", 2f);
+                editor.commit();
+            }
+        });
+
+        buttonWork.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences sharedPreferences =  getSharedPreferences("user_preferences",
+                        Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                //ToDo: Change the 1f, 2f with actual location data from Google Location API.
+
+                editor.putFloat("lat_work", 1f);
+                editor.putFloat("lon_work", 2f);
+                editor.commit();
             }
         });
 
