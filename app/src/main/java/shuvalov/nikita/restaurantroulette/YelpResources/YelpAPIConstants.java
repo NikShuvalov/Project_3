@@ -5,6 +5,7 @@ package shuvalov.nikita.restaurantroulette.YelpResources;
  */
 
 public class YelpAPIConstants {
+    public static final String YELP_GRANT_TYPE = "client_credentials";
     public static final String YELP_BEARER_TOKEN = "NA8-lx7QOQKK1e8u6CZqNXqli320QXYVoXMELvv5BVwdoUDPWY7HrpeRb7EHWwygPrBVRxESrRGxtr1PxGOY0N2i24vI6_ASJ7NQsLyu37ARsT3X3W02HGmi8xQ2WHYx";
     public static final String YELP_CLIENT_ID = "9YI_a1fQDy1CtSBiZsq6Yw";
     public static final String YELP_APP_SECRET = "edmHqYlFEY4SxJWqkgM76RmkVaXnRyr6UUdc9jXzQglM8TCELkWRGN37CBG3Ztpy";

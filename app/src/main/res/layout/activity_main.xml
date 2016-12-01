@@ -2,6 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,8 +12,108 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="shuvalov.nikita.restaurantroulette.Activities.MainActivity">
 
-    <TextView
+    <android.support.v7.widget.CardView
+        android:id="@+id/search_card_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="20dp">
+        <RelativeLayout
+            android:id="@+id/searchcard_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/searchcard_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Search for restaurant"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:textColor="#333"/>
+        <ImageView
+            android:id="@+id/searchcard_image"
+            android:layout_below="@id/searchcard_text"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"/>
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+    <Space
+        android:id="@+id/topdivider"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_below="@id/search_card_holder"/>
+
+    <Space
+        android:id="@+id/middivider"
+        android:layout_width="20dp"
+        android:layout_height="match_parent"
+        android:layout_below="@id/topdivider"
+        android:layout_centerHorizontal="true"/>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/date_night_card_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/topdivider"
+        android:layout_toLeftOf="@id/middivider"
+        app:cardCornerRadius="20dp">
+
+        <RelativeLayout
+            android:id="@+id/datecard_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/datecard_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Date Night"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:textColor="#333"/>
+            <ImageView
+                android:id="@+id/datecard_image"
+                android:layout_below="@id/datecard_text"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"/>
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/roulette_card_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/topdivider"
+        android:layout_toRightOf="@id/middivider"
+        app:cardCornerRadius="20dp">
+        <RelativeLayout
+            android:id="@+id/roulettecard_relative_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/roulettecard_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Roulette"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:textColor="#333"/>
+            <ImageView
+                android:id="@+id/roulettecard_image"
+                android:layout_below="@id/roulettecard_text"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"/>
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <Button
+        android:id="@+id/debug_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"/>
+        android:layout_below="@id/roulette_card_holder"
+        android:layout_centerHorizontal="true"
+        android:text="debug Activity"/>
+
 </RelativeLayout>
