@@ -42,7 +42,6 @@ public class UserSettingsActivity extends AppCompatActivity {
         adapterResult.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerResult.setAdapter(adapterResult);
 
-
     }
 
 
