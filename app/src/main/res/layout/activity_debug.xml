@@ -14,7 +14,25 @@
     <Button
         android:id="@+id/profile_settings_Debug"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:text="Profile Settings Debug"/>
+    <Button
+        android:id="@+id/share_activity"
+        android:layout_below="@id/profile_settings_Debug"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Share Activity Debug"/>
+    <Button
+        android:id="@+id/basic_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/share_activity"
+        android:text="Search Activity Debug"/>
+    <Button
+        android:id="@+id/detail_activity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/basic_search"
+        android:text="Detail Activity Debug"/>
 
 </RelativeLayout>
