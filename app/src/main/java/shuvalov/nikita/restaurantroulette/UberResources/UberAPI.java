@@ -1,5 +1,8 @@
 package shuvalov.nikita.restaurantroulette.UberResources;
 
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import retrofit2.Call;
@@ -17,9 +20,19 @@ import static shuvalov.nikita.restaurantroulette.UberResources.UberAPIConstants.
  */
 
 public class UberAPI {
+    public static final String TAG = "Serkan";
+    public static final String RESULT_STRING = "shuvalov.nikita.restaurantroulette.UberResources.RESULT_STRING";
+    public static final String MESSAGE_STRING = "shuvalov.nikita.restaurantroulette.UberResources.MESSAGE_STRING";
+    public static final String RESULT_AVERAGE = "shuvalov.nikita.restaurantroulette.UberResources.RESULT_AVERAGE";
+    public static final String MESSAGE_AVERAGE = "shuvalov.nikita.restaurantroulette.UberResources.MESSAGE_AVERAGE";
+    private Context mContext;
+
+    public UberAPI(Context context) {
+        mContext = context;
+    }
 
     public void getEstimateAsString(Float start_Lat, Float start_Lon, Float end_Lat, Float end_Lon,
-                                      String server_id) {
+                                    String server_id) {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(UBER_REQUEST_URL)
@@ -35,15 +48,18 @@ public class UberAPI {
                 String estimate = response.body().getPrices().get(1).getEstimate();
                 Log.d("UBER", "onResponse: " + estimate);
 
-                //TO COMMUNICATE THIS VALUE BACK TO AN ACTIVITY WE NEED A BROADCAST MANAGER SET.
+                //ToDo We still need to implement the receivers whereever we want to receive this info.
 
+                LocalBroadcastManager broadcaster = LocalBroadcastManager.getInstance(mContext);
+                Intent intent = new Intent(RESULT_STRING);
+                intent.putExtra(MESSAGE_STRING, estimate);
+                broadcaster.sendBroadcast(intent);
             }
 
             @Override
             public void onFailure(Call<UberMainObject> call, Throwable t) {
                 //
             }
-            //Once logic is retrieved
 
         });
     }
@@ -65,7 +81,14 @@ public class UberAPI {
             public void onResponse(Call<UberMainObject> call, Response<UberMainObject> response) {
                 Integer getHigh = response.body().getPrices().get(1).getHighEstimate();
                 Integer getLow = response.body().getPrices().get(1).getLowEstimate();
-                Log.d("UBER", "onResponse: AVERAGE $" + ((getHigh+getLow)/2));
+                Integer average = ((getHigh+getLow)/2);
+
+                //ToDo We still need to implement the receivers whereever we want to receive this info.
+
+                LocalBroadcastManager broadcaster = LocalBroadcastManager.getInstance(mContext);
+                Intent intent = new Intent(RESULT_AVERAGE);
+                intent.putExtra(MESSAGE_AVERAGE, average);
+                broadcaster.sendBroadcast(intent);
             }
 
             @Override
@@ -73,7 +96,6 @@ public class UberAPI {
                 //
             }
             //Once logic is retrieved
-
         });
     }
 }
