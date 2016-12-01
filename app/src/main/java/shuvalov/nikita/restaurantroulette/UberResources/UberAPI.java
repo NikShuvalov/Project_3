@@ -43,7 +43,6 @@ public class UberAPI {
             public void onFailure(Call<UberMainObject> call, Throwable t) {
                 //
             }
-            //Once logic is retrieved
 
         });
     }
@@ -66,13 +65,15 @@ public class UberAPI {
                 Integer getHigh = response.body().getPrices().get(1).getHighEstimate();
                 Integer getLow = response.body().getPrices().get(1).getLowEstimate();
                 Log.d("UBER", "onResponse: AVERAGE $" + ((getHigh+getLow)/2));
+
+                //TO COMMUNICATE THIS VALUE BACK TO AN ACTIVITY WE NEED A BROADCAST MANAGER SET.
+
             }
 
             @Override
             public void onFailure(Call<UberMainObject> call, Throwable t) {
                 //
             }
-            //Once logic is retrieved
 
         });
     }
