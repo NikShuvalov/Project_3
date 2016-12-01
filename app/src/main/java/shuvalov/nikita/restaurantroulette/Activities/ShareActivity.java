@@ -35,6 +35,10 @@ public class ShareActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        Fabric.with(this, new Twitter(authConfig));
+
         setContentView(R.layout.activity_share);
 
         Button button = (Button) findViewById(R.id.tweet_button);
@@ -74,9 +78,6 @@ public class ShareActivity extends AppCompatActivity {
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TwitterSession twitterSession = TwitterCore.getInstance()
-                                     .getSessionManager()
-                                     .getActiveSession();
                 TwitterCore.getInstance().logOut();
                 ClearCookies(getApplicationContext());
                 Twitter.logOut();
