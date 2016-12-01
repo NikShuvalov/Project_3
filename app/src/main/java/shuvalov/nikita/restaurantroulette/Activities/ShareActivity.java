@@ -148,6 +148,11 @@ public class ShareActivity extends AppCompatActivity {
             String text = "Logged in as: " + session.getUserName();
             userName.setText(text);
             notLoggedIn.setVisibility(View.GONE);
+
+            TweetComposer.Builder builder = new TweetComposer.Builder(ShareActivity.this)
+                    .text(tweetText);
+            builder.show();
+
             loggedIn.setVisibility(View.VISIBLE);
 
         } else {
