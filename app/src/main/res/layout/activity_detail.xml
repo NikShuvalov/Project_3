@@ -14,10 +14,10 @@
 
     <ImageView
         android:id="@+id/business_image"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:padding="8dp"
-        android:background="@android:color/holo_red_dark"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:padding="8dp"/>
 
     <TextView
         android:id="@+id/business_name"
@@ -143,11 +143,16 @@
         android:padding="8dp"
         android:text="(Address Goes Here)"/>
 
-    <!--TODO: Change this ImageView to Frame for MapFragment-->
-    <ImageView
-        android:id="@+id/map_frame"
+    <fragment
+        android:id="@+id/map"
+        class="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:padding="8dp"
-        android:background="@color/colorPrimaryDark"/>
+        android:layout_height="150dp"/>
+
+    <Button
+        android:id="@+id/map_activity_intent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go to Map Activity"
+        android:layout_gravity="center_horizontal"/>
 </LinearLayout>
