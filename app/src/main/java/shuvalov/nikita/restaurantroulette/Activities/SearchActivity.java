@@ -3,6 +3,7 @@ package shuvalov.nikita.restaurantroulette.Activities;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -21,6 +22,17 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
 
         findViews();
+
+        //ToDo: Populate spinner items using String ArrayList
+        ArrayAdapter<CharSequence> ratingAdapter = ArrayAdapter.createFromResource(this,,android.R.layout.simple_spinner_item);
+
+//                ArrayAdapter<CharSequence> pricingAdapter = ArrayAdapter.createFromResource(this,,android.R.layout.simple_spinner_item);
+//                ArrayAdapter<CharSequence> radiusAdapter = ArrayAdapter.createFromResource(this,,,android.R.layout.simple_spinner_item);
+
+
+
+
+
 
     }
     public void findViews(){
