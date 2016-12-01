@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Category;
@@ -44,6 +46,11 @@ public class DetailActivity extends AppCompatActivity {
         mThirdStar = (ImageView) findViewById(R.id.third_star);
         mFourthStar = (ImageView) findViewById(R.id.fourth_star);
         mFifthStar = (ImageView) findViewById(R.id.fifth_star);
+
+        // Picasso method to get images for each business
+        Picasso.with(this)
+                .load("") // TODO: ADD URL
+                .into(mBusinessImage);
 
         // TODO: add bindDataToView() method
 

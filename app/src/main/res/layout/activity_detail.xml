@@ -12,7 +12,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="shuvalov.nikita.restaurantroulette.Activities.DetailActivity">
 
-    <!--TODO: Change this ImageView using Picasso-->
     <ImageView
         android:id="@+id/business_image"
         android:layout_width="match_parent"
