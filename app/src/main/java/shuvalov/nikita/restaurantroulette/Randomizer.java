@@ -51,6 +51,9 @@ public class Randomizer {
                 mMaxPricy = "$$"; //Set default to "$$"
             }
 
+        }else{
+            mMaxPricy="$$";
+            mMinRating=3.5;
         }
 
     }

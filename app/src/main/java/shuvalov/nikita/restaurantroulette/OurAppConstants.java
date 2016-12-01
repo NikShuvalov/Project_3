@@ -11,4 +11,7 @@ public class OurAppConstants {
     public static final String SHARED_PREF_RADIUS = "radiusPref";
     public static final String SHARED_PREF_NUM_OF_RESULTS = "randomresultsPref";
 
+    /**
+     * Add constants here
+     */
 }
