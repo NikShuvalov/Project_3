@@ -1,5 +1,6 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -10,6 +11,8 @@ import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.twitter.sdk.android.Twitter;
@@ -20,6 +23,7 @@ import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
+import com.twitter.sdk.android.core.internal.TwitterApiConstants;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
 import io.fabric.sdk.android.Fabric;
@@ -31,15 +35,30 @@ public class ShareActivity extends AppCompatActivity {
     private static final String TWITTER_KEY = "cUr6myy7P8yOwWwrzbIdHbxKZ";
     private static final String TWITTER_SECRET = "qW7wJRMVrWx1qVFgJqeieuy4tF8kiTveBlh8v47ahStdz56ZHp";
     private TwitterLoginButton loginButton;
+    private TextView userName, tweetPreview;
+    private RelativeLayout loggedIn, notLoggedIn;
+    private String tweetText, restaurantName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
         Fabric.with(this, new Twitter(authConfig));
 
         setContentView(R.layout.activity_share);
+
+        restaurantName = "Joe's Pizza";
+        tweetText= "Check out the new place i just discovered on INSERT_APP_NAME_HERE!\n" +
+                restaurantName;
+
+        userName = (TextView) findViewById(R.id.twitter_name);
+        tweetPreview = (TextView) findViewById(R.id.tweet_preview);
+
+        tweetPreview.setText(tweetText);
+
+        loggedIn = (RelativeLayout) findViewById(R.id.is_logged_in);
+        notLoggedIn = (RelativeLayout) findViewById(R.id.need_to_login);
+
 
         Button button = (Button) findViewById(R.id.tweet_button);
         Button logOut = (Button) findViewById(R.id.log_out_button);
@@ -69,8 +88,9 @@ public class ShareActivity extends AppCompatActivity {
             public void onClick(View view) {
                 TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
                 Fabric.with(ShareActivity.this, new Twitter(authConfig));
+
                 TweetComposer.Builder builder = new TweetComposer.Builder(ShareActivity.this)
-                        .text("just setting up my Fabric.");
+                        .text(tweetText);
                 builder.show();
             }
         });
@@ -82,6 +102,7 @@ public class ShareActivity extends AppCompatActivity {
                 ClearCookies(getApplicationContext());
                 Twitter.logOut();
                 loginButton.setVisibility(View.VISIBLE);
+                setViews();
 
 
             }
@@ -99,17 +120,7 @@ public class ShareActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
-        Fabric.with(this, new Twitter(authConfig));
-
-
-
-       if (Twitter.getInstance().core.getSessionManager().getActiveSession() != null) {
-        //    loginButton.setVisibility(View.GONE);
-            Toast.makeText(this, "Logged in as " + Twitter.getInstance().core.getSessionManager().getActiveSession().getUserName(), Toast.LENGTH_SHORT).show();
-
-        }
+        setViews();
     }
 
     public static void ClearCookies(Context context) {
@@ -124,6 +135,25 @@ public class ShareActivity extends AppCompatActivity {
             cookieManager.removeSessionCookie();
             cookieSyncMngr.stopSync();
             cookieSyncMngr.sync();
+        }
+    }
+
+    private void setViews () {
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        Fabric.with(this, new Twitter(authConfig));
+
+        TwitterSession session = Twitter.getInstance().core.getSessionManager().getActiveSession();
+
+        if (session != null) {
+            String text = "Logged in as: " + session.getUserName();
+            userName.setText(text);
+            notLoggedIn.setVisibility(View.GONE);
+            loggedIn.setVisibility(View.VISIBLE);
+
+        } else {
+            userName.setText(" ");
+            loggedIn.setVisibility(View.GONE);
+            notLoggedIn.setVisibility(View.VISIBLE);
         }
     }
 }
