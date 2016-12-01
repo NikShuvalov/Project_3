@@ -121,6 +121,7 @@ public class ShareActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         setViews();
+
     }
 
     public static void ClearCookies(Context context) {
@@ -149,9 +150,7 @@ public class ShareActivity extends AppCompatActivity {
             userName.setText(text);
             notLoggedIn.setVisibility(View.GONE);
 
-            TweetComposer.Builder builder = new TweetComposer.Builder(ShareActivity.this)
-                    .text(tweetText);
-            builder.show();
+            
 
             loggedIn.setVisibility(View.VISIBLE);
 
