@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
+    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_user_settings"
@@ -11,4 +12,86 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="shuvalov.nikita.restaurantroulette.Activities.UserSettingsActivity">
 
-</RelativeLayout>
+    <TextView
+        android:text="Please Enter Values for Random Search"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="Pick minimum rating: "
+            android:layout_width="0dp"
+            android:layout_weight="0.7"
+            android:layout_height="wrap_content" />
+
+        <Spinner
+            android:layout_weight="0.3"
+            android:id="@+id/spinner_rating"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="Pick maximum budget: "
+            android:layout_width="0dp"
+            android:layout_weight="0.7"
+            android:layout_height="wrap_content" />
+
+        <Spinner
+            android:layout_weight="0.3"
+            android:id="@+id/spinner_pricing"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="Pick maximum distance: "
+            android:layout_width="0dp"
+            android:layout_weight="0.7"
+            android:layout_height="wrap_content" />
+
+        <Spinner
+            android:layout_weight="0.3"
+            android:id="@+id/spinner_radius"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="Pick number of results: "
+            android:layout_width="0dp"
+            android:layout_weight="0.7"
+            android:layout_height="wrap_content" />
+
+        <Spinner
+            android:layout_weight="0.3"
+            android:id="@+id/spinner_result"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</LinearLayout>
