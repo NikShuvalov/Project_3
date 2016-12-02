@@ -32,6 +32,11 @@ package="shuvalov.nikita.restaurantroulette">
     <activity android:name=".Activities.ShareActivity" />
     <activity android:name=".Activities.DebugActivity"/>
     <activity android:name=".Activities.MapsActivity"/>
+
+
+    <service android:name=".YelpResources.YelpJobService"
+        android:permission="android.permission.BIND_JOB_SERVICE"/>
+
 </application>
 
 </manifest>

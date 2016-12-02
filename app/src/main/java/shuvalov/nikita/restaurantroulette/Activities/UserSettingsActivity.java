@@ -1,17 +1,26 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Spinner;
+import android.widget.Toast;
 
+import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
+import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPI;
+import shuvalov.nikita.restaurantroulette.YelpResources.YelpJobService;
 
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_NUM_OF_RESULTS;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_PRICING;
@@ -30,12 +39,16 @@ public class UserSettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_settings);
 
+        YelpAPI yelpAPI = new YelpAPI(getApplicationContext());
+        yelpAPI.getRestaurantDeals();
+
         SharedPreferences sharedPreferences = getSharedPreferences(USER_PREFERENCES,
                 Context.MODE_PRIVATE);
         final long ratingSavedPosition = sharedPreferences.getLong(SHARED_PREF_RATING, -1);
         final long priceSavedPosition = sharedPreferences.getLong(SHARED_PREF_PRICING, -1);
         final long radiusSavedPosition = sharedPreferences.getLong(SHARED_PREF_RADIUS, -1);
         final long searchResultsSavedPosition = sharedPreferences.getLong(SHARED_PREF_NUM_OF_RESULTS, -1);
+        boolean isDealsEnabled = sharedPreferences.getBoolean("notificationcheckbox", false);
 
         Log.d("Serkan", "onCreate: " + ratingSavedPosition);
 
@@ -218,7 +231,53 @@ public class UserSettingsActivity extends AppCompatActivity {
             }
         });
 
+        final CheckBox checkBox = (CheckBox) findViewById(R.id.deals_checkbox);
+
+        if (isDealsEnabled) {
+            checkBox.setChecked(true);
+        } else {
+            checkBox.setChecked(false);
+        }
+
+        checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (checkBox.isChecked()) {
+                    Toast.makeText(UserSettingsActivity.this, "Create service", Toast.LENGTH_SHORT).show();
+                    SharedPreferences sharedPreferences =  getSharedPreferences(USER_PREFERENCES,
+                            Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean("notificationcheckbox", true);
+                    editor.commit();
+
+                    //Create Jobscheduler Service
+
+                    PersistableBundle periodicPersistableBundle = new PersistableBundle();
+                    periodicPersistableBundle.putString("Type","Periodic Yelp API CHECK");
+
+                    JobInfo periodicJobInfo = new JobInfo.Builder(OurAppConstants.PERIODIC_JOB_ID,
+                            new ComponentName(UserSettingsActivity.this, YelpJobService.class))
+                            .setExtras(periodicPersistableBundle)
+                            .setPeriodic(10000) //RUN IT EVERY 10 secs
+                            .build();
+
+                    JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+                    jobScheduler.schedule(periodicJobInfo);
+
+                } else {
+                    Toast.makeText(UserSettingsActivity.this, "Kill service", Toast.LENGTH_SHORT).show();
+                    SharedPreferences sharedPreferences =  getSharedPreferences(USER_PREFERENCES,
+                            Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean("notificationcheckbox", false);
+                    editor.commit();
+
+                    //Kill Jobscheduler Service
+                    JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+                    jobScheduler.cancelAll();
+                }
+            }
+        });
+
     }
-
-
 }

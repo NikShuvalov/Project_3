@@ -15,6 +15,7 @@ public class OurAppConstants {
     public static final double GA_LONGITUDE = -73.97887613997012;
 
     public static final String BUSINESS_POSITION_INTENT_KEY = "business position";
+    public static final int PERIODIC_JOB_ID = 1;
 
     /**
      * Add constants here

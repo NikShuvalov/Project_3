@@ -15,6 +15,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.SearchActivityRecyclerAdapter;
 import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
@@ -45,6 +46,10 @@ public class YelpAPI {
     public YelpAPI(Context context, Location lastUserLocation) {
         mContext = context;
         mLastLocation = lastUserLocation;
+    }
+
+    public YelpAPI(Context context) {
+        mContext = context;
     }
 
     /**
@@ -112,6 +117,36 @@ public class YelpAPI {
             }
         });
 
+    }
+
+    public void getRestaurantDeals() {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(YELP_SEARCH_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        //double myLong = mLastLocation.getLongitude();
+        //double myLat = mLastLocation.getLatitude();
+        //Log.d(TAG, "Lat, Long: "+myLat+","+myLong);
+        YelpNotificationService service = retrofit.create(YelpNotificationService.class);
+
+        //ToDo CHANGE THE HARDCODED LAT LONG INFO!
+        Call<RestaurantsMainObject> call = service.getRestaurantDeals("Bearer " + YELP_BEARER_TOKEN,
+                OurAppConstants.GA_LATITUDE, OurAppConstants.GA_LONGITUDE, "restaurants", 500,
+                "deals", "distance");
+
+        call.enqueue(new Callback<RestaurantsMainObject>() {
+            @Override
+            public void onResponse(Call<RestaurantsMainObject> call, Response<RestaurantsMainObject> response) {
+                String nameOfDealRestaurant = response.body().getBusinesses().get(0).getName();
+
+            }
+
+            @Override
+            public void onFailure(Call<RestaurantsMainObject> call, Throwable t) {
+                Log.d(TAG, "GET RESTAURANT DEALS FAILED");
+            }
+        });
     }
 }
 
