@@ -150,7 +150,7 @@ public class ShareActivity extends AppCompatActivity {
             userName.setText(text);
             notLoggedIn.setVisibility(View.GONE);
 
-            
+
 
             loggedIn.setVisibility(View.VISIBLE);
 
