@@ -13,6 +13,12 @@ import android.widget.Spinner;
 
 import shuvalov.nikita.restaurantroulette.R;
 
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_NUM_OF_RESULTS;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_PRICING;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_RADIUS;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_RATING;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_PREFERENCES;
+
 public class UserSettingsActivity extends AppCompatActivity {
     boolean isFirstTimeRating = true;
     boolean isFirstTimePrice = true;
@@ -24,12 +30,12 @@ public class UserSettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_settings);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("user_preferences",
+        SharedPreferences sharedPreferences = getSharedPreferences(USER_PREFERENCES,
                 Context.MODE_PRIVATE);
-        final long ratingSavedPosition = sharedPreferences.getLong("rating", -1);
-        final long priceSavedPosition = sharedPreferences.getLong("pricing", -1);
-        final long radiusSavedPosition = sharedPreferences.getLong("radius", -1);
-        final long searchResultsSavedPosition = sharedPreferences.getLong("search_results", -1);
+        final long ratingSavedPosition = sharedPreferences.getLong(SHARED_PREF_RATING, -1);
+        final long priceSavedPosition = sharedPreferences.getLong(SHARED_PREF_PRICING, -1);
+        final long radiusSavedPosition = sharedPreferences.getLong(SHARED_PREF_RADIUS, -1);
+        final long searchResultsSavedPosition = sharedPreferences.getLong(SHARED_PREF_NUM_OF_RESULTS, -1);
 
         Log.d("Serkan", "onCreate: " + ratingSavedPosition);
 
@@ -55,10 +61,10 @@ public class UserSettingsActivity extends AppCompatActivity {
                 if (isFirstTimeRating) {
                     isFirstTimeRating = false;
                 } else {
-                    SharedPreferences sharedPreferences =  getSharedPreferences("user_preferences",
+                    SharedPreferences sharedPreferences =  getSharedPreferences(USER_PREFERENCES,
                                     Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putLong("rating", position);
+                    editor.putLong(SHARED_PREF_RATING, position);
                     editor.commit();
                 }
             }
@@ -91,10 +97,10 @@ public class UserSettingsActivity extends AppCompatActivity {
                 if (isFirstTimePrice) {
                     isFirstTimePrice = false;
                 } else {
-                    SharedPreferences sharedPreferences =  getSharedPreferences("user_preferences",
+                    SharedPreferences sharedPreferences =  getSharedPreferences(USER_PREFERENCES,
                             Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putLong("pricing", position);
+                    editor.putLong(SHARED_PREF_PRICING, position);
                     editor.commit();
                 }
             }
@@ -127,10 +133,10 @@ public class UserSettingsActivity extends AppCompatActivity {
                 if (isFirstTimeRadius) {
                     isFirstTimeRadius = false;
                 } else {
-                    SharedPreferences sharedPreferences =  getSharedPreferences("user_preferences",
+                    SharedPreferences sharedPreferences =  getSharedPreferences(USER_PREFERENCES,
                             Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putLong("radius", position);
+                    editor.putLong(SHARED_PREF_RADIUS, position);
                     editor.commit();
 
                 }
@@ -164,10 +170,10 @@ public class UserSettingsActivity extends AppCompatActivity {
                 if (isFirstTimeSearchResult) {
                     isFirstTimeSearchResult = false;
                 } else {
-                    SharedPreferences sharedPreferences =  getSharedPreferences("user_preferences",
+                    SharedPreferences sharedPreferences =  getSharedPreferences(USER_PREFERENCES,
                             Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putLong("search_results", position);
+                    editor.putLong(SHARED_PREF_NUM_OF_RESULTS, position);
                     editor.commit();
 
                 }
@@ -185,7 +191,7 @@ public class UserSettingsActivity extends AppCompatActivity {
         buttonHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences sharedPreferences =  getSharedPreferences("user_preferences",
+                SharedPreferences sharedPreferences =  getSharedPreferences(USER_PREFERENCES,
                         Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -200,7 +206,7 @@ public class UserSettingsActivity extends AppCompatActivity {
         buttonWork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences sharedPreferences =  getSharedPreferences("user_preferences",
+                SharedPreferences sharedPreferences =  getSharedPreferences(USER_PREFERENCES,
                         Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
