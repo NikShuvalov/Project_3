@@ -45,7 +45,8 @@ public class SearchActivityRecyclerAdapter extends RecyclerView.Adapter<SearchRe
         return mBusinessList.size();
     }
     public void replaceList(List<Business> newSearchResult){
-        mBusinessList = newSearchResult;
+        mBusinessList.clear();
+        mBusinessList.addAll(newSearchResult);
     }
 }
 
@@ -75,6 +76,5 @@ class SearchResultViewHolder extends RecyclerView.ViewHolder{
         mPrice.setText(business.getPrice());
         mRating.setText(String.valueOf(business.getRating()));
         //ToDo:Set image by using picasso with image.url
-
     }
 }

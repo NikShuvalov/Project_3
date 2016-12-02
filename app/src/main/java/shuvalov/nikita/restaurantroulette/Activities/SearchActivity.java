@@ -20,6 +20,7 @@ import java.util.List;
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.SearchActivityRecyclerAdapter;
+import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPI;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 
@@ -41,9 +42,11 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        mBusinessList = RestaurantSearchHelper.getInstance().getSearchResults();
+
         findViews();
         addAdaptersToSpinners();
-//        setUpRecyclerView();
+        setUpRecyclerView();
         setOnClickListeners();
     }
     public void findViews(){
@@ -82,7 +85,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
 
     public void setUpRecyclerView(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
-//        mAdapter = new SearchActivityRecyclerAdapter() //ToDo:Add a list to go in here.
+        mAdapter = new SearchActivityRecyclerAdapter(mBusinessList);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -99,8 +102,9 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
                 Location mockLocation = new Location(LOCATION_SERVICE);
                 mockLocation.setLongitude(OurAppConstants.GA_LONGITUDE);
                 mockLocation.setLatitude(OurAppConstants.GA_LATITUDE);
-                YelpAPI yelpApi = new YelpAPI(view.getContext(),mockLocation);
-                yelpApi.getRestaurants(mQueryEntry.getText().toString(),Integer.parseInt(mRadius));
+                YelpAPI yelpApi = new YelpAPI(view.getContext(), mockLocation);
+                String query = mQueryEntry.getText().toString();
+                yelpApi.getRestaurants(query,Integer.parseInt(mRadius),mAdapter);
             }
         });
         mRandom.setOnClickListener(new View.OnClickListener() {
@@ -115,16 +119,16 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         if (adapterView.getAdapter().equals(mPricingAdapter)){
             mPrice = (String) adapterView.getItemAtPosition(i);
-            Toast.makeText(this, "Price value changed to "+mPrice, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Price value changed to "+mPrice, Toast.LENGTH_SHORT).show();
         }else if (adapterView.getAdapter().equals(mRadiusAdapter)){
             mRadius = (String) adapterView.getItemAtPosition(i);
-            Toast.makeText(this, "Radius value changed to "+mRadius, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Radius value changed to "+mRadius, Toast.LENGTH_SHORT).show();
         }else if (adapterView.getAdapter().equals(mRatingAdapter)) {
             mRating = (String) adapterView.getItemAtPosition(i);
-            Toast.makeText(this, "Rating value changed to " + mRating, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Rating value changed to " + mRating, Toast.LENGTH_SHORT).show();
         }else if(adapterView.getAdapter().equals(mLocationAdapter)) {
             mLocation = (String) adapterView.getItemAtPosition(i);
-            Toast.makeText(this, "Location being used: "+ mLocation, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Location being used: "+ mLocation, Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(this, "SOMETHING WENT WRONG!", Toast.LENGTH_SHORT).show();
             Log.d("Search Activity", "Adapter not identified");
