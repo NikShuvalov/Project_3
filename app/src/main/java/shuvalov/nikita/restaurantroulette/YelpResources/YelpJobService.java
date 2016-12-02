@@ -15,6 +15,8 @@ public class YelpJobService extends JobService {
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
         Log.d(TAG, "onStartJob: " + jobParameters.getExtras().get("Type"));
+        YelpAPI yelpAPI = new YelpAPI(getApplicationContext());
+        yelpAPI.getRestaurantDeals();
         jobFinished(jobParameters, false);
         return false;
     }

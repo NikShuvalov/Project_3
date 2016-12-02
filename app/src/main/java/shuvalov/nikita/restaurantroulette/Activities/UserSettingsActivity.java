@@ -39,9 +39,6 @@ public class UserSettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_settings);
 
-        YelpAPI yelpAPI = new YelpAPI(getApplicationContext());
-        yelpAPI.getRestaurantDeals();
-
         SharedPreferences sharedPreferences = getSharedPreferences(USER_PREFERENCES,
                 Context.MODE_PRIVATE);
         final long ratingSavedPosition = sharedPreferences.getLong(SHARED_PREF_RATING, -1);
