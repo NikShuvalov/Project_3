@@ -14,6 +14,8 @@ public class OurAppConstants {
     public static final double GA_LATITUDE = 40.7387387387384;
     public static final double GA_LONGITUDE = -73.97887613997012;
 
+    public static final String BUSINESS_POSITION_INTENT_KEY = "business position";
+
     /**
      * Add constants here
      */
