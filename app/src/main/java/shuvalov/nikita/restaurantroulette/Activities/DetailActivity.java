@@ -75,21 +75,23 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                 .load("http://cdn2-www.dogtime.com/assets/uploads/gallery/30-impossibly-cute-puppies/impossibly-cute-puppy-8.jpg") // TODO: ADD URL
                 .into(mBusinessImage);
         
+        // Gets Instance of the Business
         mBusinessPosition = getIntent().getIntExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, -1);
-        bindDataToView(RestaurantSearchHelper.getInstance().getBusinessAtPosition(mBusinessPosition));
+        mBusiness = RestaurantSearchHelper.getInstance().getBusinessAtPosition(mBusinessPosition);
+        bindDataToView(mBusiness);
 
 
         // Phone Button OnClickListener to Open Dialer Intent
         mPhoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: change 0123456789 to business.getPhone()
                 Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:0123456789"));
+                intent.setData(Uri.parse("tel:" + mBusiness.getPhone()));
                 startActivity(intent);
             }
         });
 
+        // Share Button OnClickListener to Share Activity
         mShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
