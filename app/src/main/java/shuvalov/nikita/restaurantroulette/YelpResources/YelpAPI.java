@@ -33,17 +33,19 @@ import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.RestaurantsM
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_LAST_PUSHED_BUSINESS_NAME;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_PREFERENCES;
-import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.ADDRESS_1;
-import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.BUSINESS_ID;
-import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.BUSINESS_NAME;
-import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.BUSINESS_URL;
-import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.CITY;
-import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.DISTANCE;
-import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.IMAGE_URL;
-import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.IS_CLOSED;
-import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.PHONE_NUMBER;
-import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.RATING;
-import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.REVIEW_COUNT;
+import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_ADDRESS_1;
+import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_BUSINESS_ID;
+import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_BUSINESS_NAME;
+import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_BUSINESS_URL;
+import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_CITY;
+import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_DISTANCE;
+import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_IMAGE_URL;
+import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_IS_CLOSED;
+import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_LATITUTE;
+import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_LONGITUDE;
+import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_PHONE_NUMBER;
+import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_RATING;
+import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_REVIEW_COUNT;
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.YELP_APP_SECRET;
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.YELP_BEARER_TOKEN;
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.YELP_CLIENT_ID;
@@ -158,7 +160,7 @@ public class YelpAPI {
         //ToDo CHANGE THE HARDCODED LAT LONG INFO!
         Call<RestaurantsMainObject> call = service.getRestaurantDeals("Bearer " + YELP_BEARER_TOKEN,
                 OurAppConstants.GA_LATITUDE, OurAppConstants.GA_LONGITUDE, "restaurants", 500,
-                "deals", "distance");
+                "deals", "distance", "true");
 
         call.enqueue(new Callback<RestaurantsMainObject>() {
             @Override
@@ -179,23 +181,25 @@ public class YelpAPI {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString(SHARED_PREF_LAST_PUSHED_BUSINESS_NAME, businessName);
                     editor.commit();
-                    
+
                     Uri currentNotificationUri = RingtoneManager.getActualDefaultRingtoneUri(mContext,
                             RingtoneManager.TYPE_NOTIFICATION);
 
                     Intent intent = new Intent(mContext, DetailActivity.class);
                     //Passing all business object info
-                    intent.putExtra(IMAGE_URL, response.body().getBusinesses().get(0).getImageUrl());
-                    intent.putExtra(PHONE_NUMBER, response.body().getBusinesses().get(0).getPhone());
-                    intent.putExtra(IS_CLOSED, response.body().getBusinesses().get(0).getIsClosed());
-                    intent.putExtra(BUSINESS_URL, response.body().getBusinesses().get(0).getUrl());
-                    intent.putExtra(BUSINESS_ID, response.body().getBusinesses().get(0).getId());
-                    intent.putExtra(REVIEW_COUNT, response.body().getBusinesses().get(0).getReviewCount());
-                    intent.putExtra(RATING, response.body().getBusinesses().get(0).getRating());
-                    intent.putExtra(DISTANCE, response.body().getBusinesses().get(0).getDistance());
-                    intent.putExtra(BUSINESS_NAME, response.body().getBusinesses().get(0).getName());
-                    intent.putExtra(ADDRESS_1, response.body().getBusinesses().get(0).getLocation().getAddress1());
-                    intent.putExtra(CITY, response.body().getBusinesses().get(0).getLocation().getCity());
+                    intent.putExtra(NOTIF_IMAGE_URL, response.body().getBusinesses().get(0).getImageUrl());
+                    intent.putExtra(NOTIF_PHONE_NUMBER, response.body().getBusinesses().get(0).getPhone());
+                    intent.putExtra(NOTIF_IS_CLOSED, response.body().getBusinesses().get(0).getIsClosed());
+                    intent.putExtra(NOTIF_BUSINESS_URL, response.body().getBusinesses().get(0).getUrl());
+                    intent.putExtra(NOTIF_BUSINESS_ID, response.body().getBusinesses().get(0).getId());
+                    intent.putExtra(NOTIF_REVIEW_COUNT, response.body().getBusinesses().get(0).getReviewCount());
+                    intent.putExtra(NOTIF_RATING, response.body().getBusinesses().get(0).getRating());
+                    intent.putExtra(NOTIF_DISTANCE, response.body().getBusinesses().get(0).getDistance());
+                    intent.putExtra(NOTIF_BUSINESS_NAME, response.body().getBusinesses().get(0).getName());
+                    intent.putExtra(NOTIF_ADDRESS_1, response.body().getBusinesses().get(0).getLocation().getAddress1());
+                    intent.putExtra(NOTIF_CITY, response.body().getBusinesses().get(0).getLocation().getCity());
+                    intent.putExtra(NOTIF_LATITUTE, response.body().getBusinesses().get(0).getCoordinates().getLatitude());
+                    intent.putExtra(NOTIF_LONGITUDE, response.body().getBusinesses().get(0).getCoordinates().getLongitude());
 
                     PendingIntent pendingIntent = PendingIntent.getActivity(mContext,
                             (int) System.currentTimeMillis(), intent, 0);

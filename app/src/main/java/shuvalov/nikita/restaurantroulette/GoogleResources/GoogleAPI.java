@@ -5,4 +5,6 @@ package shuvalov.nikita.restaurantroulette.GoogleResources;
  */
 
 public class GoogleAPI {
+
+
 }

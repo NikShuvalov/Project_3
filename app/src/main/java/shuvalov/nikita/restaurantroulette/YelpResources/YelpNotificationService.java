@@ -18,5 +18,6 @@ public interface YelpNotificationService {
                                                    @Query("categories") String categories,
                                                    @Query("radius") int radius,
                                                    @Query("attributes") String attributes,
-                                                   @Query("sort_by") String sort_by);
+                                                   @Query("sort_by") String sort_by,
+                                                   @Query("open_now") String open_now);
 }

@@ -249,7 +249,7 @@ public class UserSettingsActivity extends AppCompatActivity {
                     editor.commit();
 
                     //Create Jobscheduler Service
-
+                    //IGNORE ERRORS: THEY ARE BECAUSE OF OUR MIN SDK.
                     PersistableBundle periodicPersistableBundle = new PersistableBundle();
                     periodicPersistableBundle.putString("Type","Periodic Yelp API CHECK");
 
