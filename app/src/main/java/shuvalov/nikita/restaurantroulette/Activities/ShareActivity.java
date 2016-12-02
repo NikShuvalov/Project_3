@@ -28,6 +28,7 @@ import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
 import io.fabric.sdk.android.Fabric;
 import shuvalov.nikita.restaurantroulette.R;
+import shuvalov.nikita.restaurantroulette.TwitterResources.TwitterAPIConstants;
 
 public class ShareActivity extends AppCompatActivity {
 
@@ -39,6 +40,7 @@ public class ShareActivity extends AppCompatActivity {
     private RelativeLayout loggedIn, notLoggedIn;
     private String tweetText, restaurantName;
     private boolean tweeted;
+    private String key, secret;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,11 @@ public class ShareActivity extends AppCompatActivity {
         Fabric.with(this, new Twitter(authConfig));
 
         setContentView(R.layout.activity_share);
+
+        TwitterAPIConstants constants = new TwitterAPIConstants();
+
+        key = constants.CONSUMER_KEY;
+        secret = constants.CONSUMER_SECRET;
 
         tweeted = false;
 
@@ -89,7 +96,7 @@ public class ShareActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+                TwitterAuthConfig authConfig = new TwitterAuthConfig(key, secret);
                 Fabric.with(ShareActivity.this, new Twitter(authConfig));
 
                 TweetComposer.Builder builder = new TweetComposer.Builder(ShareActivity.this)
@@ -144,7 +151,7 @@ public class ShareActivity extends AppCompatActivity {
     }
 
     private void setViews () {
-        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(key, secret);
         Fabric.with(this, new Twitter(authConfig));
 
         TwitterSession session = Twitter.getInstance().core.getSessionManager().getActiveSession();

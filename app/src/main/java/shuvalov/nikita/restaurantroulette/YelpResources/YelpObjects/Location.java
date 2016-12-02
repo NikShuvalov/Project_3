@@ -28,6 +28,16 @@ public class Location {
     @Expose
     private String zipCode;
 
+    public Location(String address1, String country, String address2, String city, String state, String address3, String zipCode) {
+        this.address1 = address1;
+        this.country = country;
+        this.address2 = address2;
+        this.city = city;
+        this.state = state;
+        this.address3 = address3;
+        this.zipCode = zipCode;
+    }
+
     /**
      * 
      * @return

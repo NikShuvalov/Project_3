@@ -49,6 +49,24 @@ public class Business {
     @Expose
     private String name;
 
+    public Business(String imageUrl, String phone, String price, Boolean isClosed, Location location,
+                    String url, String id, Integer reviewCount, List<Category> categories, Double rating,
+                    Coordinates coordinates, Double distance, String name) {
+        this.imageUrl = imageUrl;
+        this.phone = phone;
+        this.price = price;
+        this.isClosed = isClosed;
+        this.location = location;
+        this.url = url;
+        this.id = id;
+        this.reviewCount = reviewCount;
+        this.categories = categories;
+        this.rating = rating;
+        this.coordinates = coordinates;
+        this.distance = distance;
+        this.name = name;
+    }
+
     /**
      * 
      * @return
