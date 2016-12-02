@@ -4,12 +4,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/activity_detail"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -29,7 +30,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="(Business Name Goes Here)"/>
+            android:textSize="24dp"
+            android:textStyle="bold"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -81,6 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
+                android:textSize="16dp"
                 android:text="Pricing:"/>
 
             <TextView
@@ -88,7 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:text="Getting info..."/>
+                android:textSize="16dp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -100,6 +103,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
+                android:textSize="16dp"
+                android:text="Uber Estimate:"/>
+
+            <TextView
+                android:id="@+id/uber_estimate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textSize="16dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textSize="16dp"
                 android:text="Share"/>
 
             <ImageView
@@ -124,6 +148,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
+                android:textSize="16dp"
                 android:text="Call:"/>
 
             <TextView
@@ -131,14 +156,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:text="(Phone Number Goes Here)"/>
+                android:textSize="16dp"/>
         </LinearLayout>
 
         <TextView
             android:id="@+id/open_or_closed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="(Open Or Closed)"
+            android:textSize="16dp"
             android:padding="8dp"/>
 
         <TextView
@@ -146,7 +171,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="(Address Goes Here)"/>
+            android:textSize="16dp"/>
 
         <fragment
             android:id="@+id/map"
