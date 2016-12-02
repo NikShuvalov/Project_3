@@ -26,9 +26,19 @@ public class UberAPI {
     public static final String RESULT_AVERAGE = "shuvalov.nikita.restaurantroulette.UberResources.RESULT_AVERAGE";
     public static final String MESSAGE_AVERAGE = "shuvalov.nikita.restaurantroulette.UberResources.MESSAGE_AVERAGE";
     private Context mContext;
+    private UberApiResultListener mListener;
 
     public UberAPI(Context context) {
+        mListener = null;
         mContext = context;
+    }
+
+    public interface UberApiResultListener {
+        public void onUberEstimateReady(String estimate);
+    }
+
+    public void setUberApiResultListener(UberApiResultListener listener) {
+        mListener = listener;
     }
 
     public void getEstimateAsString(Float start_Lat, Float start_Lon, Float end_Lat, Float end_Lon,
@@ -49,6 +59,10 @@ public class UberAPI {
                 Log.d("UBER", "onResponse: " + estimate);
 
                 //ToDo We still need to implement the receivers whereever we want to receive this info.
+
+                if (mListener != null) {
+                    mListener.onUberEstimateReady(estimate);
+                }
 
                 LocalBroadcastManager broadcaster = LocalBroadcastManager.getInstance(mContext);
                 Intent intent = new Intent(RESULT_STRING);
