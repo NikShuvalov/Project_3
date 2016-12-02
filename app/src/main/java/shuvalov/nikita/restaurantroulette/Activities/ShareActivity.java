@@ -42,13 +42,12 @@ public class ShareActivity extends AppCompatActivity {
     // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
     private static final String TWITTER_KEY = "cUr6myy7P8yOwWwrzbIdHbxKZ";
     private static final String TWITTER_SECRET = "qW7wJRMVrWx1qVFgJqeieuy4tF8kiTveBlh8v47ahStdz56ZHp";
-    private TwitterLoginButton mTwitterLoginButton, testButton;
-    private TextView mUserName, mTweetPreview, mDialogueUserName;
-    private RelativeLayout loggedIn, notLoggedIn;
+    private TwitterLoginButton mTwitterLoginButton;
+    private TextView mDialogueUserName;
     private String mTweetText, mRestaurantName;
     private boolean tweeted;
     private Business mBusiness;
-    private Button mContinue, mLogOUt;
+    private Button mContinue, mLogOUt, mQuit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,12 +66,13 @@ public class ShareActivity extends AppCompatActivity {
         mTweetText = "Check out the new place I just discovered on Restaurant Roulette!\n" +
                 mRestaurantName;
 
-
-
-
-
-        notLoggedIn = (RelativeLayout) findViewById(R.id.need_to_login);
-
+        mQuit = (Button) findViewById(R.id.back_button_twitter);
+        mQuit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
 
         mTwitterLoginButton = (TwitterLoginButton) findViewById(R.id.login_button);
@@ -135,13 +135,13 @@ public class ShareActivity extends AppCompatActivity {
         TwitterSession session = Twitter.getInstance().core.getSessionManager().getActiveSession();
 
         if (session != null) {
-            String text = "Logged in as: " + session.getUserName();
 
             final Dialog continueDialog = new Dialog(this);
             continueDialog.setContentView(R.layout.tweet_pop_up);
 
             mDialogueUserName = (TextView) continueDialog.findViewById(R.id.username_text);
-            mDialogueUserName.setText(session.getUserName());
+            String userName = "@" + session.getUserName();
+            mDialogueUserName.setText(userName);
 
             mContinue = (Button) continueDialog.findViewById(R.id.continue_button);
             mLogOUt = (Button) continueDialog.findViewById(R.id.logout_button);
@@ -178,15 +178,13 @@ public class ShareActivity extends AppCompatActivity {
             });
 
             continueDialog.show();
-            /*mUserName.setText(text);
-            notLoggedIn.setVisibility(View.GONE);
-            loggedIn.setVisibility(View.VISIBLE);*/
+
             if (tweeted) {
                 Toast.makeText(ShareActivity.this, "Thanks for sharing!", Toast.LENGTH_SHORT).show();
                 finish();
             }
 
-        } 
+        }
     }
 
     public Uri getImageUri (String url) {
