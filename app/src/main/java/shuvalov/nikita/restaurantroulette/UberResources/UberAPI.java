@@ -1,8 +1,6 @@
 package shuvalov.nikita.restaurantroulette.UberResources;
 
 import android.content.Context;
-import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import retrofit2.Call;
@@ -27,18 +25,28 @@ public class UberAPI {
     public static final String MESSAGE_AVERAGE = "shuvalov.nikita.restaurantroulette.UberResources.MESSAGE_AVERAGE";
     private Context mContext;
     private UberApiResultListener mListener;
+    private UberApiAverageResultListener mAverageListener;
 
     public UberAPI(Context context) {
         mListener = null;
+        mAverageListener = null;
         mContext = context;
     }
 
     public interface UberApiResultListener {
-        public void onUberEstimateReady(String estimate);
+        void onUberEstimateReady(String estimate);
     }
 
     public void setUberApiResultListener(UberApiResultListener listener) {
         mListener = listener;
+    }
+
+    public interface UberApiAverageResultListener {
+        void onUberAverageEstimateReady(Integer averageEstimate);
+    }
+
+    public void setUberApiAverageResultListener(UberApiAverageResultListener listener) {
+        mAverageListener = listener;
     }
 
     public void getEstimateAsString(Float start_Lat, Float start_Lon, Float end_Lat, Float end_Lon,
@@ -58,16 +66,9 @@ public class UberAPI {
                 String estimate = response.body().getPrices().get(1).getEstimate();
                 Log.d("UBER", "onResponse: " + estimate);
 
-                //ToDo We still need to implement the receivers whereever we want to receive this info.
-
                 if (mListener != null) {
                     mListener.onUberEstimateReady(estimate);
                 }
-
-                LocalBroadcastManager broadcaster = LocalBroadcastManager.getInstance(mContext);
-                Intent intent = new Intent(RESULT_STRING);
-                intent.putExtra(MESSAGE_STRING, estimate);
-                broadcaster.sendBroadcast(intent);
             }
 
             @Override
@@ -77,7 +78,6 @@ public class UberAPI {
 
         });
     }
-
 
     public void getEstimateAsIntAverage(Float start_Lat, Float start_Lon, Float end_Lat, Float end_Lon,
                                       String server_id) {
@@ -97,12 +97,9 @@ public class UberAPI {
                 Integer getLow = response.body().getPrices().get(1).getLowEstimate();
                 Integer average = ((getHigh+getLow)/2);
 
-                //ToDo We still need to implement the receivers whereever we want to receive this info.
-
-                LocalBroadcastManager broadcaster = LocalBroadcastManager.getInstance(mContext);
-                Intent intent = new Intent(RESULT_AVERAGE);
-                intent.putExtra(MESSAGE_AVERAGE, average);
-                broadcaster.sendBroadcast(intent);
+                if (mAverageListener != null) {
+                    mAverageListener.onUberAverageEstimateReady(average);
+                }
             }
 
             @Override

@@ -1,17 +1,23 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
 import android.location.Location;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -31,6 +37,8 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     private RecyclerView mRecyclerView;
     private SearchActivityRecyclerAdapter mAdapter;
     private List<Business> mBusinessList;
+    private CardView mBasicCardHolder;
+    private boolean mOptionsVisible;
 
     private ArrayAdapter<CharSequence> mRatingAdapter, mPricingAdapter, mRadiusAdapter, mLocationAdapter;
 
@@ -43,6 +51,8 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         setContentView(R.layout.activity_search);
 
         mBusinessList = RestaurantSearchHelper.getInstance().getSearchResults();
+        mOptionsVisible = true;
+
 
         findViews();
         addAdaptersToSpinners();
@@ -58,6 +68,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         mRecyclerView = (RecyclerView)findViewById(R.id.search_recyclerview);
         mRandom = (Button)findViewById(R.id.random_search);
         mLocationSpinner = (Spinner)findViewById(R.id.location_spinner);
+        mBasicCardHolder =(CardView)findViewById(R.id.basic_search_card);
     }
 
     public void addAdaptersToSpinners(){
@@ -99,6 +110,11 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
                 //ToDo: Use values that are put into the spinners to perform a search.
                 //ToDo: Move options and parameters off-screen
                 inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
+                if(mOptionsVisible){
+                    animateOptionsOffScreen();//Rename to animateOffScreen
+                    mOptionsVisible=!mOptionsVisible;
+                }
+
                 Location mockLocation = new Location(LOCATION_SERVICE);
                 mockLocation.setLongitude(OurAppConstants.GA_LONGITUDE);
                 mockLocation.setLatitude(OurAppConstants.GA_LATITUDE);
@@ -113,22 +129,28 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
                 inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
             }
         });
+
+        mQueryEntry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!mOptionsVisible){
+                    mOptionsVisible=!mOptionsVisible;
+                    animationOptionsOntoScreen();
+                }
+            }
+        });
     }
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         if (adapterView.getAdapter().equals(mPricingAdapter)){
             mPrice = (String) adapterView.getItemAtPosition(i);
-//            Toast.makeText(this, "Price value changed to "+mPricing, Toast.LENGTH_SHORT).show();
         }else if (adapterView.getAdapter().equals(mRadiusAdapter)){
             mRadius = (String) adapterView.getItemAtPosition(i);
-//            Toast.makeText(this, "Radius value changed to "+mRadius, Toast.LENGTH_SHORT).show();
         }else if (adapterView.getAdapter().equals(mRatingAdapter)) {
             mRating = (String) adapterView.getItemAtPosition(i);
-//            Toast.makeText(this, "Rating value changed to " + mRating, Toast.LENGTH_SHORT).show();
         }else if(adapterView.getAdapter().equals(mLocationAdapter)) {
             mLocation = (String) adapterView.getItemAtPosition(i);
-//            Toast.makeText(this, "Location being used: "+ mLocation, Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(this, "SOMETHING WENT WRONG!", Toast.LENGTH_SHORT).show();
             Log.d("Search Activity", "Adapter not identified");
@@ -139,4 +161,25 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     public void onNothingSelected(AdapterView<?> adapterView) {
         Toast.makeText(this, "What this do?", Toast.LENGTH_SHORT).show();
     }
+
+    public void animateOptionsOffScreen(){
+        Animation basicSearchAnimation = AnimationUtils.loadAnimation(this,R.anim.basic_search_out);
+        mBasicCardHolder.setAnimation(basicSearchAnimation);
+        mBasicCardHolder.setVisibility(View.GONE);
+
+        Animation randomSearchAnimation = AnimationUtils.loadAnimation(this, R.anim.random_out);
+        mRandom.setAnimation(randomSearchAnimation);
+        mRandom.setVisibility(View.GONE);
+
+    }
+
+    public void animationOptionsOntoScreen(){
+        Animation basicSearchAnimation = AnimationUtils.loadAnimation(this,R.anim.basic_search_in);
+        mBasicCardHolder.setAnimation(basicSearchAnimation);
+
+        Animation randomSearchAnimation = AnimationUtils.loadAnimation(this, R.anim.random_in);
+        mRandom.setAnimation(randomSearchAnimation);
+
+    }
+
 }
