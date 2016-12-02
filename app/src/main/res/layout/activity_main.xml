@@ -16,7 +16,8 @@
         android:id="@+id/search_card_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="20dp">
+        app:cardCornerRadius="20dp"
+        android:background="@drawable/click_card">
         <RelativeLayout
             android:id="@+id/searchcard_relative_layout"
             android:layout_width="match_parent"
@@ -56,6 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/topdivider"
         android:layout_toLeftOf="@id/middivider"
+        android:background="@drawable/click_card"
         app:cardCornerRadius="20dp">
 
         <RelativeLayout
@@ -86,6 +88,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/topdivider"
         android:layout_toRightOf="@id/middivider"
+        android:background="@drawable/click_card"
         app:cardCornerRadius="20dp">
         <RelativeLayout
             android:id="@+id/roulettecard_relative_layout"
