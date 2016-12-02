@@ -68,7 +68,7 @@ public class ShareActivity extends AppCompatActivity {
                 mRestaurantName;
 
 
-        
+
 
 
         notLoggedIn = (RelativeLayout) findViewById(R.id.need_to_login);
@@ -186,10 +186,7 @@ public class ShareActivity extends AppCompatActivity {
                 finish();
             }
 
-        } else {
-            mUserName.setText(" ");
-            notLoggedIn.setVisibility(View.VISIBLE);
-        }
+        } 
     }
 
     public Uri getImageUri (String url) {
