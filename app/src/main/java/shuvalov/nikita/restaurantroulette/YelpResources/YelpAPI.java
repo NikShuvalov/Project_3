@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
@@ -23,12 +24,15 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import shuvalov.nikita.restaurantroulette.Activities.DetailActivity;
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
+import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.SearchActivityRecyclerAdapter;
 import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.RestaurantsMainObject;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_LAST_PUSHED_BUSINESS_NAME;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_PREFERENCES;
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.ADDRESS_1;
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.BUSINESS_ID;
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.BUSINESS_NAME;
@@ -164,38 +168,51 @@ public class YelpAPI {
                 long distanceRounded = Math.round(distance);
                 Log.d(TAG, "onResponse: " + businessName);
 
-                Uri currentNotificationUri = RingtoneManager.getActualDefaultRingtoneUri(mContext,
-                        RingtoneManager.TYPE_NOTIFICATION);
+                SharedPreferences sharedPreferences = mContext.getSharedPreferences(USER_PREFERENCES,
+                        Context.MODE_PRIVATE);
+                String lastPushedBusinessName =
+                        sharedPreferences.getString(SHARED_PREF_LAST_PUSHED_BUSINESS_NAME, "default");
 
-                Intent intent = new Intent(mContext, DetailActivity.class);
-                //Passing all business object info
-                intent.putExtra(IMAGE_URL, response.body().getBusinesses().get(0).getImageUrl());
-                intent.putExtra(PHONE_NUMBER, response.body().getBusinesses().get(0).getPhone());
-                intent.putExtra(IS_CLOSED, response.body().getBusinesses().get(0).getIsClosed());
-                intent.putExtra(BUSINESS_URL, response.body().getBusinesses().get(0).getUrl());
-                intent.putExtra(BUSINESS_ID, response.body().getBusinesses().get(0).getId());
-                intent.putExtra(REVIEW_COUNT, response.body().getBusinesses().get(0).getReviewCount());
-                intent.putExtra(RATING, response.body().getBusinesses().get(0).getRating());
-                intent.putExtra(DISTANCE, response.body().getBusinesses().get(0).getDistance());
-                intent.putExtra(BUSINESS_NAME, response.body().getBusinesses().get(0).getName());
-                intent.putExtra(ADDRESS_1, response.body().getBusinesses().get(0).getLocation().getAddress1());
-                intent.putExtra(CITY, response.body().getBusinesses().get(0).getLocation().getCity());
+                if (businessName.equals(lastPushedBusinessName)) {
+                    //Do nothing
+                } else {
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(SHARED_PREF_LAST_PUSHED_BUSINESS_NAME, businessName);
+                    editor.commit();
+                    
+                    Uri currentNotificationUri = RingtoneManager.getActualDefaultRingtoneUri(mContext,
+                            RingtoneManager.TYPE_NOTIFICATION);
 
-                PendingIntent pendingIntent = PendingIntent.getActivity(mContext,
-                        (int) System.currentTimeMillis(), intent, 0);
+                    Intent intent = new Intent(mContext, DetailActivity.class);
+                    //Passing all business object info
+                    intent.putExtra(IMAGE_URL, response.body().getBusinesses().get(0).getImageUrl());
+                    intent.putExtra(PHONE_NUMBER, response.body().getBusinesses().get(0).getPhone());
+                    intent.putExtra(IS_CLOSED, response.body().getBusinesses().get(0).getIsClosed());
+                    intent.putExtra(BUSINESS_URL, response.body().getBusinesses().get(0).getUrl());
+                    intent.putExtra(BUSINESS_ID, response.body().getBusinesses().get(0).getId());
+                    intent.putExtra(REVIEW_COUNT, response.body().getBusinesses().get(0).getReviewCount());
+                    intent.putExtra(RATING, response.body().getBusinesses().get(0).getRating());
+                    intent.putExtra(DISTANCE, response.body().getBusinesses().get(0).getDistance());
+                    intent.putExtra(BUSINESS_NAME, response.body().getBusinesses().get(0).getName());
+                    intent.putExtra(ADDRESS_1, response.body().getBusinesses().get(0).getLocation().getAddress1());
+                    intent.putExtra(CITY, response.body().getBusinesses().get(0).getLocation().getCity());
 
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
-                builder.setSmallIcon(android.R.drawable.ic_dialog_alert);
-                builder.setSound(currentNotificationUri);
-                builder.setContentTitle("New food deal at " + businessName + "!" );
-                builder.setContentText("It is " + distanceRounded + " meters to your location");
-                builder.setAutoCancel(true);
-                builder.setPriority(Notification.PRIORITY_MAX);
-                builder.setContentIntent(pendingIntent);
+                    PendingIntent pendingIntent = PendingIntent.getActivity(mContext,
+                            (int) System.currentTimeMillis(), intent, 0);
 
-                NotificationManager notificationManager =
-                        (NotificationManager) mContext.getSystemService(NOTIFICATION_SERVICE);
-                notificationManager.notify(1, builder.build());
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
+                    builder.setSmallIcon(R.drawable.ic_place_black_24dp);
+                    builder.setSound(currentNotificationUri);
+                    builder.setContentTitle("New food deal at " + businessName + "!");
+                    builder.setContentText("It is " + distanceRounded + " meters to your location");
+                    builder.setAutoCancel(true);
+                    builder.setPriority(Notification.PRIORITY_MAX);
+                    builder.setContentIntent(pendingIntent);
+
+                    NotificationManager notificationManager =
+                            (NotificationManager) mContext.getSystemService(NOTIFICATION_SERVICE);
+                    notificationManager.notify(1, builder.build());
+                }
             }
 
             @Override

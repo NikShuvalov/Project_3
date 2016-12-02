@@ -22,6 +22,7 @@ import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPI;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpJobService;
 
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_NOTIFICATION_CHECKED;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_NUM_OF_RESULTS;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_PRICING;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_RADIUS;
@@ -45,7 +46,7 @@ public class UserSettingsActivity extends AppCompatActivity {
         final long priceSavedPosition = sharedPreferences.getLong(SHARED_PREF_PRICING, -1);
         final long radiusSavedPosition = sharedPreferences.getLong(SHARED_PREF_RADIUS, -1);
         final long searchResultsSavedPosition = sharedPreferences.getLong(SHARED_PREF_NUM_OF_RESULTS, -1);
-        boolean isDealsEnabled = sharedPreferences.getBoolean("notificationcheckbox", false);
+        boolean isDealsEnabled = sharedPreferences.getBoolean(SHARED_PREF_NOTIFICATION_CHECKED, false);
 
         Log.d("Serkan", "onCreate: " + ratingSavedPosition);
 
@@ -244,7 +245,7 @@ public class UserSettingsActivity extends AppCompatActivity {
                     SharedPreferences sharedPreferences =  getSharedPreferences(USER_PREFERENCES,
                             Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putBoolean("notificationcheckbox", true);
+                    editor.putBoolean(SHARED_PREF_NOTIFICATION_CHECKED, true);
                     editor.commit();
 
                     //Create Jobscheduler Service
@@ -266,7 +267,7 @@ public class UserSettingsActivity extends AppCompatActivity {
                     SharedPreferences sharedPreferences =  getSharedPreferences(USER_PREFERENCES,
                             Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putBoolean("notificationcheckbox", false);
+                    editor.putBoolean(SHARED_PREF_NOTIFICATION_CHECKED, false);
                     editor.commit();
 
                     //Kill Jobscheduler Service
