@@ -38,6 +38,7 @@ public class ShareActivity extends AppCompatActivity {
     private TextView userName, tweetPreview;
     private RelativeLayout loggedIn, notLoggedIn;
     private String tweetText, restaurantName;
+    private boolean tweeted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,8 @@ public class ShareActivity extends AppCompatActivity {
         Fabric.with(this, new Twitter(authConfig));
 
         setContentView(R.layout.activity_share);
+
+        tweeted = false;
 
         restaurantName = "Joe's Pizza";
         tweetText= "Check out the new place i just discovered on INSERT_APP_NAME_HERE!\n" +
@@ -92,6 +95,7 @@ public class ShareActivity extends AppCompatActivity {
                 TweetComposer.Builder builder = new TweetComposer.Builder(ShareActivity.this)
                         .text(tweetText);
                 builder.show();
+                tweeted = true;
             }
         });
 
@@ -149,10 +153,10 @@ public class ShareActivity extends AppCompatActivity {
             String text = "Logged in as: " + session.getUserName();
             userName.setText(text);
             notLoggedIn.setVisibility(View.GONE);
-
-
-
             loggedIn.setVisibility(View.VISIBLE);
+            if (tweeted) {
+                finish();
+            }
 
         } else {
             userName.setText(" ");
