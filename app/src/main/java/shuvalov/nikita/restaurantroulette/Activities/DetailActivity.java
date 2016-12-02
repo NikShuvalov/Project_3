@@ -26,7 +26,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 
+import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
+import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
 import shuvalov.nikita.restaurantroulette.UberResources.UberAPI;
 import shuvalov.nikita.restaurantroulette.UberResources.UberAPIConstants;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
@@ -41,6 +43,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     public ImageView mBusinessImage, mShare, mPhoneButton,
             mFirstStar, mSecondStar, mThirdStar, mFourthStar, mFifthStar;
     public Business mBusiness;
+    public int mBusinessPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +74,10 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         Picasso.with(this)
                 .load("http://cdn2-www.dogtime.com/assets/uploads/gallery/30-impossibly-cute-puppies/impossibly-cute-puppy-8.jpg") // TODO: ADD URL
                 .into(mBusinessImage);
+        
+        mBusinessPosition = getIntent().getIntExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, -1);
+        bindDataToView(RestaurantSearchHelper.getInstance().getBusinessAtPosition(mBusinessPosition));
 
-        // TODO: add bindDataToView() method
 
         // Phone Button OnClickListener to Open Dialer Intent
         mPhoneButton.setOnClickListener(new View.OnClickListener() {
@@ -85,7 +90,14 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             }
         });
 
-        // TODO: add OnClickListener for Share ImageView
+        mShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DetailActivity.this, ShareActivity.class);
+                intent.putExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, mBusinessPosition);
+                startActivity(intent);
+            }
+        });
 
         // Map Setup
         MapFragment mapFragment = (MapFragment) getFragmentManager()
