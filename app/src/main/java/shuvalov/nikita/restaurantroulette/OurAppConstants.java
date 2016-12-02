@@ -12,6 +12,10 @@ public class OurAppConstants {
     public static final String SHARED_PREF_NUM_OF_RESULTS = "randomresultsPref";
     public static final String SHARED_PREF_NOTIFICATION_CHECKED = "notificationChecked";
     public static final String SHARED_PREF_LAST_PUSHED_BUSINESS_NAME = "business_name";
+    public static final String SHARED_PREF_HOME_LAT = "home_lat";
+    public static final String SHARED_PREF_HOME_LON = "home_lat";
+    public static final String SHARED_PREF_WORK_LAT = "home_lat";
+    public static final String SHARED_PREF_WORK_LON = "home_lat";
 
     public static final double GA_LATITUDE = 40.7387387387384;
     public static final double GA_LONGITUDE = -73.97887613997012;

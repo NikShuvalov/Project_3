@@ -22,11 +22,15 @@ import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPI;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpJobService;
 
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_HOME_LAT;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_HOME_LON;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_NOTIFICATION_CHECKED;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_NUM_OF_RESULTS;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_PRICING;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_RADIUS;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_RATING;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_WORK_LAT;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_WORK_LON;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_PREFERENCES;
 
 public class UserSettingsActivity extends AppCompatActivity {
@@ -208,8 +212,8 @@ public class UserSettingsActivity extends AppCompatActivity {
 
                 //ToDo: Change the 1f, 2f with actual location data from Google Location API.
 
-                editor.putFloat("lat_home", 1f);
-                editor.putFloat("lon_home", 2f);
+                editor.putFloat(SHARED_PREF_HOME_LAT, 1f);
+                editor.putFloat(SHARED_PREF_HOME_LON, 2f);
                 editor.commit();
             }
         });
@@ -223,8 +227,8 @@ public class UserSettingsActivity extends AppCompatActivity {
 
                 //ToDo: Change the 1f, 2f with actual location data from Google Location API.
 
-                editor.putFloat("lat_work", 1f);
-                editor.putFloat("lon_work", 2f);
+                editor.putFloat(SHARED_PREF_WORK_LAT, 1f);
+                editor.putFloat(SHARED_PREF_WORK_LON, 2f);
                 editor.commit();
             }
         });
