@@ -29,19 +29,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <Button
+                android:id="@+id/continue_button"
                 android:text="continue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"/>
             <Button
+                android:id="@+id/logout_button"
                 android:text="log out"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"/>
         </LinearLayout>
-
-
-
-
     </LinearLayout>
 </android.support.v7.widget.CardView>

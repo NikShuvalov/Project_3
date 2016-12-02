@@ -12,8 +12,7 @@
     <RelativeLayout
         android:id="@+id/need_to_login"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
+        android:layout_height="match_parent">
         <TextView
             android:layout_above="@+id/login_button"
             android:text="please login to continue"
@@ -29,44 +28,7 @@
         android:layout_height="wrap_content" />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/is_logged_in"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <TextView
-            android:id="@+id/tweet_preview"
-            android:textSize="30dp"
-            android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
 
-        <LinearLayout
-            android:id="@+id/tweet_buttons"
-            android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tweet_preview">
-            <Button
-                android:id="@+id/tweet_button"
-                android:text="tweet"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <Button
-                android:id="@+id/log_out_button"
-                android:text="log out"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-        <TextView
-            android:id="@+id/twitter_name"
-            android:layout_below="@id/tweet_buttons"
-            android:textSize="30dp"
-            android:layout_centerHorizontal="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-    </RelativeLayout>
 
 
 

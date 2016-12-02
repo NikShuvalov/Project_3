@@ -43,12 +43,12 @@ public class ShareActivity extends AppCompatActivity {
     private static final String TWITTER_KEY = "cUr6myy7P8yOwWwrzbIdHbxKZ";
     private static final String TWITTER_SECRET = "qW7wJRMVrWx1qVFgJqeieuy4tF8kiTveBlh8v47ahStdz56ZHp";
     private TwitterLoginButton mTwitterLoginButton, testButton;
-    private TextView mUserName, mTweetPreview;
+    private TextView mUserName, mTweetPreview, mDialogueUserName;
     private RelativeLayout loggedIn, notLoggedIn;
     private String mTweetText, mRestaurantName;
     private boolean tweeted;
     private Business mBusiness;
-    private Button mCancelButton;
+    private Button mContinue, mLogOUt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,17 +67,13 @@ public class ShareActivity extends AppCompatActivity {
         mTweetText = "Check out the new place I just discovered on Restaurant Roulette!\n" +
                 mRestaurantName;
 
-        mUserName = (TextView) findViewById(R.id.twitter_name);
-        mTweetPreview = (TextView) findViewById(R.id.tweet_preview);
 
-        mTweetPreview.setText(mTweetText);
+        
 
-        loggedIn = (RelativeLayout) findViewById(R.id.is_logged_in);
+
         notLoggedIn = (RelativeLayout) findViewById(R.id.need_to_login);
 
 
-        Button button = (Button) findViewById(R.id.tweet_button);
-        Button logOut = (Button) findViewById(R.id.log_out_button);
 
         mTwitterLoginButton = (TwitterLoginButton) findViewById(R.id.login_button);
         mTwitterLoginButton.setCallback(new Callback<TwitterSession>() {
@@ -99,36 +95,7 @@ public class ShareActivity extends AppCompatActivity {
             }
         });
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
-                Fabric.with(ShareActivity.this, new Twitter(authConfig));
 
-
-
-                TweetComposer.Builder builder = new TweetComposer.Builder(ShareActivity.this)
-                        .text(mTweetText)
-                        .image(getImageUri(mBusiness.getImageUrl()))
-                        .url(getURL(mBusiness.getUrl()))
-                        ;
-                builder.show();
-                tweeted = true;
-            }
-        });
-
-        logOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TwitterCore.getInstance().logOut();
-                ClearCookies(getApplicationContext());
-                Twitter.logOut();
-                mTwitterLoginButton.setVisibility(View.VISIBLE);
-                setViews();
-
-
-            }
-        });
     }
 
     @Override
@@ -169,9 +136,51 @@ public class ShareActivity extends AppCompatActivity {
 
         if (session != null) {
             String text = "Logged in as: " + session.getUserName();
-            mUserName.setText(text);
+
+            final Dialog continueDialog = new Dialog(this);
+            continueDialog.setContentView(R.layout.tweet_pop_up);
+
+            mDialogueUserName = (TextView) continueDialog.findViewById(R.id.username_text);
+            mDialogueUserName.setText(session.getUserName());
+
+            mContinue = (Button) continueDialog.findViewById(R.id.continue_button);
+            mLogOUt = (Button) continueDialog.findViewById(R.id.logout_button);
+
+            mContinue.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+                    Fabric.with(ShareActivity.this, new Twitter(authConfig));
+
+
+
+                    TweetComposer.Builder builder = new TweetComposer.Builder(ShareActivity.this)
+                            .text(mTweetText)
+                            .image(getImageUri(mBusiness.getImageUrl()))
+                            .url(getURL(mBusiness.getUrl()))
+                            ;
+                    builder.show();
+                    tweeted = true;
+                    continueDialog.dismiss();
+                }
+            });
+
+            mLogOUt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    TwitterCore.getInstance().logOut();
+                    ClearCookies(getApplicationContext());
+                    Twitter.logOut();
+                    mTwitterLoginButton.setVisibility(View.VISIBLE);
+                    continueDialog.dismiss();
+                    setViews();
+                }
+            });
+
+            continueDialog.show();
+            /*mUserName.setText(text);
             notLoggedIn.setVisibility(View.GONE);
-            loggedIn.setVisibility(View.VISIBLE);
+            loggedIn.setVisibility(View.VISIBLE);*/
             if (tweeted) {
                 Toast.makeText(ShareActivity.this, "Thanks for sharing!", Toast.LENGTH_SHORT).show();
                 finish();
@@ -179,7 +188,6 @@ public class ShareActivity extends AppCompatActivity {
 
         } else {
             mUserName.setText(" ");
-            loggedIn.setVisibility(View.GONE);
             notLoggedIn.setVisibility(View.VISIBLE);
         }
     }
