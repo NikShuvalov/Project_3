@@ -145,7 +145,7 @@ public class YelpAPI {
                 .build();
 
         //ToDo CHANGE THE HARDCODED LAT LONG INFO!
-        
+
         //double myLong = mLastLocation.getLongitude();
         //double myLat = mLastLocation.getLatitude();
         //Log.d(TAG, "Lat, Long: "+myLat+","+myLong);
