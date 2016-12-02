@@ -119,7 +119,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         if (adapterView.getAdapter().equals(mPricingAdapter)){
             mPrice = (String) adapterView.getItemAtPosition(i);
-//            Toast.makeText(this, "Price value changed to "+mPrice, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Price value changed to "+mPricing, Toast.LENGTH_SHORT).show();
         }else if (adapterView.getAdapter().equals(mRadiusAdapter)){
             mRadius = (String) adapterView.getItemAtPosition(i);
 //            Toast.makeText(this, "Radius value changed to "+mRadius, Toast.LENGTH_SHORT).show();
