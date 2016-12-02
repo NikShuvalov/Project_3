@@ -5,6 +5,7 @@ import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+import android.widget.Toast;
 
 
 import java.util.List;
@@ -14,10 +15,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.SearchActivityRecyclerAdapter;
+import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.RestaurantsMainObject;
 
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.YELP_APP_SECRET;
+import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.YELP_BEARER_TOKEN;
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.YELP_CLIENT_ID;
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.YELP_GRANT_TYPE;
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.YELP_SEARCH_BASE_URL;
@@ -77,7 +81,7 @@ public class YelpAPI {
         }
     }
 
-    public void getRestaurants(String query, int radius) {
+    public void getRestaurants(String query, int radius, final SearchActivityRecyclerAdapter adapter) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(YELP_SEARCH_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -85,17 +89,21 @@ public class YelpAPI {
 
         double myLong = mLastLocation.getLongitude();
         double myLat = mLastLocation.getLatitude();
+        Log.d(TAG, "Lat, Long: "+myLat+","+myLong);
         YelpSearchService service = retrofit.create(YelpSearchService.class);
 
         //ToDo: Replace "restaurants" with Constant and/or variable based on what the search category is.
-        Call<RestaurantsMainObject> call = service.getRestaurants("Bearer " + YelpAPIConstants.YELP_BEARER_TOKEN, query, "restaurants",
-                40, myLat, myLong, radius);//ToDo: Do we need to make a different MainObject for place of entertainment?
+        Call<RestaurantsMainObject> call = service.getRestaurants("Bearer " + YELP_BEARER_TOKEN, query, "restaurants",
+                40, myLat, myLong, radius*1000);//ToDo: Do we need to make a different MainObject for place of entertainment?
 
         call.enqueue(new Callback<RestaurantsMainObject>() {
             @Override
             public void onResponse(Call<RestaurantsMainObject> call, Response<RestaurantsMainObject> response) {
                 mBusinessList = response.body().getBusinesses();
-                //ToDo: Probably pass mBusinessList to another java class. Singleton?
+                Toast.makeText(mContext, "Size: "+mBusinessList.size(), Toast.LENGTH_SHORT).show();
+                RestaurantSearchHelper.getInstance().setmBusinessList(mBusinessList);
+                adapter.replaceList(mBusinessList);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
