@@ -16,7 +16,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_alignParentRight="true"
-        android:background="#f00"/>
+        android:scaleType="fitXY"/>
     <TextView
         android:id="@+id/description_text_view"
         android:layout_width="match_parent"
