@@ -41,7 +41,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     public ImageView mBusinessImage, mShare, mPhoneButton,
             mFirstStar, mSecondStar, mThirdStar, mFourthStar, mFifthStar;
     public Business mBusiness;
-    public BroadcastReceiver mBroadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,17 +100,15 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             }
         });
 
-        mBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String uberEstimate = intent.getStringExtra(UberAPI.MESSAGE_STRING);
-                mPrice.setText(uberEstimate);
-            }
-        };
-
-        UberAPI uberAPI = new UberAPI(this);
-        uberAPI.getEstimateAsString(40.73873873873874f, -73.97987613997012f, 40.5945945945946f, -73.9387914156729f, UberAPIConstants.UBER_SERVER_ID);
-
+        // Temporarily Commented out
+//        UberAPI uberAPI = new UberAPI(this);
+//        uberAPI.getEstimateAsString(40.73873873873874f, -73.97987613997012f, 40.5945945945946f, -73.9387914156729f, UberAPIConstants.UBER_SERVER_ID);
+//        uberAPI.setUberApiResultListener(new UberAPI.UberApiResultListener() {
+//            @Override
+//            public void onUberEstimateReady(String estimate) {
+//                mPrice.setText(estimate);
+//            }
+//        });
     }
 
     public void bindDataToView(Business business) {
@@ -141,19 +138,5 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                     .snippet("Where We Study ADI")
                     .position(ourLocation));
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        LocalBroadcastManager.getInstance(this).registerReceiver((mBroadcastReceiver),
-                new IntentFilter(UberAPI.RESULT_STRING)
-        );
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);
     }
 }
