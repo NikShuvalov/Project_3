@@ -1,8 +1,8 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,22 +23,29 @@ import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
-import com.twitter.sdk.android.core.internal.TwitterApiConstants;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+
 import io.fabric.sdk.android.Fabric;
+import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
+import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
+import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 
 public class ShareActivity extends AppCompatActivity {
 
     // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
     private static final String TWITTER_KEY = "cUr6myy7P8yOwWwrzbIdHbxKZ";
     private static final String TWITTER_SECRET = "qW7wJRMVrWx1qVFgJqeieuy4tF8kiTveBlh8v47ahStdz56ZHp";
-    private TwitterLoginButton loginButton;
-    private TextView userName, tweetPreview;
+    private TwitterLoginButton mTwitterLoginButton;
+    private TextView mUserName, mTweetPreview;
     private RelativeLayout loggedIn, notLoggedIn;
-    private String tweetText, restaurantName;
+    private String mTweetText, mRestaurantName;
     private boolean tweeted;
+    private Business mBusiness;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,14 +57,17 @@ public class ShareActivity extends AppCompatActivity {
 
         tweeted = false;
 
-        restaurantName = "Joe's Pizza";
-        tweetText= "Check out the new place i just discovered on INSERT_APP_NAME_HERE!\n" +
-                restaurantName;
+        int pos = getIntent().getIntExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, 1);
+        mBusiness = RestaurantSearchHelper.getInstance().getBusinessAtPosition(pos);
 
-        userName = (TextView) findViewById(R.id.twitter_name);
-        tweetPreview = (TextView) findViewById(R.id.tweet_preview);
+        mRestaurantName = mBusiness.getName();
+        mTweetText = "Check out the new place i just discovered on INSERT_APP_NAME_HERE!\n" +
+                mRestaurantName;
 
-        tweetPreview.setText(tweetText);
+        mUserName = (TextView) findViewById(R.id.twitter_name);
+        mTweetPreview = (TextView) findViewById(R.id.tweet_preview);
+
+        mTweetPreview.setText(mTweetText);
 
         loggedIn = (RelativeLayout) findViewById(R.id.is_logged_in);
         notLoggedIn = (RelativeLayout) findViewById(R.id.need_to_login);
@@ -66,8 +76,8 @@ public class ShareActivity extends AppCompatActivity {
         Button button = (Button) findViewById(R.id.tweet_button);
         Button logOut = (Button) findViewById(R.id.log_out_button);
 
-        loginButton = (TwitterLoginButton) findViewById(R.id.login_button);
-        loginButton.setCallback(new Callback<TwitterSession>() {
+        mTwitterLoginButton = (TwitterLoginButton) findViewById(R.id.login_button);
+        mTwitterLoginButton.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
                 // The TwitterSession is also available through:
@@ -92,10 +102,16 @@ public class ShareActivity extends AppCompatActivity {
                 TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
                 Fabric.with(ShareActivity.this, new Twitter(authConfig));
 
+
+
                 TweetComposer.Builder builder = new TweetComposer.Builder(ShareActivity.this)
-                        .text(tweetText);
+                        .text(mTweetText)
+                        //.image(getImageUri(mBusiness.getImageUrl()))
+                        .url(getURL(mBusiness.getUrl()))
+                        ;
                 builder.show();
                 tweeted = true;
+                Toast.makeText(ShareActivity.this, "Thanks for sharing!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -105,7 +121,7 @@ public class ShareActivity extends AppCompatActivity {
                 TwitterCore.getInstance().logOut();
                 ClearCookies(getApplicationContext());
                 Twitter.logOut();
-                loginButton.setVisibility(View.VISIBLE);
+                mTwitterLoginButton.setVisibility(View.VISIBLE);
                 setViews();
 
 
@@ -116,9 +132,9 @@ public class ShareActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // Make sure that the loginButton hears the result from any
+        // Make sure that the mTwitterLoginButton hears the result from any
         // Activity that it triggered.
-        loginButton.onActivityResult(requestCode, resultCode, data);
+        mTwitterLoginButton.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -151,7 +167,7 @@ public class ShareActivity extends AppCompatActivity {
 
         if (session != null) {
             String text = "Logged in as: " + session.getUserName();
-            userName.setText(text);
+            mUserName.setText(text);
             notLoggedIn.setVisibility(View.GONE);
             loggedIn.setVisibility(View.VISIBLE);
             if (tweeted) {
@@ -159,9 +175,25 @@ public class ShareActivity extends AppCompatActivity {
             }
 
         } else {
-            userName.setText(" ");
+            mUserName.setText(" ");
             loggedIn.setVisibility(View.GONE);
             notLoggedIn.setVisibility(View.VISIBLE);
         }
+    }
+
+    public Uri getImageUri (String url) {
+        Uri imageUri = Uri.parse(url);
+        return imageUri;
+    }
+
+    public URL getURL (String url) {
+        URL imageURL = null;
+        try {
+            imageURL = new URL(url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return imageURL;
     }
 }
