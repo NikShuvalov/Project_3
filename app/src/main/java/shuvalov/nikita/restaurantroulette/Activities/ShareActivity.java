@@ -1,9 +1,11 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,12 +42,13 @@ public class ShareActivity extends AppCompatActivity {
     // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
     private static final String TWITTER_KEY = "cUr6myy7P8yOwWwrzbIdHbxKZ";
     private static final String TWITTER_SECRET = "qW7wJRMVrWx1qVFgJqeieuy4tF8kiTveBlh8v47ahStdz56ZHp";
-    private TwitterLoginButton mTwitterLoginButton;
+    private TwitterLoginButton mTwitterLoginButton, testButton;
     private TextView mUserName, mTweetPreview;
     private RelativeLayout loggedIn, notLoggedIn;
     private String mTweetText, mRestaurantName;
     private boolean tweeted;
     private Business mBusiness;
+    private Button mCancelButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +64,7 @@ public class ShareActivity extends AppCompatActivity {
         mBusiness = RestaurantSearchHelper.getInstance().getBusinessAtPosition(pos);
 
         mRestaurantName = mBusiness.getName();
-        mTweetText = "Check out the new place i just discovered on INSERT_APP_NAME_HERE!\n" +
+        mTweetText = "Check out the new place I just discovered on Restaurant Roulette!\n" +
                 mRestaurantName;
 
         mUserName = (TextView) findViewById(R.id.twitter_name);
@@ -106,12 +109,11 @@ public class ShareActivity extends AppCompatActivity {
 
                 TweetComposer.Builder builder = new TweetComposer.Builder(ShareActivity.this)
                         .text(mTweetText)
-                        //.image(getImageUri(mBusiness.getImageUrl()))
+                        .image(getImageUri(mBusiness.getImageUrl()))
                         .url(getURL(mBusiness.getUrl()))
                         ;
                 builder.show();
                 tweeted = true;
-                Toast.makeText(ShareActivity.this, "Thanks for sharing!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -171,6 +173,7 @@ public class ShareActivity extends AppCompatActivity {
             notLoggedIn.setVisibility(View.GONE);
             loggedIn.setVisibility(View.VISIBLE);
             if (tweeted) {
+                Toast.makeText(ShareActivity.this, "Thanks for sharing!", Toast.LENGTH_SHORT).show();
                 finish();
             }
 
@@ -196,4 +199,8 @@ public class ShareActivity extends AppCompatActivity {
 
         return imageURL;
     }
+
+
+
+
 }
