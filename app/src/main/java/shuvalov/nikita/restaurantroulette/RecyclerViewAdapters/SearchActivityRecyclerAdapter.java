@@ -13,6 +13,7 @@ import java.util.List;
 
 import shuvalov.nikita.restaurantroulette.Activities.DetailActivity;
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
+import shuvalov.nikita.restaurantroulette.PicassoImageManager;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Category;
@@ -89,6 +90,9 @@ class SearchResultViewHolder extends RecyclerView.ViewHolder{
         mDescView.setText(fullAddress+"\n"+business.getPhone()+"\n"+categoriesText);
         mPrice.setText(business.getPrice());
         mRating.setText(String.valueOf(business.getRating())); //FixMe: Change this to the Yelp star rating instead of numbers. & in the xml.
-        //ToDo:Set image by using picasso with image.url
+
+        PicassoImageManager picassoImageManager = new PicassoImageManager(mPicture.getContext(), mPicture);
+        picassoImageManager.setImageFromUrl(business.getImageUrl());
+
     }
 }

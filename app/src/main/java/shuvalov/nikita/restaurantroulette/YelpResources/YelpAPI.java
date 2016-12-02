@@ -100,7 +100,6 @@ public class YelpAPI {
             @Override
             public void onResponse(Call<RestaurantsMainObject> call, Response<RestaurantsMainObject> response) {
                 mBusinessList = response.body().getBusinesses();
-                Toast.makeText(mContext, "Size: "+mBusinessList.size(), Toast.LENGTH_SHORT).show();
                 RestaurantSearchHelper.getInstance().setmBusinessList(mBusinessList);
                 adapter.replaceList(mBusinessList);
                 adapter.notifyDataSetChanged();
