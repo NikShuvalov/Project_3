@@ -69,17 +69,11 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         mFifthStar = (ImageView) findViewById(R.id.fifth_star);
 
         // TODO: Create Logic for Review Stars
-
-        // Picasso method to get images for each business
-        Picasso.with(this)
-                .load("http://cdn2-www.dogtime.com/assets/uploads/gallery/30-impossibly-cute-puppies/impossibly-cute-puppy-8.jpg") // TODO: ADD URL
-                .into(mBusinessImage);
         
         // Gets Instance of the Business
         mBusinessPosition = getIntent().getIntExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, -1);
         mBusiness = RestaurantSearchHelper.getInstance().getBusinessAtPosition(mBusinessPosition);
         bindDataToView(mBusiness);
-
 
         // Phone Button OnClickListener to Open Dialer Intent
         mPhoneButton.setOnClickListener(new View.OnClickListener() {
@@ -133,6 +127,11 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         Location location = business.getLocation();
         mAddress.setText(location.getAddress1() + " " + location.getCity());
         mOpenOrClosed.setText((business.getIsClosed()) ? "Closed" : "Open");
+
+        // Picasso method to get images for each business
+        Picasso.with(this)
+                .load(mBusiness.getImageUrl())
+                .into(mBusinessImage);
     }
 
     @Override
