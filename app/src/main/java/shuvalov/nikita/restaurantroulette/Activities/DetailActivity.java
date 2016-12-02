@@ -67,8 +67,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         mThirdStar = (ImageView) findViewById(R.id.third_star);
         mFourthStar = (ImageView) findViewById(R.id.fourth_star);
         mFifthStar = (ImageView) findViewById(R.id.fifth_star);
-
-        // TODO: Create Logic for Review Stars
         
         // Gets Instance of the Business
         mBusinessPosition = getIntent().getIntExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, -1);
@@ -128,10 +126,54 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         mAddress.setText(location.getAddress1() + " " + location.getCity());
         mOpenOrClosed.setText((business.getIsClosed()) ? "Closed" : "Open");
 
+        reviewStars();
+
         // Picasso method to get images for each business
         Picasso.with(this)
                 .load(mBusiness.getImageUrl())
                 .into(mBusinessImage);
+    }
+
+    public void reviewStars(){
+        if (mBusiness.getRating() == 1) {
+            mFirstStar.setImageResource(R.drawable.one_star_rating);
+        } else if (mBusiness.getRating() == 1.5) {
+            mFirstStar.setImageResource(R.drawable.one_star_rating);
+            mSecondStar.setImageResource(R.drawable.one_half_star_rating);
+        } else if (mBusiness.getRating() == 2) {
+            mFirstStar.setImageResource(R.drawable.two_star_rating);
+            mSecondStar.setImageResource(R.drawable.two_star_rating);
+        } else if (mBusiness.getRating() == 2.5) {
+            mFirstStar.setImageResource(R.drawable.two_star_rating);
+            mSecondStar.setImageResource(R.drawable.two_star_rating);
+            mThirdStar.setImageResource(R.drawable.two_half_star_rating);
+        } else if (mBusiness.getRating() == 3) {
+            mFirstStar.setImageResource(R.drawable.three_star_rating);
+            mSecondStar.setImageResource(R.drawable.three_star_rating);
+            mThirdStar.setImageResource(R.drawable.three_star_rating);
+        } else if (mBusiness.getRating() == 3.5) {
+            mFirstStar.setImageResource(R.drawable.three_star_rating);
+            mSecondStar.setImageResource(R.drawable.three_star_rating);
+            mThirdStar.setImageResource(R.drawable.three_star_rating);
+            mFourthStar.setImageResource(R.drawable.three_half_star_rating);
+        } else if (mBusiness.getRating() == 4) {
+            mFirstStar.setImageResource(R.drawable.four_star_rating);
+            mSecondStar.setImageResource(R.drawable.four_star_rating);
+            mThirdStar.setImageResource(R.drawable.four_star_rating);
+            mFourthStar.setImageResource(R.drawable.four_star_rating);
+        } else if (mBusiness.getRating() == 4.5) {
+            mFirstStar.setImageResource(R.drawable.four_star_rating);
+            mSecondStar.setImageResource(R.drawable.four_star_rating);
+            mThirdStar.setImageResource(R.drawable.four_star_rating);
+            mFourthStar.setImageResource(R.drawable.four_star_rating);
+            mFifthStar.setImageResource(R.drawable.four_half_star_rating);
+        } else if (mBusiness.getRating() == 5) {
+            mFirstStar.setImageResource(R.drawable.five_star_rating);
+            mSecondStar.setImageResource(R.drawable.five_star_rating);
+            mThirdStar.setImageResource(R.drawable.five_star_rating);
+            mFourthStar.setImageResource(R.drawable.five_star_rating);
+            mFifthStar.setImageResource(R.drawable.five_star_rating);
+        }
     }
 
     @Override
