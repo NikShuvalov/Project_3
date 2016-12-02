@@ -1,22 +1,16 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
 import android.Manifest;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -38,7 +32,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
 
     public static final int REQUEST_CODE_LOCATION = 1;
 
-    public TextView mBusinessName, mPrice,
+    public TextView mBusinessName, mPricing, mUberEstimate,
             mPhoneNumber, mAddress, mOpenOrClosed;
     public ImageView mBusinessImage, mShare, mPhoneButton,
             mFirstStar, mSecondStar, mThirdStar, mFourthStar, mFifthStar;
@@ -52,7 +46,8 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
 
         // Reference to Views
         mBusinessName = (TextView) findViewById(R.id.business_name);
-        mPrice = (TextView) findViewById(R.id.pricing);
+        mPricing = (TextView) findViewById(R.id.pricing);
+        mUberEstimate = (TextView) findViewById(R.id.uber_estimate);
         mPhoneNumber = (TextView) findViewById(R.id.phone_number);
         mAddress = (TextView) findViewById(R.id.address);
         mOpenOrClosed = (TextView) findViewById(R.id.open_or_closed);
@@ -112,14 +107,14 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
 //        uberAPI.setUberApiResultListener(new UberAPI.UberApiResultListener() {
 //            @Override
 //            public void onUberEstimateReady(String estimate) {
-//                mPrice.setText(estimate);
+//                mUberEstimate.setText(estimate);
 //            }
 //        });
     }
 
     public void bindDataToView(Business business) {
         mBusinessName.setText(business.getName());
-        mPrice.setText(business.getPrice());
+        mPricing.setText(business.getPrice());
         mPhoneNumber.setText(business.getPhone());
 
         Location location = business.getLocation();
