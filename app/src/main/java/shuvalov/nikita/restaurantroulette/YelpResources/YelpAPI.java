@@ -24,6 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import shuvalov.nikita.restaurantroulette.Activities.DetailActivity;
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
+import shuvalov.nikita.restaurantroulette.Randomizer;
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.SearchActivityRecyclerAdapter;
 import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
@@ -110,7 +111,7 @@ public class YelpAPI {
         }
     }
 
-    public void getRestaurants(String query, int radius, final SearchActivityRecyclerAdapter adapter) {
+    public void getRestaurants(String query, int radius, final SearchActivityRecyclerAdapter adapter, final boolean isRandomized) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(YELP_SEARCH_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -130,7 +131,12 @@ public class YelpAPI {
             public void onResponse(Call<RestaurantsMainObject> call, Response<RestaurantsMainObject> response) {
                 mBusinessList = response.body().getBusinesses();
                 RestaurantSearchHelper.getInstance().setmBusinessList(mBusinessList);
-                adapter.replaceList(mBusinessList);
+                if(isRandomized){
+                    Randomizer randomizer = new Randomizer(mContext);
+                    adapter.replaceList(randomizer.pickRandomFromList(mBusinessList));
+                }else{
+                    adapter.replaceList(mBusinessList);
+                }
                 adapter.notifyDataSetChanged();
             }
 

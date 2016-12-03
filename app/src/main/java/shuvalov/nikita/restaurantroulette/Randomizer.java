@@ -16,16 +16,18 @@ import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
  */
 
 public class Randomizer {
-    private String mMaxPricy;
-    private double mMinRating;
+    private long mMaxPricy;
+    private long mMinRating;
     private Context mContext;
+    private long mNumberOfRandoms;
+
     /**
      * Decided to make this into an object that way we can create one with passed parameters, default parameters, or sharedPreferences
      * @param minRating value between 1.0-5.0
      * @param maxExpensiveness "$", "$$", "$$$", "$$$$"
      * @param context Takes context to create toasts or sharedPreferences if necessary.
      */
-    public Randomizer(Context context, float minRating, String maxExpensiveness){
+    public Randomizer(Context context, long minRating, long maxExpensiveness){
         mMinRating = minRating;
         mMaxPricy = maxExpensiveness;
         mContext = context;
@@ -38,22 +40,22 @@ public class Randomizer {
     public Randomizer(Context context){
         if (context!= null){
             SharedPreferences sharedPreferences = context.getSharedPreferences(OurAppConstants.USER_PREFERENCES, Context.MODE_PRIVATE);
-            float rateVal = sharedPreferences.getFloat(OurAppConstants.SHARED_PREF_RATING, (float) -1);
-            if(rateVal!=-1){
-                mMinRating=rateVal;//If rating preference exist, set that preference.
-            }else{
-                mMinRating=3.5;//If rating preference doesn't exist, set to a default value of 3.5
+            mNumberOfRandoms = sharedPreferences.getLong(OurAppConstants.SHARED_PREF_NUM_OF_RESULTS, -1);
+            mMaxPricy = sharedPreferences.getLong(OurAppConstants.SHARED_PREF_PRICING,-1);
+            mMinRating = sharedPreferences.getLong(OurAppConstants.SHARED_PREF_RATING,  -1);
+            if(mMinRating==-1){
+                mMinRating=3;
             }
-            String priceVal = sharedPreferences.getString(OurAppConstants.SHARED_PREF_PRICING,"");
-            if(priceVal.length()!=0){
-                mMaxPricy = priceVal;
-            }else{
-                mMaxPricy = "$$"; //Set default to "$$"
+            if(mMaxPricy==-1){
+                mMaxPricy = 2;
+            }
+            if (mNumberOfRandoms==-1){
+                mNumberOfRandoms=3;
             }
 
         }else{
-            mMaxPricy="$$";
-            mMinRating=3.5;
+            mMaxPricy=2;
+            mMinRating=3;
         }
 
     }
@@ -64,10 +66,10 @@ public class Randomizer {
      * @Param List<Business>, int numberToPick
      */
 
-    public List<Business> pickRandomFromList(List<Business> businessList, int numberToPick) {
+    public List<Business> pickRandomFromList(List<Business> businessList) {
         List<Business> randomPicks = new ArrayList<>();
         Random picker = new Random();
-        for (int i = 0; i < numberToPick; i++) {
+        for (int i = 0; i <= mNumberOfRandoms; i++) {
             if (businessList.size() == 0) {
                 Toast.makeText(mContext, "Not enough results to pick from", Toast.LENGTH_SHORT).show();
                 break;
@@ -75,7 +77,7 @@ public class Randomizer {
 
             int randomIndex = picker.nextInt(businessList.size());
             Business randomBusiness = businessList.get(randomIndex);
-            if (randomBusiness.getRating() < mMinRating || randomBusiness.getPrice() != null && randomBusiness.getPrice().length() >= mMaxPricy.length()) {
+            if (randomBusiness.getRating() < mMinRating || randomBusiness.getPrice() != null && randomBusiness.getPrice().length() >= mMaxPricy) {
                 i--;
             } else {
                 randomPicks.add(randomBusiness);

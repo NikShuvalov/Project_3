@@ -1,5 +1,6 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import java.util.List;
 
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
+import shuvalov.nikita.restaurantroulette.Randomizer;
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.SearchActivityRecyclerAdapter;
 import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPI;
@@ -46,7 +48,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     private String mLocation;
 
 
-    //FixMe: EditText in this activity has a weird hitBox halfway down the screen that remains after other options are animated away.
+    //ToDo: Add a way to let user view the full list?
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,13 +133,31 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
                 mockLocation.setLatitude(OurAppConstants.GA_LATITUDE);
                 YelpAPI yelpApi = new YelpAPI(view.getContext(), mockLocation);
                 String query = mQueryEntry.getText().toString();
-                yelpApi.getRestaurants(query,Integer.parseInt(mRadius),mAdapter);
+                yelpApi.getRestaurants(query,Integer.parseInt(mRadius),mAdapter, false);
             }
         });
+        //ToDo:Combine mSearch and mRandom OnclickListener
         mRandom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
+
+                if(mOptionsVisible){
+                    animateOptionsOffScreen();
+                    mOptionsVisible=false;
+                }
+
+                Location mockLocation = new Location(LOCATION_SERVICE);
+                mockLocation.setLongitude(OurAppConstants.GA_LONGITUDE);
+                mockLocation.setLatitude(OurAppConstants.GA_LATITUDE);
+                YelpAPI yelpApi = new YelpAPI(view.getContext(), mockLocation);
+                String query = mQueryEntry.getText().toString();
+                SharedPreferences sharedPreferences = getSharedPreferences(OurAppConstants.USER_PREFERENCES, MODE_PRIVATE);
+                int radius = (int)sharedPreferences.getLong(OurAppConstants.SHARED_PREF_RADIUS,-1);
+                if (radius==-1){
+                    radius=3;
+                }
+                yelpApi.getRestaurants(query,radius,mAdapter, true);
             }
         });
 
