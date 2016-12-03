@@ -45,6 +45,8 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     private String mPrice, mRating, mRadius = "show all";//ToDo: Change value into constant
     private String mLocation;
 
+
+    //FixMe: EditText in this activity has a weird hitBox halfway down the screen that remains after other options are animated away.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

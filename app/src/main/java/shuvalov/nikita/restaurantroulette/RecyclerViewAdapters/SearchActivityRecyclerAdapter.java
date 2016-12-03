@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -16,8 +17,6 @@ import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.PicassoImageManager;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
-import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Category;
-import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Location;
 
 /**
  * Created by NikitaShuvalov on 12/1/16.
@@ -65,34 +64,93 @@ public class SearchActivityRecyclerAdapter extends RecyclerView.Adapter<SearchRe
 }
 
 class SearchResultViewHolder extends RecyclerView.ViewHolder{
-    TextView mNameView, mDescView, mPrice, mRating;
+    TextView mNameView, mDescView, mPrice;
     ImageView mPicture;
     RelativeLayout mHolderLayout;
+    LinearLayout mStarRatingHolder;
 
     public SearchResultViewHolder(View itemView) {
         super(itemView);
         mNameView = (TextView)itemView.findViewById(R.id.business_name_view);
         mDescView = (TextView)itemView.findViewById(R.id.description_text_view);
         mPrice = (TextView)itemView.findViewById(R.id.price_view);
-        mRating = (TextView)itemView.findViewById(R.id.rating_view);
         mHolderLayout = (RelativeLayout)itemView.findViewById(R.id.holder_layout);
         mPicture = (ImageView)itemView.findViewById(R.id.picture);
+        mStarRatingHolder = (LinearLayout)itemView.findViewById(R.id.star_rating_container);
     }
 
     public void bindDataToView(Business business){
         mNameView.setText(business.getName());
-        String categoriesText = "";
-        for (Category category: business.getCategories()){
-            categoriesText+=(category.getTitle()+", ");
-        }
-        Location location = business.getLocation();
-        String fullAddress = location.getAddress1()+" "+location.getCity();
-        mDescView.setText(fullAddress+"\n"+business.getPhone()+"\n"+categoriesText);
+//        Location location = business.getLocation();
+        mDescView.setText(business.getDistance()+"meters away");
         mPrice.setText(business.getPrice());
-        mRating.setText(String.valueOf(business.getRating())); //FixMe: Change this to the Yelp star rating instead of numbers. & in the xml.
+
+        double rating = business.getRating();
+        applyStarRating(rating);
+
 
         PicassoImageManager picassoImageManager = new PicassoImageManager(mPicture.getContext(), mPicture);
         picassoImageManager.setImageFromUrl(business.getImageUrl());
+
+    }
+
+    //Unnecessarily complicated method to set imageResource for stars.
+    public void applyStarRating(double rating) {
+        boolean halfStar = rating % 1 == 0.5;
+        int lastFullStar = (int) rating;
+        int usedImage = R.drawable.blank_star_rating;
+        if (rating == 0) {
+            for (int i = 0; i < 5; i++) {
+                ImageView starImage = (ImageView) mStarRatingHolder.getChildAt(i);
+                starImage.setImageResource(usedImage);
+            }
+        } else if (rating == 5) {
+            for (int i = 0; i < 5; i++) {
+                ImageView starImage = (ImageView) mStarRatingHolder.getChildAt(i);
+                starImage.setImageResource(R.drawable.five_star_rating);
+            }
+        } else {
+
+            switch (lastFullStar) {
+                case 1:
+                    usedImage = R.drawable.one_star_rating;
+                    break;
+                case 2:
+                    usedImage = R.drawable.two_star_rating;
+                    break;
+                case 3:
+                    usedImage = R.drawable.three_star_rating;
+                    break;
+                case 4:
+                    usedImage = R.drawable.four_star_rating;
+                    break;
+            }
+            for (int i = 0; i < lastFullStar; i++) {
+                ImageView starImage = (ImageView) mStarRatingHolder.getChildAt(i);
+                starImage.setImageResource(usedImage);
+            }
+            for (int i = 4; i >lastFullStar-1; i--) {
+                ImageView starImage = (ImageView) mStarRatingHolder.getChildAt(i);
+                starImage.setImageResource(R.drawable.blank_star_rating);
+            }
+            if(halfStar){
+                ImageView starImage = (ImageView) mStarRatingHolder.getChildAt(lastFullStar);
+                switch (lastFullStar){
+                    case 1:
+                        starImage.setImageResource(R.drawable.one_half_star_rating);
+                        break;
+                    case 2:
+                        starImage.setImageResource(R.drawable.two_half_star_rating);
+                        break;
+                    case 3:
+                        starImage.setImageResource(R.drawable.three_half_star_rating);
+                        break;
+                    case 4:
+                        starImage.setImageResource(R.drawable.four_half_star_rating);
+                        break;
+                }
+            }
+        }
 
     }
 }
