@@ -196,6 +196,23 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         mBasicCardHolder.setVisibility(View.GONE);
 
         Animation randomSearchAnimation = AnimationUtils.loadAnimation(this, R.anim.random_out);
+        randomSearchAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mRandom.clearAnimation();
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
         mRandom.setAnimation(randomSearchAnimation);
         mRandom.setVisibility(View.GONE);
 

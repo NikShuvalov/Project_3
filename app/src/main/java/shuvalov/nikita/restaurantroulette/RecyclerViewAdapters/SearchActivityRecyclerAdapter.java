@@ -81,8 +81,17 @@ class SearchResultViewHolder extends RecyclerView.ViewHolder{
 
     public void bindDataToView(Business business){
         mNameView.setText(business.getName());
-//        Location location = business.getLocation();
-        mDescView.setText(business.getDistance()+"meters away");
+        int distance = business.getDistance().intValue();
+        String distanceText;
+
+        //ToDo: Put into this snippet of code into a Utility class if we're going to be using it often?
+        if (distance>1000){//Changes format to look like "2.4" km away, instead of "2400 meters away" for large distances.
+            distanceText = (distance/100)/10.0f+" km away";
+        }else {
+            distanceText = distance+ " meters away";
+        }
+
+        mDescView.setText(distanceText); //ToDo: Can(Or Should) we change from metric (Meters/km) to Freedom Units(miles/feet)?
         mPrice.setText(business.getPrice());
 
         double rating = business.getRating();
