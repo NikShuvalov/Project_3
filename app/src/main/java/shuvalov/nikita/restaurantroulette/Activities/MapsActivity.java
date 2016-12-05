@@ -10,6 +10,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -40,9 +41,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        // TODO: Pass the business location from Detail Activity
         // TODO: Change Zoom based on the distance between current location and business
-        LatLng ourLocation = new LatLng(40.73873873873874, -73.97987613997012);
-        mMap.addMarker(new MarkerOptions().position(ourLocation).title("Marker in Sydney"));
+        LatLng ourLocation = new LatLng(OurAppConstants.GA_LATITUDE, OurAppConstants.GA_LONGITUDE);
+        mMap.addMarker(new MarkerOptions().position(ourLocation).title("General Assembly"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ourLocation, 13));
     }
 }

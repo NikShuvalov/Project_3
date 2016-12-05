@@ -1,26 +1,20 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Display;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
+import shuvalov.nikita.restaurantroulette.PicassoImageManager;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
 import shuvalov.nikita.restaurantroulette.UberResources.UberAPI;
@@ -28,13 +22,11 @@ import shuvalov.nikita.restaurantroulette.UberResources.UberAPIConstants;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Location;
 
-public class DetailActivity extends AppCompatActivity implements OnMapReadyCallback {
-
-    public static final int REQUEST_CODE_LOCATION = 1;
+public class DetailActivity extends AppCompatActivity{
 
     public TextView mBusinessName, mPricing, mUberEstimate,
             mPhoneNumber, mAddress, mOpenOrClosed;
-    public ImageView mBusinessImage, mShare, mPhoneButton,
+    public ImageView mBusinessImage, mShare, mPhoneButton, mMapFrame,
             mFirstStar, mSecondStar, mThirdStar, mFourthStar, mFifthStar;
     public Business mBusiness;
     public int mBusinessPosition;
@@ -55,6 +47,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         mBusinessImage = (ImageView) findViewById(R.id.business_image);
         mShare = (ImageView) findViewById(R.id.share_image_view);
         mPhoneButton = (ImageView) findViewById(R.id.call_image_view);
+        mMapFrame = (ImageView) findViewById(R.id.map_imageview);
 
         // Review Stars
         mFirstStar = (ImageView) findViewById(R.id.first_star);
@@ -88,12 +81,8 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             }
         });
 
-        // Map Setup
-        MapFragment mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-        Button button = (Button) findViewById(R.id.map_activity_intent);
-        button.setOnClickListener(new View.OnClickListener() {
+        // Google Map OnClickListener to Map Activity
+        mMapFrame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(DetailActivity.this, MapsActivity.class);
@@ -118,15 +107,39 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         mPhoneNumber.setText(business.getPhone());
 
         Location location = business.getLocation();
-        mAddress.setText(location.getAddress1() + " " + location.getCity());
+        mAddress.setText(location.getAddress1() + ", " + location.getCity());
         mOpenOrClosed.setText((business.getIsClosed()) ? "Closed" : "Open");
 
+        mapSetup();
         reviewStars();
 
         // Picasso method to get images for each business
         Picasso.with(this)
                 .load(mBusiness.getImageUrl())
                 .into(mBusinessImage);
+    }
+
+    public void mapSetup(){
+        Point size = new Point();
+        Display display = getWindowManager().getDefaultDisplay();
+        display.getSize(size);
+        int display_width = size.x;
+
+        String baseUrl = "https://maps.googleapis.com/maps/api/staticmap";
+        String businessCoordinates = String.valueOf(mBusiness.getCoordinates().getLatitude() + ","
+                + String.valueOf(mBusiness.getCoordinates().getLongitude()));
+        String zoomText = "18";
+        String sizeText = String.valueOf(display_width) + "x" + "300";
+        String key = "AIzaSyA6Q8c-2DtOC2WKvOx3vFU7gBV_ZnwL-VU";
+
+        String searchText = baseUrl + "?" + "center=" + businessCoordinates +
+                "&zoom=" + zoomText +
+                "&size=" + sizeText +
+                "&key=" + key +
+                "&markers=" + businessCoordinates;
+
+        PicassoImageManager picassoImageManager = new PicassoImageManager(this, mMapFrame);
+        picassoImageManager.setImageFromUrl(searchText);
     }
 
     public void reviewStars(){
@@ -168,25 +181,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             mThirdStar.setImageResource(R.drawable.five_star_rating);
             mFourthStar.setImageResource(R.drawable.five_star_rating);
             mFifthStar.setImageResource(R.drawable.five_star_rating);
-        }
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        LatLng ourLocation = new LatLng(40.73873873873874, -73.97987613997012);
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},REQUEST_CODE_LOCATION);
-
-        } else if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            googleMap.setMyLocationEnabled(true);
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ourLocation, 13));
-
-            googleMap.addMarker(new MarkerOptions()
-                    .title("General Assembly")
-                    .snippet("Where We Study ADI")
-                    .position(ourLocation));
         }
     }
 }
