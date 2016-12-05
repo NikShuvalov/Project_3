@@ -41,19 +41,19 @@ public class GoogleAPI {
         return mGoogleApiClient;
     }
 
-    public float getUserLat(GoogleApiClient googleApiClient) {
+    public String getUserLat(GoogleApiClient googleApiClient) {
         Location location = LocationServices.FusedLocationApi.getLastLocation(
                 googleApiClient);
-        double userLat = location.getLatitude();
-        float fUserLat = (float) userLat;
-        return fUserLat;
+        Double userLatDouble = location.getLatitude();
+        String userLatString = userLatDouble.toString();
+        return userLatString;
     }
 
-    public float getUserLon(GoogleApiClient googleApiClient) {
+    public String getUserLon(GoogleApiClient googleApiClient) {
         Location location = LocationServices.FusedLocationApi.getLastLocation(
                 googleApiClient);
-        double userLon = location.getLongitude();
-        float fUserLon = (float) userLon;
-        return fUserLon;
+        Double userLonDouble = location.getLongitude();
+        String UserLonString = userLonDouble.toString();
+        return UserLonString;
     }
 }
