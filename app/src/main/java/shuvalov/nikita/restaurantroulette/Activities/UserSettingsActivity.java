@@ -289,6 +289,8 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
                     JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
                     jobScheduler.schedule(periodicJobInfo);
 
+                    startLocationUpdates();
+
                 } else {
                     Toast.makeText(UserSettingsActivity.this, "Kill service", Toast.LENGTH_SHORT).show();
                     SharedPreferences sharedPreferences =  getSharedPreferences(USER_PREFERENCES,
@@ -300,10 +302,24 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
                     //Kill Jobscheduler Service
                     JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
                     jobScheduler.cancelAll();
+
+                    stopLocationUpdates();
                 }
             }
         });
 
+    }
+
+    protected void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, this);
+    }
+
+    protected void startLocationUpdates() {
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setInterval(10000);
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, locationRequest, this);
     }
 
     @Override
@@ -324,12 +340,6 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
             editor.commit();
 
             Log.d(GoogleAPIConstants.TAG, "onConnected: " + userLat + " / " + userLon);
-
-            //Below code is to enable
-            LocationRequest locationRequest = LocationRequest.create();
-            locationRequest.setInterval(10000);
-            LocationServices.FusedLocationApi.requestLocationUpdates(
-                    mGoogleApiClient, locationRequest, this);
         } else {
             verifyLocationPermissions(this);
         }
@@ -354,7 +364,6 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
     @Override
     protected void onStop() {
         super.onStop();
-        mGoogleApiClient.disconnect();
     }
 
     public static void verifyLocationPermissions(Activity activity) {
