@@ -73,7 +73,7 @@ public class YelpAPI {
      *
      * @param context Needed for systemServices and such
      */
-    public YelpAPI(Context context, Location lastUserLocation) {
+    public YelpAPI(Context context, Location lastUserLocation) {//ToDo:Housekeeping, remove mLastLocation because it does nothing.
         mContext = context;
         mLastLocation = lastUserLocation;
     }
@@ -116,16 +116,34 @@ public class YelpAPI {
         }
     }
 
-    public void getRestaurants(String query, int radius, final SearchActivityRecyclerAdapter adapter, final boolean isRandomized) {
+    public void getRestaurants(String query, String price, int radius, final SearchActivityRecyclerAdapter adapter, final boolean isRandomized) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(YELP_SEARCH_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
+        String priceQueryText = "";
+        if (price == null) {
+            priceQueryText = "1,2,3,4";
+        } else {
+
+            switch (price) {
+                case "$$$$":
+                    priceQueryText += "4,";
+                case "$$$":
+                    priceQueryText+="3,";
+                case "$$":
+                    priceQueryText+="2,";
+                case "$":
+                    priceQueryText+="1";
+                    break;
+            }
+        }
+
         SharedPreferences userSharedPref = mContext.getSharedPreferences(OurAppConstants.USER_PREFERENCES,MODE_PRIVATE);
 
-        double myLong = (double)userSharedPref.getFloat(OurAppConstants.USER_LAST_LON,200);
-        double myLat = (double)userSharedPref.getFloat(OurAppConstants.USER_LAST_LAT,200);
+        double myLong = Double.parseDouble(userSharedPref.getString(OurAppConstants.USER_LAST_LON,"200"));
+        double myLat = Double.parseDouble(userSharedPref.getString(OurAppConstants.USER_LAST_LAT,"200"));
 
         if (myLong ==200|| myLat == 200){
             Toast.makeText(mContext, "No location found in userPreferences", Toast.LENGTH_SHORT).show();
@@ -134,7 +152,7 @@ public class YelpAPI {
         YelpSearchService service = retrofit.create(YelpSearchService.class);
 
         //ToDo: Replace "restaurants" with Constant and/or variable based on what the search category is.
-        Call<RestaurantsMainObject> call = service.getRestaurants("Bearer " + YELP_BEARER_TOKEN, query, "restaurants",
+        Call<RestaurantsMainObject> call = service.getRestaurants("Bearer " + YELP_BEARER_TOKEN, query, priceQueryText, "restaurants",
                 40, myLat, myLong, radius*1000);//ToDo: Do we need to make a different MainObject for place of entertainment?
 
         call.enqueue(new Callback<RestaurantsMainObject>() {

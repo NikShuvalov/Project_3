@@ -40,7 +40,7 @@ import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 
 public class SearchActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private EditText mQueryEntry;
-    private Spinner mRatingSpinner, mPricingSpinner, mRadiusSpinner;
+    private Spinner mPricingSpinner, mRadiusSpinner;
     private Button mSearch, mRandom;
     private RecyclerView mRecyclerView;
     private SearchActivityRecyclerAdapter mAdapter;
@@ -78,7 +78,6 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
 
         findViews();
         mBasicCardHolder.setVisibility(View.VISIBLE);
-        mRandom.setVisibility(View.VISIBLE);
 
         addAdaptersToSpinners();
         setUpRecyclerView();
@@ -86,7 +85,6 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     }
     public void findViews(){
         mQueryEntry = (EditText)findViewById(R.id.query_entry);
-        mRatingSpinner =(Spinner)findViewById(R.id.rating_spinner);
         mRadiusSpinner =(Spinner)findViewById(R.id.radius_spinner);
         mPricingSpinner = (Spinner)findViewById(R.id.price_spinner);
         mSearch = (Button)findViewById(R.id.basic_search);
@@ -97,24 +95,19 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     public void addAdaptersToSpinners(){
-        mRatingAdapter = ArrayAdapter.createFromResource(this, R.array.rating_array,android.R.layout.simple_spinner_item);
         mPricingAdapter = ArrayAdapter.createFromResource(this, R.array.price_array,android.R.layout.simple_spinner_item);
         mRadiusAdapter = ArrayAdapter.createFromResource(this, R.array.radius_array,android.R.layout.simple_spinner_item);
 
-        mRatingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mPricingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mRadiusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        mRatingSpinner.setAdapter(mRatingAdapter);
         mPricingSpinner.setAdapter(mPricingAdapter);
         mRadiusSpinner.setAdapter(mRadiusAdapter);
 
-        mRatingSpinner.setSelection(2);
         mPricingSpinner.setSelection(1);
         mRadiusSpinner.setSelection(4);
 
 
-        mRatingSpinner.setOnItemSelectedListener(this);
         mPricingSpinner.setOnItemSelectedListener(this);
         mRadiusSpinner.setOnItemSelectedListener(this);
 
@@ -151,7 +144,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
                 YelpAPI yelpApi = new YelpAPI(view.getContext(), mockLocation);
                 String query = mQueryEntry.getText().toString();
                 mQueryEntry.setText("");
-                yelpApi.getRestaurants(query,Integer.parseInt(mRadius),mAdapter, false);
+                yelpApi.getRestaurants(query, mPrice,Integer.parseInt(mRadius),mAdapter, false);
             }
         });
         //ToDo:Combine mSearch and mRandom OnclickListener
@@ -174,7 +167,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
                 if (radius==-1){
                     radius=3;
                 }
-                yelpApi.getRestaurants(query,radius,mAdapter, true);
+                yelpApi.getRestaurants(query,null,radius,mAdapter, true);
             }
         });
 
@@ -211,11 +204,8 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
             mPrice = (String) adapterView.getItemAtPosition(i);
         }else if (adapterView.getAdapter().equals(mRadiusAdapter)){
             mRadius = (String) adapterView.getItemAtPosition(i);
-        }else if (adapterView.getAdapter().equals(mRatingAdapter)) {
-            mRating = (String) adapterView.getItemAtPosition(i);
-        }else if(adapterView.getAdapter().equals(mLocationAdapter)) {
-            mLocation = (String) adapterView.getItemAtPosition(i);
-        }else{
+        }
+        else{
             Toast.makeText(this, "SOMETHING WENT WRONG!", Toast.LENGTH_SHORT).show();
             Log.d("Search Activity", "Adapter not identified");
         }
@@ -227,7 +217,12 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     public void animateOptionsOffScreen(){
-        Animation basicSearchAnimation = AnimationUtils.loadAnimation(this,R.anim.basic_search_out);
+        Animation basicSearchAnimation;
+        if (mOrientation == 0) {
+            basicSearchAnimation= AnimationUtils.loadAnimation(this,R.anim.basic_search_out);
+        }else{
+            basicSearchAnimation = AnimationUtils.loadAnimation(this,R.anim.basic_landscape_out);
+        }
         basicSearchAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -248,50 +243,54 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         mBasicCardHolder.setAnimation(basicSearchAnimation);
         mBasicCardHolder.setVisibility(View.GONE);
 
-        Animation randomSearchAnimation;
-        if(mOrientation==0){
-            randomSearchAnimation = AnimationUtils.loadAnimation(this, R.anim.random_out);
-        } else{
-            randomSearchAnimation = AnimationUtils.loadAnimation(this, R.anim.random_land_out);
-        }
-        randomSearchAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                mRandom.clearAnimation();
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        mRandom.setAnimation(randomSearchAnimation);
-        mRandom.setVisibility(View.GONE);
+//        Animation randomSearchAnimation;
+//        if(mOrientation==0){
+//            randomSearchAnimation = AnimationUtils.loadAnimation(this, R.anim.random_out);
+//        } else{
+//            randomSearchAnimation = AnimationUtils.loadAnimation(this, R.anim.basic_landscape_out);
+//        }
+//        randomSearchAnimation.setAnimationListener(new Animation.AnimationListener() {
+//            @Override
+//            public void onAnimationStart(Animation animation) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animation animation) {
+//                mRandom.clearAnimation();
+//
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animation animation) {
+//
+//            }
+//        });
+//        mRandom.setAnimation(randomSearchAnimation);
+//        mRandom.setVisibility(View.GONE);
 
     }
 
     public void animationOptionsOntoScreen(){
-        Animation basicSearchAnimation = AnimationUtils.loadAnimation(this,R.anim.basic_search_in);
+        Animation basicSearchAnimation;
 
-        mBasicCardHolder.setAnimation(basicSearchAnimation);
-
-        mBasicCardHolder.setVisibility(View.VISIBLE);
-
-        Animation randomSearchAnimation;
-
-        if(mOrientation ==0){
-            randomSearchAnimation = AnimationUtils.loadAnimation(this, R.anim.random_in);
+        if(mOrientation==0){
+            basicSearchAnimation= AnimationUtils.loadAnimation(this,R.anim.basic_search_in);
         }else{
-            randomSearchAnimation = AnimationUtils.loadAnimation(this, R.anim.random_land_in);
+            basicSearchAnimation = AnimationUtils.loadAnimation(this, R.anim.basic_landscape_in);
         }
-        mRandom.setAnimation(randomSearchAnimation);
-        mRandom.setVisibility(View.VISIBLE);
+        mBasicCardHolder.setAnimation(basicSearchAnimation);
+        mBasicCardHolder.setVisibility(View.VISIBLE);
+//
+//        Animation randomSearchAnimation;
+//
+//        if(mOrientation ==0){
+//            randomSearchAnimation = AnimationUtils.loadAnimation(this, R.anim.random_in);
+//        }else{
+//            randomSearchAnimation = AnimationUtils.loadAnimation(this, R.anim.basic_landscape_in);
+//        }
+//        mRandom.setAnimation(randomSearchAnimation);
+//        mRandom.setVisibility(View.VISIBLE);
 
     }
 
