@@ -145,13 +145,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             switch (id) {
                 case R.id.search_card_holder:
                     intent = new Intent(view.getContext(), SearchActivity.class);
-                    startActivity(intent);
                     break;
                 case R.id.date_night_card_holder:
+                    intent = new Intent(view.getContext(), DateNightActivity.class);
                     break;
                 case R.id.roulette_card_holder:
+                    intent = new Intent(view.getContext(), RouletteActivity.class);
+                    break;
+                default:
+                    intent = null;
                     break;
             }
+            startActivity(intent);
         }
     };
 

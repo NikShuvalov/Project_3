@@ -26,8 +26,11 @@ import shuvalov.nikita.restaurantroulette.Activities.DetailActivity;
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.Randomizer;
+
+import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.RouletteActivityRecyclerAdapter;
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.SearchActivityRecyclerAdapter;
 import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
+import shuvalov.nikita.restaurantroulette.RouletteHelper;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.RestaurantsMainObject;
 
@@ -66,7 +69,7 @@ public class YelpAPI {
     public static final String TAG = "YelpAPI_class";
     private Location mLastLocation;
     private Context mContext;
-    private List<Business> mBusinessList;
+    private List<Business> mBusinessList, mRandomPicksList;
 
     /**
      * Might not need to be an object but for now making it an object. Otherwise change methods to static
@@ -166,6 +169,41 @@ public class YelpAPI {
                 }else{
                     adapter.replaceList(mBusinessList);
                 }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<RestaurantsMainObject> call, Throwable t) {
+                //Do nothing.
+            }
+        });
+
+    }
+
+    public void getRestaurantsForRoulette(String query, int radius, final RouletteActivityRecyclerAdapter adapter) {
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(YELP_SEARCH_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        double myLong = mLastLocation.getLongitude();
+        double myLat = mLastLocation.getLatitude();
+        Log.d(TAG, "Lat, Long: "+myLat+","+myLong);
+        YelpSearchService service = retrofit.create(YelpSearchService.class);
+
+        //ToDo: Replace "restaurants" with Constant and/or variable based on what the search category is.
+        Call<RestaurantsMainObject> call = service.getRestaurants("Bearer " + YELP_BEARER_TOKEN, query, "restaurants",
+                40, myLat, myLong, radius*1000);//ToDo: Do we need to make a different MainObject for place of entertainment?
+
+        call.enqueue(new Callback<RestaurantsMainObject>() {
+            @Override
+            public void onResponse(Call<RestaurantsMainObject> call, Response<RestaurantsMainObject> response) {
+                mBusinessList = response.body().getBusinesses();
+                Randomizer randomizer = new Randomizer(mContext);
+                mRandomPicksList = randomizer.pickRandomFromList(mBusinessList);
+                RouletteHelper.getInstance().setRandomList(mRandomPicksList);
+                adapter.replaceList(mRandomPicksList);
                 adapter.notifyDataSetChanged();
             }
 
