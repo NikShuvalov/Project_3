@@ -2,6 +2,8 @@ package shuvalov.nikita.restaurantroulette.Activities;
 
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -20,9 +22,13 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPI;
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.SearchActivityRecyclerAdapter;
@@ -30,7 +36,7 @@ import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPI;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 
-public class SearchActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class SearchActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private EditText mQueryEntry;
     private Spinner mRatingSpinner, mPricingSpinner, mRadiusSpinner, mLocationSpinner;
     private Button mSearch, mRandom;
@@ -40,6 +46,9 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     private CardView mBasicCardHolder;
     private boolean mOptionsVisible;
     private ImageView mCloseView;
+    private GoogleApiClient mGoogleApiClient;
+    private SharedPreferences mSharedPreferences;
+    private GoogleAPI mGoogleApi;
 
     private ArrayList<Spinner> mSpinnersInCardView;
 
@@ -55,10 +64,15 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        mGoogleApi = new GoogleAPI();
+
+
         mBusinessList = RestaurantSearchHelper.getInstance().getSearchResults();
         mOptionsVisible = true;
         mSpinnersInCardView = new ArrayList<>();
+        mSharedPreferences = getSharedPreferences(OurAppConstants.USER_PREFERENCES, MODE_PRIVATE);
 
+        mGoogleApiClient = mGoogleApi.callGoogleLocApi(this);
 
         findViews();
         mBasicCardHolder.setVisibility(View.VISIBLE);
@@ -125,7 +139,6 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
             @Override
             public void onClick(View view) {
                 inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
-                mQueryEntry.setText("");
                 if(mOptionsVisible){
                     animateOptionsOffScreen();
                     mOptionsVisible=false;
@@ -136,6 +149,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
                 mockLocation.setLatitude(OurAppConstants.GA_LATITUDE);
                 YelpAPI yelpApi = new YelpAPI(view.getContext(), mockLocation);
                 String query = mQueryEntry.getText().toString();
+                mQueryEntry.setText("");
                 yelpApi.getRestaurants(query,Integer.parseInt(mRadius),mAdapter, false);
             }
         });
@@ -262,4 +276,36 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mGoogleApiClient.disconnect();
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putFloat(OurAppConstants.USER_LAST_LAT,mGoogleApi.getUserLat(mGoogleApiClient));
+        editor.putFloat(OurAppConstants.USER_LAST_LON, mGoogleApi.getUserLon(mGoogleApiClient));
+        if(editor.commit()){
+            Log.d("Search Activity", "Location successfully saved");
+        }
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
 }

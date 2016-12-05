@@ -22,8 +22,14 @@ public class YelpAPIConstants {
     public static final String NOTIF_RATING = "rating";
     public static final String NOTIF_DISTANCE = "distance";
     public static final String NOTIF_BUSINESS_NAME = "name";
-    public static final String NOTIF_ADDRESS_1 = "adress1";
+    public static final String NOTIF_ADDRESS_1 = "address1";
     public static final String NOTIF_CITY = "city";
     public static final String NOTIF_LATITUTE = "lat";
     public static final String NOTIF_LONGITUDE = "lon";
+
+
+    //Names of categories to enter in query
+    public static final String CAT_AMUSEMENT_PARK = "amusementparks";
+
+
 }

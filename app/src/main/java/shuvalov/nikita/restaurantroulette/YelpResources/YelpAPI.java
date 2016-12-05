@@ -13,6 +13,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import shuvalov.nikita.restaurantroulette.Activities.DetailActivity;
+import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.Randomizer;
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.SearchActivityRecyclerAdapter;
@@ -29,6 +31,7 @@ import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.RestaurantsMainObject;
 
+import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_LAST_PUSHED_BUSINESS_NAME;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LAT;
@@ -119,8 +122,14 @@ public class YelpAPI {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        double myLong = mLastLocation.getLongitude();
-        double myLat = mLastLocation.getLatitude();
+        SharedPreferences userSharedPref = mContext.getSharedPreferences(OurAppConstants.USER_PREFERENCES,MODE_PRIVATE);
+
+        double myLong = (double)userSharedPref.getFloat(OurAppConstants.USER_LAST_LON,200);
+        double myLat = (double)userSharedPref.getFloat(OurAppConstants.USER_LAST_LAT,200);
+
+        if (myLong ==200|| myLat == 200){
+            Toast.makeText(mContext, "No location found in userPreferences", Toast.LENGTH_SHORT).show();
+        }
         Log.d(TAG, "Lat, Long: "+myLat+","+myLong);
         YelpSearchService service = retrofit.create(YelpSearchService.class);
 
@@ -154,8 +163,8 @@ public class YelpAPI {
 
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(USER_LAST_LOCATION,
                 Context.MODE_PRIVATE);
-        float userLat = sharedPreferences.getFloat(USER_LAST_LAT, -1);
-        float userLon = sharedPreferences.getFloat(USER_LAST_LON, -1);
+        float userLat = sharedPreferences.getFloat(USER_LAST_LAT, 200);
+        float userLon = sharedPreferences.getFloat(USER_LAST_LON, 200);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(YELP_SEARCH_BASE_URL)
