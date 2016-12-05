@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -24,7 +25,6 @@ import java.util.List;
 
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
-import shuvalov.nikita.restaurantroulette.Randomizer;
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.SearchActivityRecyclerAdapter;
 import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPI;
@@ -39,6 +39,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     private List<Business> mBusinessList;
     private CardView mBasicCardHolder;
     private boolean mOptionsVisible;
+    private ImageView mCloseView;
 
     private ArrayList<Spinner> mSpinnersInCardView;
 
@@ -48,7 +49,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     private String mLocation;
 
 
-    //ToDo: Add a way to let user view the full list?
+    //ToDo: Add a way to close options to see full list without having to search
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +80,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         mRandom = (Button)findViewById(R.id.random_search);
         mLocationSpinner = (Spinner)findViewById(R.id.location_spinner);
         mBasicCardHolder =(CardView)findViewById(R.id.basic_search_card);
+        mCloseView =(ImageView)findViewById(R.id.close_search);
 
         mSpinnersInCardView.add(mRatingSpinner);
         mSpinnersInCardView.add(mRadiusSpinner);
@@ -123,6 +125,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
             @Override
             public void onClick(View view) {
                 inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
+                mQueryEntry.setText("");
                 if(mOptionsVisible){
                     animateOptionsOffScreen();
                     mOptionsVisible=false;
@@ -141,7 +144,6 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
             @Override
             public void onClick(View view) {
                 inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
-
                 if(mOptionsVisible){
                     animateOptionsOffScreen();
                     mOptionsVisible=false;
@@ -168,6 +170,13 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
                     mOptionsVisible=true;
                     animationOptionsOntoScreen();
                 }
+            }
+        });
+        mCloseView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mQueryEntry.setText("");
+
             }
         });
     }

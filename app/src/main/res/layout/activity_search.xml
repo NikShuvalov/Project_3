@@ -13,8 +13,16 @@
     android:background="#dde5f5"
     tools:context="shuvalov.nikita.restaurantroulette.Activities.SearchActivity">
 
+    <ImageView
+        android:id="@+id/close_search"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:tint="#444"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"/>
     <EditText
         android:id="@+id/query_entry"
+        android:layout_toLeftOf="@id/close_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="What would you like to eat?"/>
@@ -117,10 +125,32 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/card_button_divider"
         android:text="quick pick"/>
+
+    <LinearLayout
+        android:id="@+id/yelp_display_requirements"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+        <TextView
+            android:id="@+id/yelp_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Powered By:"
+            android:layout_gravity="center"
+            />
+        <ImageView
+            android:id="@+id/yelp_logo"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/yelp_trademark"/>
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/search_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/random_search"/>
+        android:layout_below="@id/random_search"
+        android:layout_above="@id/yelp_display_requirements"/>
 
 </RelativeLayout>
