@@ -13,7 +13,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -23,7 +22,6 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import shuvalov.nikita.restaurantroulette.Activities.DetailActivity;
-import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.SearchActivityRecyclerAdapter;
 import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
@@ -32,6 +30,9 @@ import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.RestaurantsM
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_LAST_PUSHED_BUSINESS_NAME;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LAT;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LOCATION;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LON;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_PREFERENCES;
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_ADDRESS_1;
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_BUSINESS_ID;
@@ -144,77 +145,81 @@ public class YelpAPI {
     }
 
     public void getRestaurantDeals() {
+
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(USER_LAST_LOCATION,
+                Context.MODE_PRIVATE);
+        float userLat = sharedPreferences.getFloat(USER_LAST_LAT, -1);
+        float userLon = sharedPreferences.getFloat(USER_LAST_LON, -1);
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(YELP_SEARCH_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        //ToDo CHANGE THE HARDCODED LAT LONG INFO!
-
-        //double myLong = mLastLocation.getLongitude();
-        //double myLat = mLastLocation.getLatitude();
-        //Log.d(TAG, "Lat, Long: "+myLat+","+myLong);
         YelpNotificationService service = retrofit.create(YelpNotificationService.class);
 
-        //ToDo CHANGE THE HARDCODED LAT LONG INFO!
         Call<RestaurantsMainObject> call = service.getRestaurantDeals("Bearer " + YELP_BEARER_TOKEN,
-                OurAppConstants.GA_LATITUDE, OurAppConstants.GA_LONGITUDE, "restaurants", 500,
+                (double) userLat, (double) userLon, "restaurants", 500,
                 "deals", "distance", "true");
 
         call.enqueue(new Callback<RestaurantsMainObject>() {
             @Override
             public void onResponse(Call<RestaurantsMainObject> call, Response<RestaurantsMainObject> response) {
-                String businessName = response.body().getBusinesses().get(0).getName();
-                Double distance = response.body().getBusinesses().get(0).getDistance();
-                long distanceRounded = Math.round(distance);
-                Log.d(TAG, "onResponse: " + businessName);
+                if (response.body().getBusinesses().size() > 0 ) {
+                    String businessName = response.body().getBusinesses().get(0).getName();
+                    Double distance = response.body().getBusinesses().get(0).getDistance();
+                    long distanceRounded = Math.round(distance);
+                    Log.d(TAG, "onResponse: " + businessName);
 
-                SharedPreferences sharedPreferences = mContext.getSharedPreferences(USER_PREFERENCES,
-                        Context.MODE_PRIVATE);
-                String lastPushedBusinessName =
-                        sharedPreferences.getString(SHARED_PREF_LAST_PUSHED_BUSINESS_NAME, "default");
+                    SharedPreferences sharedPreferences = mContext.getSharedPreferences(USER_PREFERENCES,
+                            Context.MODE_PRIVATE);
+                    String lastPushedBusinessName =
+                            sharedPreferences.getString(SHARED_PREF_LAST_PUSHED_BUSINESS_NAME, "default");
 
-                if (businessName.equals(lastPushedBusinessName)) {
-                    //Do nothing
+                    if (businessName.equals(lastPushedBusinessName)) {
+                        //Do nothing
+                    } else {
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString(SHARED_PREF_LAST_PUSHED_BUSINESS_NAME, businessName);
+                        editor.commit();
+
+                        Uri currentNotificationUri = RingtoneManager.getActualDefaultRingtoneUri(mContext,
+                                RingtoneManager.TYPE_NOTIFICATION);
+
+                        Intent intent = new Intent(mContext, DetailActivity.class);
+                        //Passing all business object info
+                        intent.putExtra(NOTIF_IMAGE_URL, response.body().getBusinesses().get(0).getImageUrl());
+                        intent.putExtra(NOTIF_PHONE_NUMBER, response.body().getBusinesses().get(0).getPhone());
+                        intent.putExtra(NOTIF_IS_CLOSED, response.body().getBusinesses().get(0).getIsClosed());
+                        intent.putExtra(NOTIF_BUSINESS_URL, response.body().getBusinesses().get(0).getUrl());
+                        intent.putExtra(NOTIF_BUSINESS_ID, response.body().getBusinesses().get(0).getId());
+                        intent.putExtra(NOTIF_REVIEW_COUNT, response.body().getBusinesses().get(0).getReviewCount());
+                        intent.putExtra(NOTIF_RATING, response.body().getBusinesses().get(0).getRating());
+                        intent.putExtra(NOTIF_DISTANCE, response.body().getBusinesses().get(0).getDistance());
+                        intent.putExtra(NOTIF_BUSINESS_NAME, response.body().getBusinesses().get(0).getName());
+                        intent.putExtra(NOTIF_ADDRESS_1, response.body().getBusinesses().get(0).getLocation().getAddress1());
+                        intent.putExtra(NOTIF_CITY, response.body().getBusinesses().get(0).getLocation().getCity());
+                        intent.putExtra(NOTIF_LATITUTE, response.body().getBusinesses().get(0).getCoordinates().getLatitude());
+                        intent.putExtra(NOTIF_LONGITUDE, response.body().getBusinesses().get(0).getCoordinates().getLongitude());
+
+                        PendingIntent pendingIntent = PendingIntent.getActivity(mContext,
+                                (int) System.currentTimeMillis(), intent, 0);
+
+                        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
+                        builder.setSmallIcon(R.drawable.ic_place_black_24dp);
+                        builder.setSound(currentNotificationUri);
+                        builder.setContentTitle("New food deal at " + businessName + "!");
+                        builder.setContentText("It is " + distanceRounded + " meters to your location");
+                        builder.setAutoCancel(true);
+                        builder.setPriority(Notification.PRIORITY_MAX);
+                        builder.setContentIntent(pendingIntent);
+
+                        NotificationManager notificationManager =
+                                (NotificationManager) mContext.getSystemService(NOTIFICATION_SERVICE);
+                        notificationManager.notify(1, builder.build());
+                    }
                 } else {
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString(SHARED_PREF_LAST_PUSHED_BUSINESS_NAME, businessName);
-                    editor.commit();
-
-                    Uri currentNotificationUri = RingtoneManager.getActualDefaultRingtoneUri(mContext,
-                            RingtoneManager.TYPE_NOTIFICATION);
-
-                    Intent intent = new Intent(mContext, DetailActivity.class);
-                    //Passing all business object info
-                    intent.putExtra(NOTIF_IMAGE_URL, response.body().getBusinesses().get(0).getImageUrl());
-                    intent.putExtra(NOTIF_PHONE_NUMBER, response.body().getBusinesses().get(0).getPhone());
-                    intent.putExtra(NOTIF_IS_CLOSED, response.body().getBusinesses().get(0).getIsClosed());
-                    intent.putExtra(NOTIF_BUSINESS_URL, response.body().getBusinesses().get(0).getUrl());
-                    intent.putExtra(NOTIF_BUSINESS_ID, response.body().getBusinesses().get(0).getId());
-                    intent.putExtra(NOTIF_REVIEW_COUNT, response.body().getBusinesses().get(0).getReviewCount());
-                    intent.putExtra(NOTIF_RATING, response.body().getBusinesses().get(0).getRating());
-                    intent.putExtra(NOTIF_DISTANCE, response.body().getBusinesses().get(0).getDistance());
-                    intent.putExtra(NOTIF_BUSINESS_NAME, response.body().getBusinesses().get(0).getName());
-                    intent.putExtra(NOTIF_ADDRESS_1, response.body().getBusinesses().get(0).getLocation().getAddress1());
-                    intent.putExtra(NOTIF_CITY, response.body().getBusinesses().get(0).getLocation().getCity());
-                    intent.putExtra(NOTIF_LATITUTE, response.body().getBusinesses().get(0).getCoordinates().getLatitude());
-                    intent.putExtra(NOTIF_LONGITUDE, response.body().getBusinesses().get(0).getCoordinates().getLongitude());
-
-                    PendingIntent pendingIntent = PendingIntent.getActivity(mContext,
-                            (int) System.currentTimeMillis(), intent, 0);
-
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
-                    builder.setSmallIcon(R.drawable.ic_place_black_24dp);
-                    builder.setSound(currentNotificationUri);
-                    builder.setContentTitle("New food deal at " + businessName + "!");
-                    builder.setContentText("It is " + distanceRounded + " meters to your location");
-                    builder.setAutoCancel(true);
-                    builder.setPriority(Notification.PRIORITY_MAX);
-                    builder.setContentIntent(pendingIntent);
-
-                    NotificationManager notificationManager =
-                            (NotificationManager) mContext.getSystemService(NOTIFICATION_SERVICE);
-                    notificationManager.notify(1, builder.build());
+                    Log.d(TAG, "onResponse: No restaurants with deals in 500m");
                 }
             }
 
