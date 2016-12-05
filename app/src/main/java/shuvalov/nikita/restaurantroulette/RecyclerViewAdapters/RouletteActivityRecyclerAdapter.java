@@ -85,6 +85,7 @@ class RouletteResultViewHolder extends RecyclerView.ViewHolder{
                 int position = RouletteHelper.getInstance().getPositionofBusiness(business);
                 intent.putExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, position);
                 intent.putExtra("origin", "roulette");
+                view.getContext().startActivity(intent);
             }
         });
     }
