@@ -1,13 +1,11 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
 import android.location.Location;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -17,10 +15,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
@@ -40,6 +38,8 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     private CardView mBasicCardHolder;
     private boolean mOptionsVisible;
 
+    private ArrayList<Spinner> mSpinnersInCardView;
+
     private ArrayAdapter<CharSequence> mRatingAdapter, mPricingAdapter, mRadiusAdapter, mLocationAdapter;
 
     private String mPrice, mRating, mRadius = "show all";//ToDo: Change value into constant
@@ -52,9 +52,15 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
 
         mBusinessList = RestaurantSearchHelper.getInstance().getSearchResults();
         mOptionsVisible = true;
+        mSpinnersInCardView = new ArrayList<>();
 
 
         findViews();
+        mBasicCardHolder.setVisibility(View.VISIBLE);
+        mRandom.setVisibility(View.VISIBLE);
+        for(Spinner spinner:mSpinnersInCardView) {
+            spinner.setEnabled(true);
+        }
         addAdaptersToSpinners();
         setUpRecyclerView();
         setOnClickListeners();
@@ -69,6 +75,11 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         mRandom = (Button)findViewById(R.id.random_search);
         mLocationSpinner = (Spinner)findViewById(R.id.location_spinner);
         mBasicCardHolder =(CardView)findViewById(R.id.basic_search_card);
+
+        mSpinnersInCardView.add(mRatingSpinner);
+        mSpinnersInCardView.add(mRadiusSpinner);
+        mSpinnersInCardView.add(mRatingSpinner);
+        mSpinnersInCardView.add(mPricingSpinner);
     }
 
     public void addAdaptersToSpinners(){
@@ -107,12 +118,10 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         mSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //ToDo: Use values that are put into the spinners to perform a search.
-                //ToDo: Move options and parameters off-screen
                 inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
                 if(mOptionsVisible){
-                    animateOptionsOffScreen();//Rename to animateOffScreen
-                    mOptionsVisible=!mOptionsVisible;
+                    animateOptionsOffScreen();
+                    mOptionsVisible=false;
                 }
 
                 Location mockLocation = new Location(LOCATION_SERVICE);
@@ -134,7 +143,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
             @Override
             public void onClick(View view) {
                 if(!mOptionsVisible){
-                    mOptionsVisible=!mOptionsVisible;
+                    mOptionsVisible=true;
                     animationOptionsOntoScreen();
                 }
             }
@@ -164,6 +173,23 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
 
     public void animateOptionsOffScreen(){
         Animation basicSearchAnimation = AnimationUtils.loadAnimation(this,R.anim.basic_search_out);
+        basicSearchAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mBasicCardHolder.clearAnimation();
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
         mBasicCardHolder.setAnimation(basicSearchAnimation);
         mBasicCardHolder.setVisibility(View.GONE);
 
@@ -175,10 +201,16 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
 
     public void animationOptionsOntoScreen(){
         Animation basicSearchAnimation = AnimationUtils.loadAnimation(this,R.anim.basic_search_in);
+
         mBasicCardHolder.setAnimation(basicSearchAnimation);
+        for(Spinner spinner:mSpinnersInCardView){
+            spinner.setEnabled(true);
+        }
+        mBasicCardHolder.setVisibility(View.VISIBLE);
 
         Animation randomSearchAnimation = AnimationUtils.loadAnimation(this, R.anim.random_in);
         mRandom.setAnimation(randomSearchAnimation);
+        mRandom.setVisibility(View.VISIBLE);
 
     }
 
