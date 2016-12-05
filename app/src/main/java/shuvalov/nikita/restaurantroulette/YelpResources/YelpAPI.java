@@ -159,7 +159,7 @@ public class YelpAPI {
         YelpNotificationService service = retrofit.create(YelpNotificationService.class);
 
         Call<RestaurantsMainObject> call = service.getRestaurantDeals("Bearer " + YELP_BEARER_TOKEN,
-                (double) userLat, (double) userLon, "restaurants", 500,
+                (double) userLat, (double) userLon, "restaurants", 1000,
                 "deals", "distance", "true");
 
         call.enqueue(new Callback<RestaurantsMainObject>() {

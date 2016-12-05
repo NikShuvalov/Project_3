@@ -25,7 +25,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 
 import shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPI;
 import shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPIConstants;
@@ -33,7 +32,6 @@ import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpJobService;
 
-import static shuvalov.nikita.restaurantroulette.Activities.DetailActivity.REQUEST_CODE_LOCATION;
 import static shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPIConstants.PERMISSION_LOCATION;
 import static shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPIConstants.REQUEST_CODE_LOCATION_GLOC_API;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_HOME_LAT;
@@ -189,7 +187,7 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
             }
         });
 
-        //Spinner for Radius
+        //Spinner for Result
         final Spinner spinnerResult = (Spinner) findViewById(R.id.spinner_result);
         ArrayAdapter<CharSequence> adapterResult = ArrayAdapter.createFromResource(this,
                 R.array.result_array, android.R.layout.simple_spinner_item);
