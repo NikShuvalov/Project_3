@@ -125,7 +125,6 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
             @Override
             public void onClick(View view) {
                 inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
-                mQueryEntry.setText("");
                 if(mOptionsVisible){
                     animateOptionsOffScreen();
                     mOptionsVisible=false;
@@ -136,6 +135,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
                 mockLocation.setLatitude(OurAppConstants.GA_LATITUDE);
                 YelpAPI yelpApi = new YelpAPI(view.getContext(), mockLocation);
                 String query = mQueryEntry.getText().toString();
+                mQueryEntry.setText("");
                 yelpApi.getRestaurants(query,Integer.parseInt(mRadius),mAdapter, false);
             }
         });
