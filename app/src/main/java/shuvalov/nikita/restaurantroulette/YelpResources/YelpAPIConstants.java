@@ -28,7 +28,7 @@ public class YelpAPIConstants {
     public static final String NOTIF_LONGITUDE = "lon";
 
 
-    //Names of categories to enter in query
+    //Query Categories
     public static final String CAT_AMUSEMENT_PARK = "amusementparks";
 
 

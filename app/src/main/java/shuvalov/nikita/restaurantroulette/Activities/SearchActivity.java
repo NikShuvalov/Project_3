@@ -7,10 +7,13 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -49,6 +52,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     private GoogleApiClient mGoogleApiClient;
     private SharedPreferences mSharedPreferences;
     private GoogleAPI mGoogleApi;
+    private int mOrientation;
 
     private ArrayList<Spinner> mSpinnersInCardView;
 
@@ -66,8 +70,9 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
 
         mGoogleApi = new GoogleAPI();
 
-
         mBusinessList = RestaurantSearchHelper.getInstance().getSearchResults();
+        checkOrientation();
+
         mOptionsVisible = true;
         mSpinnersInCardView = new ArrayList<>();
         mSharedPreferences = getSharedPreferences(OurAppConstants.USER_PREFERENCES, MODE_PRIVATE);
@@ -126,9 +131,14 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     public void setUpRecyclerView(){
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
+        RecyclerView.LayoutManager layoutManager;
+        if(mOrientation==0){
+            layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
+        }else{
+            layoutManager = new GridLayoutManager(this,2);
+        }
         mAdapter = new SearchActivityRecyclerAdapter(mBusinessList);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
     }
@@ -238,7 +248,12 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         mBasicCardHolder.setAnimation(basicSearchAnimation);
         mBasicCardHolder.setVisibility(View.GONE);
 
-        Animation randomSearchAnimation = AnimationUtils.loadAnimation(this, R.anim.random_out);
+        Animation randomSearchAnimation;
+        if(mOrientation==0){
+            randomSearchAnimation = AnimationUtils.loadAnimation(this, R.anim.random_out);
+        } else{
+            randomSearchAnimation = AnimationUtils.loadAnimation(this, R.anim.random_land_out);
+        }
         randomSearchAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -270,7 +285,13 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         }
         mBasicCardHolder.setVisibility(View.VISIBLE);
 
-        Animation randomSearchAnimation = AnimationUtils.loadAnimation(this, R.anim.random_in);
+        Animation randomSearchAnimation;
+
+        if(mOrientation ==0){
+            randomSearchAnimation = AnimationUtils.loadAnimation(this, R.anim.random_in);
+        }else{
+            randomSearchAnimation = AnimationUtils.loadAnimation(this, R.anim.random_land_in);
+        }
         mRandom.setAnimation(randomSearchAnimation);
         mRandom.setVisibility(View.VISIBLE);
 
@@ -306,6 +327,15 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    public void checkOrientation(){
+        WindowManager mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        Display mDisplay = mWindowManager.getDefaultDisplay();
+        mOrientation=mDisplay.getRotation();
+
+        Log.d("ORIENTATION_TEST", "getOrientation(): " + mOrientation);
 
     }
 }
