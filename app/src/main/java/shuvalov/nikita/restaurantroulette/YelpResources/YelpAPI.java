@@ -145,7 +145,10 @@ public class YelpAPI {
 
     }
 
-    public void getRestaurantsForRoulette(String query, int radius, final RouletteActivityRecyclerAdapter adapter) {
+    public void getRestaurantsForRoulette(String query, int radius,
+                                          final float rating, final String price,
+                                          final RouletteActivityRecyclerAdapter adapter) {
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(YELP_SEARCH_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -164,8 +167,7 @@ public class YelpAPI {
             @Override
             public void onResponse(Call<RestaurantsMainObject> call, Response<RestaurantsMainObject> response) {
                 mBusinessList = response.body().getBusinesses();
-                //RestaurantSearchHelper.getInstance().setmBusinessList(mBusinessList);
-                Randomizer randomizer = new Randomizer(mContext, 1, "$$$$");
+                Randomizer randomizer = new Randomizer(mContext);
                 mRandomPicksList = randomizer.pickRandomFromList(mBusinessList, 3);
                 adapter.replaceList(mRandomPicksList);
                 adapter.notifyDataSetChanged();

@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,7 @@ public class RouletteActivity extends AppCompatActivity {
     private RouletteActivityRecyclerAdapter mAdapter;
     private FloatingActionButton mRouletteButton;
     private List<Business> mRouletteList;
+    private EditText mRouletteQuery;
 
 
 
@@ -50,6 +53,7 @@ public class RouletteActivity extends AppCompatActivity {
     public void setViews () {
         mRecyclerView = (RecyclerView) findViewById(R.id.roulette_recycler_view);
         mRouletteButton = (FloatingActionButton) findViewById(R.id.roulette_button);
+        mRouletteQuery = (EditText) findViewById(R.id.roulette_query);
     }
 
     private View.OnClickListener mListener = new View.OnClickListener() {
@@ -57,8 +61,12 @@ public class RouletteActivity extends AppCompatActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.roulette_button :
+                    final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                    inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
+
                     SharedPreferences sharedPreferences = getSharedPreferences(USER_PREFERENCES,
                             Context.MODE_PRIVATE);
+
                     long ratingSavedPosition = sharedPreferences.getLong(SHARED_PREF_RATING, -1);
                     long priceSavedPosition = sharedPreferences.getLong(SHARED_PREF_PRICING, -1);
                     long radiusSavedPosition = sharedPreferences.getLong(SHARED_PREF_RADIUS, -1);
@@ -70,7 +78,14 @@ public class RouletteActivity extends AppCompatActivity {
 
                     YelpAPI yelpAPI = new YelpAPI(RouletteActivity.this, mockLocation);
 
-                    yelpAPI.getRestaurantsForRoulette("Pizza", (int)radiusSavedPosition, mAdapter);
+                    String query = mRouletteQuery.getText().toString();
+
+                    if (query == null || query.equals("")) {
+                        mRouletteQuery.setError("Please enter search criteria");
+                    } else {
+                        yelpAPI.getRestaurantsForRoulette(query, (int) radiusSavedPosition, ratingSavedPosition,
+                                convertPrice(priceSavedPosition), mAdapter);
+                    }
                     break;
             }
         }
@@ -82,5 +97,26 @@ public class RouletteActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
+    }
+
+    public String convertPrice (long price) {
+
+        String result = "$";
+        switch ((int)price) {
+            case 0:
+                result = "$";
+                break;
+            case 1:
+                result = "$$";
+                break;
+            case 2:
+                result = "$$$";
+                break;
+            case 3:
+                result = "$$$$";
+                break;
+        }
+
+        return result;
     }
 }

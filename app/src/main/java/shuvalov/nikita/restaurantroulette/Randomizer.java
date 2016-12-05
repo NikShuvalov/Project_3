@@ -38,7 +38,7 @@ public class Randomizer {
     public Randomizer(Context context){
         if (context!= null){
             SharedPreferences sharedPreferences = context.getSharedPreferences(OurAppConstants.USER_PREFERENCES, Context.MODE_PRIVATE);
-            float rateVal = sharedPreferences.getFloat(OurAppConstants.SHARED_PREF_RATING, (float) -1);
+            float rateVal = sharedPreferences.get(OurAppConstants.SHARED_PREF_RATING, (float) -1);
             if(rateVal!=-1){
                 mMinRating=rateVal;//If rating preference exist, set that preference.
             }else{

@@ -13,9 +13,16 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/roulette_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"/>
 
-    </android.support.v7.widget.RecyclerView>
+    <EditText
+        android:id="@+id/roulette_query"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/roulette_button"
+        android:layout_toStartOf="@+id/roulette_button" />
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/roulette_button"
