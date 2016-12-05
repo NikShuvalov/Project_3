@@ -139,6 +139,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
             @Override
             public void onClick(View view) {
                 mInputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
+
                 if(mOptionsVisible){
                     animateOptionsOffScreen();
                     mOptionsVisible=false;
@@ -309,8 +310,8 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putFloat(OurAppConstants.USER_LAST_LAT,mGoogleApi.getUserLat(mGoogleApiClient));
-        editor.putFloat(OurAppConstants.USER_LAST_LON, mGoogleApi.getUserLon(mGoogleApiClient));
+        editor.putString(OurAppConstants.USER_LAST_LAT,mGoogleApi.getUserLat(mGoogleApiClient));
+        editor.putString(OurAppConstants.USER_LAST_LON, mGoogleApi.getUserLon(mGoogleApiClient));
         if(editor.commit()){
             Log.d("Search Activity", "Location successfully saved");
         }

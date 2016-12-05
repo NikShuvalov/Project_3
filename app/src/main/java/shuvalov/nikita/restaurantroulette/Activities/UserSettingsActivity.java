@@ -1,5 +1,6 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -224,38 +225,38 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
             }
         });
 
-        Button buttonHome = (Button) findViewById(R.id.button_home);
-        Button buttonWork = (Button) findViewById(R.id.button_work);
-
-        buttonHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences sharedPreferences =  getSharedPreferences(USER_PREFERENCES,
-                        Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-
-                //ToDo: Change the 1f, 2f with actual location data from Google Location API.
-
-                editor.putFloat(SHARED_PREF_HOME_LAT, 1f);
-                editor.putFloat(SHARED_PREF_HOME_LON, 2f);
-                editor.commit();
-            }
-        });
-
-        buttonWork.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences sharedPreferences =  getSharedPreferences(USER_PREFERENCES,
-                        Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-
-                //ToDo: Change the 1f, 2f with actual location data from Google Location API.
-
-                editor.putFloat(SHARED_PREF_WORK_LAT, 1f);
-                editor.putFloat(SHARED_PREF_WORK_LON, 2f);
-                editor.commit();
-            }
-        });
+//        Button buttonHome = (Button) findViewById(R.id.button_home);
+//        Button buttonWork = (Button) findViewById(R.id.button_work);
+//
+//        buttonHome.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                SharedPreferences sharedPreferences =  getSharedPreferences(USER_PREFERENCES,
+//                        Context.MODE_PRIVATE);
+//                SharedPreferences.Editor editor = sharedPreferences.edit();
+//
+//                //ToDo: Change the 1f, 2f with actual location data from Google Location API.
+//
+//                editor.putFloat(SHARED_PREF_HOME_LAT, 1f);
+//                editor.putFloat(SHARED_PREF_HOME_LON, 2f);
+//                editor.commit();
+//            }
+//        });
+//
+//        buttonWork.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                SharedPreferences sharedPreferences =  getSharedPreferences(USER_PREFERENCES,
+//                        Context.MODE_PRIVATE);
+//                SharedPreferences.Editor editor = sharedPreferences.edit();
+//
+//                //ToDo: Change the 1f, 2f with actual location data from Google Location API.
+//
+//                editor.putFloat(SHARED_PREF_WORK_LAT, 1f);
+//                editor.putFloat(SHARED_PREF_WORK_LON, 2f);
+//                editor.commit();
+//            }
+//        });
 
         final CheckBox checkBox = (CheckBox) findViewById(R.id.deals_checkbox);
 
@@ -311,14 +312,17 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
     public void onConnected(@Nullable Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            float userLat = new GoogleAPI().getUserLat(mGoogleApiClient);
-            float userLon = new GoogleAPI().getUserLon(mGoogleApiClient);
+            String userLat = new GoogleAPI().getUserLat(mGoogleApiClient);
+            String userLon = new GoogleAPI().getUserLon(mGoogleApiClient);
+
+            Log.d("GOOGLEAPI", "onConnected: " + userLat);
+            Log.d("GOOGLEAPI", "onConnected: " + userLon);
 
             SharedPreferences sharedPreferences = getSharedPreferences(USER_LAST_LOCATION,
                     Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putFloat(USER_LAST_LAT, userLat);
-            editor.putFloat(USER_LAST_LON, userLon);
+            editor.putString(USER_LAST_LAT, userLat);
+            editor.putString(USER_LAST_LON, userLon);
             editor.commit();
 
             Log.d(GoogleAPIConstants.TAG, "onConnected: " + userLat + " / " + userLon);
@@ -352,7 +356,7 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
     public static void verifyLocationPermissions(Activity activity) {
         // Check if we have write permission
         int permission = ActivityCompat.checkSelfPermission(activity,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION);
+                Manifest.permission.ACCESS_FINE_LOCATION);
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
             // We don't have permission so prompt the user
@@ -369,14 +373,14 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
         switch (requestCode) {
             case REQUEST_CODE_LOCATION_GLOC_API: {
                 //Ignore this correction; we only run this if/when we get the permission; so it can never be a problem.
-                float userLat = new GoogleAPI().getUserLat(mGoogleApiClient);
-                float userLon = new GoogleAPI().getUserLon(mGoogleApiClient);
+                String userLat = new GoogleAPI().getUserLat(mGoogleApiClient);
+                String userLon = new GoogleAPI().getUserLon(mGoogleApiClient);
 
                 SharedPreferences sharedPreferences = getSharedPreferences(USER_LAST_LOCATION,
                         Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putFloat(USER_LAST_LAT, userLat);
-                editor.putFloat(USER_LAST_LON, userLon);
+                editor.putString(USER_LAST_LAT, userLat);
+                editor.putString(USER_LAST_LON, userLon);
                 editor.commit();
 
                 Log.d(GoogleAPIConstants.TAG, "onConnected: " + userLat + " / " + userLon);

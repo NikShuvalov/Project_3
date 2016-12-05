@@ -1,21 +1,35 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
+import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
+import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
+
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LAT;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LOCATION;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LON;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+    private static final String TAG = "MapsActivity";
 
     private GoogleMap mMap;
+    public Business mBusiness;
+    public int mBusinessPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +39,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        // Gets Instance of the Business
+        mBusinessPosition = getIntent().getIntExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, -1);
+        mBusiness = RestaurantSearchHelper.getInstance().getBusinessAtPosition(mBusinessPosition);
     }
 
 
@@ -41,10 +59,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // TODO: Pass the business location from Detail Activity
-        // TODO: Change Zoom based on the distance between current location and business
-        LatLng ourLocation = new LatLng(OurAppConstants.GA_LATITUDE, OurAppConstants.GA_LONGITUDE);
-        mMap.addMarker(new MarkerOptions().position(ourLocation).title("General Assembly"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ourLocation, 13));
+        // User Location
+        SharedPreferences sharedPreferences = getSharedPreferences(USER_LAST_LOCATION,
+                Context.MODE_PRIVATE);
+
+        String userLat = sharedPreferences.getString(USER_LAST_LAT, "userLastLat");
+        String userLon = sharedPreferences.getString(USER_LAST_LON, "userLastLon");
+
+        Log.d(TAG, "onMapReady: " + userLat);
+        Log.d(TAG, "onMapReady: " + userLon);
+
+        LatLng userLocation = new LatLng(Double.parseDouble(userLat), Double.parseDouble(userLon));
+        mMap.addMarker(new MarkerOptions()
+                .position(userLocation)
+                .title("My Location"));
+
+        Log.d(TAG, "onMapReady: " + userLocation);
+
+        // Business Location
+        LatLng businessCoordinates = new LatLng(mBusiness.getCoordinates().getLatitude(),
+                mBusiness.getCoordinates().getLongitude());
+        mMap.addMarker(new MarkerOptions()
+                .position(businessCoordinates)
+                .title(mBusiness.getName()));
+
+        // Changes Zoom based on the distance between User Location and Business
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(userLocation);
+        builder.include(businessCoordinates);
+        LatLngBounds bounds = builder.build();
+
+        CameraUpdate latLngBounds = CameraUpdateFactory.newLatLngBounds(bounds, 150);
+        mMap.animateCamera(latLngBounds);
     }
 }

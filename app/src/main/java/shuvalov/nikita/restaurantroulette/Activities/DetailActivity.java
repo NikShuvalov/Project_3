@@ -1,18 +1,28 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.squareup.picasso.Picasso;
 
+import shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPI;
+import shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPIConstants;
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.PicassoImageManager;
 import shuvalov.nikita.restaurantroulette.R;
@@ -22,7 +32,14 @@ import shuvalov.nikita.restaurantroulette.UberResources.UberAPIConstants;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Location;
 
-public class DetailActivity extends AppCompatActivity{
+import static shuvalov.nikita.restaurantroulette.Activities.UserSettingsActivity.verifyLocationPermissions;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LAT;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LOCATION;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LON;
+
+public class DetailActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener{
+    private static final String TAG = "DetailActivity";
 
     public TextView mBusinessName, mPricing, mUberEstimate,
             mPhoneNumber, mAddress, mOpenOrClosed;
@@ -30,11 +47,15 @@ public class DetailActivity extends AppCompatActivity{
             mFirstStar, mSecondStar, mThirdStar, mFourthStar, mFifthStar;
     public Business mBusiness;
     public int mBusinessPosition;
+    public GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        GoogleAPI googleAPI = new GoogleAPI();
+        mGoogleApiClient = googleAPI.callGoogleLocApi(this);
 
         // Reference to Views
         mBusinessName = (TextView) findViewById(R.id.business_name);
@@ -86,19 +107,10 @@ public class DetailActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(DetailActivity.this, MapsActivity.class);
+                intent.putExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, mBusinessPosition);
                 startActivity(intent);
             }
         });
-
-        // Temporarily Commented out
-//        UberAPI uberAPI = new UberAPI(this);
-//        uberAPI.getEstimateAsString(40.73873873873874f, -73.97987613997012f, 40.5945945945946f, -73.9387914156729f, UberAPIConstants.UBER_SERVER_ID);
-//        uberAPI.setUberApiResultListener(new UberAPI.UberApiResultListener() {
-//            @Override
-//            public void onUberEstimateReady(String estimate) {
-//                mUberEstimate.setText(estimate);
-//            }
-//        });
     }
 
     public void bindDataToView(Business business) {
@@ -182,5 +194,64 @@ public class DetailActivity extends AppCompatActivity{
             mFourthStar.setImageResource(R.drawable.five_star_rating);
             mFifthStar.setImageResource(R.drawable.five_star_rating);
         }
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            String userLat = new GoogleAPI().getUserLat(mGoogleApiClient);
+            String userLon = new GoogleAPI().getUserLon(mGoogleApiClient);
+
+            SharedPreferences sharedPreferences = getSharedPreferences(USER_LAST_LOCATION,
+                    Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(USER_LAST_LAT, userLat);
+            editor.putString(USER_LAST_LON, userLon);
+            editor.commit();
+
+            // Uber Estimate
+            double businessLat = mBusiness.getCoordinates().getLatitude();
+            float businessLatFloat = (float) businessLat;
+
+            double businessLon = mBusiness.getCoordinates().getLongitude();
+            float businessLonFloat = (float) businessLon;
+
+//            UberAPI uberAPI = new UberAPI(this);
+//            uberAPI.getEstimateAsString(Float.parseFloat(userLat), Float.parseFloat(userLon),
+//                    businessLatFloat, businessLonFloat, UberAPIConstants.UBER_SERVER_ID);
+//            uberAPI.setUberApiResultListener(new UberAPI.UberApiResultListener() {
+//                @Override
+//                public void onUberEstimateReady(String estimate) {
+//                    mUberEstimate.setText(estimate);
+//                }
+//            });
+
+            Log.d(TAG, "onConnected: " + userLat + " / " + userLon);
+        } else {
+            verifyLocationPermissions(this);
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.d(TAG, "onConnectionFailed: " + i);
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.d(TAG, "onConnectionFailed: " + connectionResult);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mGoogleApiClient.disconnect();
     }
 }

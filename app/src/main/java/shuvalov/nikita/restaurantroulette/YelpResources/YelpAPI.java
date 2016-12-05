@@ -163,8 +163,9 @@ public class YelpAPI {
 
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(USER_LAST_LOCATION,
                 Context.MODE_PRIVATE);
-        float userLat = sharedPreferences.getFloat(USER_LAST_LAT, 200);
-        float userLon = sharedPreferences.getFloat(USER_LAST_LON, 200);
+
+        String userLat = sharedPreferences.getString(USER_LAST_LAT, "last_user_lat");
+        String userLon = sharedPreferences.getString(USER_LAST_LON, "last_user_lon");
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(YELP_SEARCH_BASE_URL)
@@ -174,8 +175,10 @@ public class YelpAPI {
         YelpNotificationService service = retrofit.create(YelpNotificationService.class);
 
         Call<RestaurantsMainObject> call = service.getRestaurantDeals("Bearer " + YELP_BEARER_TOKEN,
-                (double) userLat, (double) userLon, "restaurants", 1000,
+                Double.parseDouble(userLat), Double.parseDouble(userLon), "restaurants", 1000,
                 "deals", "distance", "true");
+
+        Log.d(TAG, "getRestaurantDeals: " + Double.parseDouble(userLat) + " / " + Double.parseDouble(userLon));
 
         call.enqueue(new Callback<RestaurantsMainObject>() {
             @Override

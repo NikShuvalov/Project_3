@@ -1,5 +1,6 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -73,19 +74,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            float userLat = new GoogleAPI().getUserLat(mGoogleApiClient);
-            float userLon = new GoogleAPI().getUserLon(mGoogleApiClient);
+            String userLat = new GoogleAPI().getUserLat(mGoogleApiClient);
+            String userLon = new GoogleAPI().getUserLon(mGoogleApiClient);
 
             SharedPreferences sharedPreferences = getSharedPreferences(USER_LAST_LOCATION,
                     Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putFloat(USER_LAST_LAT, userLat);
-            editor.putFloat(USER_LAST_LON, userLon);
+            editor.putString(USER_LAST_LAT, userLat);
+            editor.putString(USER_LAST_LON, userLon);
             editor.commit();
 
-            Log.d(GoogleAPIConstants.TAG, "onConnected: " + userLat + " / " + userLon);
+            Log.d("String_value", "onConnected: " + userLat);
+            Log.d("String_value", "onConnected: " + userLon);
+
         } else {
             verifyLocationPermissions(this);
         }
@@ -118,14 +121,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         switch (requestCode) {
             case REQUEST_CODE_LOCATION_GLOC_API: {
                 //Ignore this correction; we only run this if/when we get the permission; so it can never be a problem.
-                float userLat = new GoogleAPI().getUserLat(mGoogleApiClient);
-                float userLon = new GoogleAPI().getUserLon(mGoogleApiClient);
+                String userLat = new GoogleAPI().getUserLat(mGoogleApiClient);
+                String userLon = new GoogleAPI().getUserLon(mGoogleApiClient);
 
                 SharedPreferences sharedPreferences = getSharedPreferences(USER_LAST_LOCATION,
                         Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putFloat(USER_LAST_LAT, userLat);
-                editor.putFloat(USER_LAST_LON, userLon);
+                editor.putString(USER_LAST_LAT, userLat);
+                editor.putString(USER_LAST_LON, userLon);
                 editor.commit();
 
                 Log.d(GoogleAPIConstants.TAG, "onConnected: " + userLat + " / " + userLon);
