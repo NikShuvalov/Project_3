@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -47,11 +48,12 @@ import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_PREFERENCE
 public class RouletteActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
     private RecyclerView mRecyclerView;
     private RouletteActivityRecyclerAdapter mAdapter;
-    private FloatingActionButton mRouletteButton, mSettingsButton;
+    private FloatingActionButton mRouletteButton;
+    private ImageView mSettingsButton;
     private List<Business> mRouletteList;
     private EditText mRouletteQuery;
     private Location mLocation;
-    String mLat, mLon;
+    private String mLat, mLon;
     public GoogleApiClient mGoogleApiClient;
 
 
@@ -82,7 +84,7 @@ public class RouletteActivity extends AppCompatActivity implements GoogleApiClie
         mRecyclerView = (RecyclerView) findViewById(R.id.roulette_recycler_view);
         mRouletteButton = (FloatingActionButton) findViewById(R.id.roulette_button);
         mRouletteQuery = (EditText) findViewById(R.id.roulette_query);
-        mSettingsButton = (FloatingActionButton) findViewById(R.id.settings_button);
+        mSettingsButton = (ImageView) findViewById(R.id.settings_button);
 
     }
 

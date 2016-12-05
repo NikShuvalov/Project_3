@@ -35,4 +35,14 @@ public class RouletteHelper {
     public Business getBusinessAtPosition (int position) {
         return mRandomResults.get(position);
     }
+
+    public int getPositionofBusiness (Business business) {
+        for (int i = 0; i < mRandomResults.size(); i++) {
+            if (mRandomResults.get(i).getId() == business.getId()) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
 }

@@ -1,6 +1,7 @@
 package shuvalov.nikita.restaurantroulette.RecyclerViewAdapters;
 
 
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,7 +12,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
+
+import shuvalov.nikita.restaurantroulette.Activities.MapsActivity;
+import shuvalov.nikita.restaurantroulette.Activities.RouletteActivity;
+import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
+import shuvalov.nikita.restaurantroulette.RouletteHelper;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 
 /**
@@ -75,6 +81,10 @@ class RouletteResultViewHolder extends RecyclerView.ViewHolder{
             @Override
             public void onClick(View view) {
                 Toast.makeText(mRouletteCard.getContext(), business.getName(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(mRouletteCard.getContext(), MapsActivity.class);
+                int position = RouletteHelper.getInstance().getPositionofBusiness(business);
+                intent.putExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, position);
+                intent.putExtra("origin", "roulette");
             }
         });
     }
