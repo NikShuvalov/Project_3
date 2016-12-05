@@ -39,19 +39,24 @@ public class PicassoImageManager {
      * @param imageUrl
      */
     public void setImageFromUrl(final String imageUrl){
+        final boolean imageUrlIsEmpty = imageUrl.isEmpty();
 
         AsyncTask asyncTask = new AsyncTask<Void, Void, Void>(){
 
             @Override
             protected Void doInBackground(Void... voids) {
-                mRequestCreator = Picasso.with(mContext).load(imageUrl);
+                if (!imageUrlIsEmpty){
+                    mRequestCreator = Picasso.with(mContext).load(imageUrl);
+                }
                 return null;
             }
 
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                mRequestCreator.into(mImageView);
+                if(!imageUrlIsEmpty){
+                    mRequestCreator.into(mImageView);
+                }
             }
         }.execute();
 

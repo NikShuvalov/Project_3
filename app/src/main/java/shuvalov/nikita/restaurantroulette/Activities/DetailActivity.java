@@ -86,13 +86,22 @@ public class DetailActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(DetailActivity.this, MapsActivity.class);
+                intent.putExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, mBusinessPosition);
                 startActivity(intent);
             }
         });
 
         // Temporarily Commented out
-//        UberAPI uberAPI = new UberAPI(this);
-//        uberAPI.getEstimateAsString(40.73873873873874f, -73.97987613997012f, 40.5945945945946f, -73.9387914156729f, UberAPIConstants.UBER_SERVER_ID);
+        double businessLat = mBusiness.getCoordinates().getLatitude();
+        float businessLatFloat = (float) businessLat;
+
+        double businessLon = mBusiness.getCoordinates().getLongitude();
+        float businessLonFloat = (float) businessLon;
+
+        UberAPI uberAPI = new UberAPI(this);
+        // TODO: Change Start Lat, Lon to User Location
+//        uberAPI.getEstimateAsString(40.73873873873874f, -73.97987613997012f,
+//                businessLatFloat, businessLonFloat, UberAPIConstants.UBER_SERVER_ID);
 //        uberAPI.setUberApiResultListener(new UberAPI.UberApiResultListener() {
 //            @Override
 //            public void onUberEstimateReady(String estimate) {

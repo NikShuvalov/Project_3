@@ -1,12 +1,18 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
+import android.app.Activity;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -17,11 +23,17 @@ import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+
+import shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPI;
+import shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPIConstants;
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
-import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPI;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpJobService;
 
+import static shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPIConstants.PERMISSION_LOCATION;
+import static shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPIConstants.REQUEST_CODE_LOCATION_GLOC_API;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_HOME_LAT;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_HOME_LON;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_NOTIFICATION_CHECKED;
@@ -31,18 +43,30 @@ import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_RAD
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_RATING;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_WORK_LAT;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_WORK_LON;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LAT;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LOCATION;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LON;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_PREFERENCES;
 
-public class UserSettingsActivity extends AppCompatActivity {
+public class UserSettingsActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
     boolean isFirstTimeRating = true;
     boolean isFirstTimePrice = true;
     boolean isFirstTimeRadius = true;
     boolean isFirstTimeSearchResult = true;
+    GoogleApiClient mGoogleApiClient;
+    Location mLastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_settings);
+
+
+        //Location call:
+        GoogleAPI googleAPI = new GoogleAPI();
+        mGoogleApiClient = googleAPI.callGoogleLocApi(this);
+
 
         SharedPreferences sharedPreferences = getSharedPreferences(USER_PREFERENCES,
                 Context.MODE_PRIVATE);
@@ -163,7 +187,7 @@ public class UserSettingsActivity extends AppCompatActivity {
             }
         });
 
-        //Spinner for Radius
+        //Spinner for Result
         final Spinner spinnerResult = (Spinner) findViewById(R.id.spinner_result);
         ArrayAdapter<CharSequence> adapterResult = ArrayAdapter.createFromResource(this,
                 R.array.result_array, android.R.layout.simple_spinner_item);
@@ -281,5 +305,83 @@ public class UserSettingsActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            float userLat = new GoogleAPI().getUserLat(mGoogleApiClient);
+            float userLon = new GoogleAPI().getUserLon(mGoogleApiClient);
+
+            SharedPreferences sharedPreferences = getSharedPreferences(USER_LAST_LOCATION,
+                    Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putFloat(USER_LAST_LAT, userLat);
+            editor.putFloat(USER_LAST_LON, userLon);
+            editor.commit();
+
+            Log.d(GoogleAPIConstants.TAG, "onConnected: " + userLat + " / " + userLon);
+        } else {
+            verifyLocationPermissions(this);
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.d(GoogleAPIConstants.TAG, "onConnectionFailed: " + i);
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.d(GoogleAPIConstants.TAG, "onConnectionFailed: " + connectionResult);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mGoogleApiClient.disconnect();
+    }
+
+    public static void verifyLocationPermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION);
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSION_LOCATION,
+                    REQUEST_CODE_LOCATION_GLOC_API
+            );
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_LOCATION_GLOC_API: {
+                //Ignore this correction; we only run this if/when we get the permission; so it can never be a problem.
+                float userLat = new GoogleAPI().getUserLat(mGoogleApiClient);
+                float userLon = new GoogleAPI().getUserLon(mGoogleApiClient);
+
+                SharedPreferences sharedPreferences = getSharedPreferences(USER_LAST_LOCATION,
+                        Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putFloat(USER_LAST_LAT, userLat);
+                editor.putFloat(USER_LAST_LON, userLon);
+                editor.commit();
+
+                Log.d(GoogleAPIConstants.TAG, "onConnected: " + userLat + " / " + userLon);
+                break;
+            }
+        }
     }
 }
