@@ -1,5 +1,6 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -37,6 +39,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     private List<Business> mBusinessList;
     private CardView mBasicCardHolder;
     private boolean mOptionsVisible;
+    private ImageView mCloseView;
 
     private ArrayList<Spinner> mSpinnersInCardView;
 
@@ -45,6 +48,8 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     private String mPrice, mRating, mRadius = "show all";//ToDo: Change value into constant
     private String mLocation;
 
+
+    //ToDo: Add a way to close options to see full list without having to search
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +80,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         mRandom = (Button)findViewById(R.id.random_search);
         mLocationSpinner = (Spinner)findViewById(R.id.location_spinner);
         mBasicCardHolder =(CardView)findViewById(R.id.basic_search_card);
+        mCloseView =(ImageView)findViewById(R.id.close_search);
 
         mSpinnersInCardView.add(mRatingSpinner);
         mSpinnersInCardView.add(mRadiusSpinner);
@@ -119,6 +125,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
             @Override
             public void onClick(View view) {
                 inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
+                mQueryEntry.setText("");
                 if(mOptionsVisible){
                     animateOptionsOffScreen();
                     mOptionsVisible=false;
@@ -129,13 +136,30 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
                 mockLocation.setLatitude(OurAppConstants.GA_LATITUDE);
                 YelpAPI yelpApi = new YelpAPI(view.getContext(), mockLocation);
                 String query = mQueryEntry.getText().toString();
-                yelpApi.getRestaurants(query,Integer.parseInt(mRadius),mAdapter);
+                yelpApi.getRestaurants(query,Integer.parseInt(mRadius),mAdapter, false);
             }
         });
+        //ToDo:Combine mSearch and mRandom OnclickListener
         mRandom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
+                if(mOptionsVisible){
+                    animateOptionsOffScreen();
+                    mOptionsVisible=false;
+                }
+
+                Location mockLocation = new Location(LOCATION_SERVICE);
+                mockLocation.setLongitude(OurAppConstants.GA_LONGITUDE);
+                mockLocation.setLatitude(OurAppConstants.GA_LATITUDE);
+                YelpAPI yelpApi = new YelpAPI(view.getContext(), mockLocation);
+                String query = mQueryEntry.getText().toString();
+                SharedPreferences sharedPreferences = getSharedPreferences(OurAppConstants.USER_PREFERENCES, MODE_PRIVATE);
+                int radius = (int)sharedPreferences.getLong(OurAppConstants.SHARED_PREF_RADIUS,-1);
+                if (radius==-1){
+                    radius=3;
+                }
+                yelpApi.getRestaurants(query,radius,mAdapter, true);
             }
         });
 
@@ -146,6 +170,13 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
                     mOptionsVisible=true;
                     animationOptionsOntoScreen();
                 }
+            }
+        });
+        mCloseView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mQueryEntry.setText("");
+
             }
         });
     }
@@ -194,6 +225,23 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         mBasicCardHolder.setVisibility(View.GONE);
 
         Animation randomSearchAnimation = AnimationUtils.loadAnimation(this, R.anim.random_out);
+        randomSearchAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mRandom.clearAnimation();
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
         mRandom.setAnimation(randomSearchAnimation);
         mRandom.setVisibility(View.GONE);
 
