@@ -224,6 +224,7 @@ public class YelpAPI {
 
                         Intent intent = new Intent(mContext, DetailActivity.class);
                         //Passing all business object info
+                        intent.putExtra(OurAppConstants.ORIGIN,OurAppConstants.NOTIFICATION_ORIGIN);
                         intent.putExtra(NOTIF_IMAGE_URL, response.body().getBusinesses().get(0).getImageUrl());
                         intent.putExtra(NOTIF_PHONE_NUMBER, response.body().getBusinesses().get(0).getPhone());
                         intent.putExtra(NOTIF_IS_CLOSED, response.body().getBusinesses().get(0).getIsClosed());

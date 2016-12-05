@@ -47,6 +47,7 @@ public class SearchActivityRecyclerAdapter extends RecyclerView.Adapter<SearchRe
             public void onClick(View view) {
                 Intent intent = new Intent(holder.mNameView.getContext(), DetailActivity.class);
                 intent.putExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY,position);
+                intent.putExtra(OurAppConstants.ORIGIN,OurAppConstants.SEARCH_ORIGIN);
                 holder.mHolderLayout.getContext().startActivity(intent);
             }
         });

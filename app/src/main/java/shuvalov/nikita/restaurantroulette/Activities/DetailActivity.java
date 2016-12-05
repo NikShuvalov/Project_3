@@ -16,6 +16,7 @@ import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -78,8 +79,14 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
         mFifthStar = (ImageView) findViewById(R.id.fifth_star);
         
         // Gets Instance of the Business
-        mBusinessPosition = getIntent().getIntExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, -1);
-        mBusiness = RestaurantSearchHelper.getInstance().getBusinessAtPosition(mBusinessPosition);
+        String origin = getIntent().getStringExtra(OurAppConstants.ORIGIN);
+        if(origin.equals(OurAppConstants.NOTIFICATION_ORIGIN)){
+            Log.d(TAG, "onCreate: Arrived from notification" );
+        }else if(origin.equals(OurAppConstants.SEARCH_ORIGIN)){
+            mBusinessPosition = getIntent().getIntExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, -1);
+            mBusiness = RestaurantSearchHelper.getInstance().getBusinessAtPosition(mBusinessPosition);
+        }
+
         bindDataToView(mBusiness);
 
         // Phone Button OnClickListener to Open Dialer Intent
