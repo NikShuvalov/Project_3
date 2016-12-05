@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         setContentView(R.layout.activity_main);
 
         findViews();
+        setClickListener();
 
         //ToDo:Remove function and call once we're done with it
         setDebug();
@@ -131,5 +132,29 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 break;
             }
         }
+    }
+
+    public View.OnClickListener mListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            int id = view.getId();
+            Intent intent;
+            switch (id) {
+                case R.id.search_card_holder:
+                    intent = new Intent(view.getContext(), SearchActivity.class);
+                    startActivity(intent);
+                    break;
+                case R.id.date_night_card_holder:
+                    break;
+                case R.id.roulette_card_holder:
+                    break;
+            }
+        }
+    };
+
+    public void setClickListener () {
+        mBasicSearch.setOnClickListener(mListener);
+        mDateNight.setOnClickListener(mListener);
+        mRoulette.setOnClickListener(mListener);
     }
 }
