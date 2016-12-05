@@ -53,11 +53,13 @@ public class Randomizer {
             if (mNumberOfRandoms==-1){
                 mNumberOfRandoms=3;
             }
+            mContext = context;
 
         }else{
             mMaxPricy=2;
             mMinRating=3;
         }
+
 
     }
 
@@ -71,7 +73,7 @@ public class Randomizer {
         List<Business> randomPicks = new ArrayList<>();
         Random picker = new Random();
         for (int i = 0; i <= mNumberOfRandoms; i++) {
-            if (businessList.size() == 0) {
+            if (businessList == null || businessList.size() == 0) {
                 Toast.makeText(mContext, "Not enough results to pick from", Toast.LENGTH_SHORT).show();
                 break;
             }

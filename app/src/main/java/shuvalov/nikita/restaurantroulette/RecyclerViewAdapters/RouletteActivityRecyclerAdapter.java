@@ -1,25 +1,18 @@
 package shuvalov.nikita.restaurantroulette.RecyclerViewAdapters;
 
-import android.content.Intent;
+
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
-
-import shuvalov.nikita.restaurantroulette.Activities.DetailActivity;
-import shuvalov.nikita.restaurantroulette.OurAppConstants;
-import shuvalov.nikita.restaurantroulette.PicassoImageManager;
 import shuvalov.nikita.restaurantroulette.R;
-import shuvalov.nikita.restaurantroulette.Randomizer;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
-import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Category;
-import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Location;
 
 /**
  * Created by justinwells on 12/4/16.
@@ -72,7 +65,7 @@ class RouletteResultViewHolder extends RecyclerView.ViewHolder{
 
     }
 
-    public void bindDataToView(Business business){
+    public void bindDataToView(final Business business){
 
         String uberEstimate = "Estimated Uber Cost: $13.50";
         mUberEstimate.setText(uberEstimate);
@@ -81,7 +74,7 @@ class RouletteResultViewHolder extends RecyclerView.ViewHolder{
         mRouletteCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Toast.makeText(mRouletteCard.getContext(), business.getName(), Toast.LENGTH_SHORT).show();
             }
         });
     }

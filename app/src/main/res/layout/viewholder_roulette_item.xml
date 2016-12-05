@@ -9,11 +9,14 @@
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical" android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal">
         <LinearLayout
+            android:id="@+id/stars"
+            android:layout_alignLeft="@+id/roulette_uber_estimate"
+            android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -57,16 +60,24 @@
         <TextView
             android:id="@+id/roulette_price"
             android:layout_gravity="center_horizontal"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/stars"
             android:textSize="25dp"
             android:text="$$$$"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
-            android:id="@+id/roulette_uber_estimate"
+            android:id="@id/roulette_uber_estimate"
+            android:layout_below="@id/roulette_price"
+            android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-    </LinearLayout>
+    </RelativeLayout>
 
 </android.support.v7.widget.CardView>
+    <Space
+        android:layout_below="@id/mystery_restaurant"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"/>
 </RelativeLayout>

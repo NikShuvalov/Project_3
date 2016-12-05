@@ -1,16 +1,21 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +37,10 @@ import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_PREFERENCE
 public class RouletteActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RouletteActivityRecyclerAdapter mAdapter;
-    private FloatingActionButton mRouletteButton;
+    private FloatingActionButton mRouletteButton, mSettingsButton;
     private List<Business> mRouletteList;
     private EditText mRouletteQuery;
+
 
 
 
@@ -43,18 +49,24 @@ public class RouletteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_roulette);
 
+        final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
+
         mRouletteList = RouletteHelper.getInstance().getRandomList();
 
         setViews();
         setUpRecyclerView();
 
         mRouletteButton.setOnClickListener(mListener);
+        mSettingsButton.setOnClickListener(mListener);
     }
 
     public void setViews () {
         mRecyclerView = (RecyclerView) findViewById(R.id.roulette_recycler_view);
         mRouletteButton = (FloatingActionButton) findViewById(R.id.roulette_button);
         mRouletteQuery = (EditText) findViewById(R.id.roulette_query);
+        mSettingsButton = (FloatingActionButton) findViewById(R.id.settings_button);
+
     }
 
     private View.OnClickListener mListener = new View.OnClickListener() {
@@ -84,6 +96,10 @@ public class RouletteActivity extends AppCompatActivity {
                         yelpAPI.getRestaurantsForRoulette(query, (int) radiusSavedPosition,mAdapter);
                     }
                     break;
+
+                case R.id.settings_button:
+                    Intent intent = new Intent(RouletteActivity.this, UserSettingsActivity.class);
+                    startActivity(intent);
             }
         }
     };
@@ -94,26 +110,9 @@ public class RouletteActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
+
     }
 
-    public String convertPrice (long price) {
 
-        String result = "$";
-        switch ((int)price) {
-            case 0:
-                result = "$";
-                break;
-            case 1:
-                result = "$$";
-                break;
-            case 2:
-                result = "$$$";
-                break;
-            case 3:
-                result = "$$$$";
-                break;
-        }
 
-        return result;
-    }
 }
