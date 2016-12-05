@@ -39,6 +39,7 @@ import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LON;
 
 public class DetailActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener{
+    private static final String TAG = "DetailActivity";
 
     public TextView mBusinessName, mPricing, mUberEstimate,
             mPhoneNumber, mAddress, mOpenOrClosed;
@@ -199,16 +200,17 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
     public void onConnected(@Nullable Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            float userLat = new GoogleAPI().getUserLat(mGoogleApiClient);
-            float userLon = new GoogleAPI().getUserLon(mGoogleApiClient);
+            String userLat = new GoogleAPI().getUserLat(mGoogleApiClient);
+            String userLon = new GoogleAPI().getUserLon(mGoogleApiClient);
 
             SharedPreferences sharedPreferences = getSharedPreferences(USER_LAST_LOCATION,
                     Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putFloat(USER_LAST_LAT, userLat);
-            editor.putFloat(USER_LAST_LON, userLon);
+            editor.putString(USER_LAST_LAT, userLat);
+            editor.putString(USER_LAST_LON, userLon);
             editor.commit();
 
+            // Uber Estimate
             double businessLat = mBusiness.getCoordinates().getLatitude();
             float businessLatFloat = (float) businessLat;
 
@@ -216,9 +218,7 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
             float businessLonFloat = (float) businessLon;
 
             UberAPI uberAPI = new UberAPI(this);
-            // TODO: Change Start Lat, Lon to User Location
-
-            uberAPI.getEstimateAsString(userLat, userLon,
+            uberAPI.getEstimateAsString(Float.parseFloat(userLat), Float.parseFloat(userLon),
                     businessLatFloat, businessLonFloat, UberAPIConstants.UBER_SERVER_ID);
             uberAPI.setUberApiResultListener(new UberAPI.UberApiResultListener() {
                 @Override
@@ -227,7 +227,7 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
                 }
             });
 
-            Log.d(GoogleAPIConstants.TAG, "onConnected: " + userLat + " / " + userLon);
+            Log.d(TAG, "onConnected: " + userLat + " / " + userLon);
         } else {
             verifyLocationPermissions(this);
         }
@@ -235,12 +235,12 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.d(GoogleAPIConstants.TAG, "onConnectionFailed: " + i);
+        Log.d(TAG, "onConnectionFailed: " + i);
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(GoogleAPIConstants.TAG, "onConnectionFailed: " + connectionResult);
+        Log.d(TAG, "onConnectionFailed: " + connectionResult);
     }
 
     @Override

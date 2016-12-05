@@ -25,6 +25,7 @@ import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LOCAT
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LON;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+    private static final String TAG = "MapsActivity";
 
     private GoogleMap mMap;
     public Business mBusiness;
@@ -58,22 +59,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // TODO: Change GA LAT and LON to user location
-        // User Location (temporarily using GA Lat and Lng)
-
+        // User Location
         SharedPreferences sharedPreferences = getSharedPreferences(USER_LAST_LOCATION,
                 Context.MODE_PRIVATE);
 
-        float userLat = sharedPreferences.getFloat(USER_LAST_LAT, 1f);
-        float userLon = sharedPreferences.getFloat(USER_LAST_LON, 1f);
+        String userLat = sharedPreferences.getString(USER_LAST_LAT, "userLastLat");
+        String userLon = sharedPreferences.getString(USER_LAST_LON, "userLastLon");
 
-        Log.d("FLOAT_VALUES", "onMapReady: " + userLat);
-        Log.d("FLOAT_VALUES", "onMapReady: " + userLon);
+        Log.d(TAG, "onMapReady: " + userLat);
+        Log.d(TAG, "onMapReady: " + userLon);
 
-        LatLng userLocation = new LatLng((double) userLat, (double) userLon);
+        LatLng userLocation = new LatLng(Double.parseDouble(userLat), Double.parseDouble(userLon));
         mMap.addMarker(new MarkerOptions()
                 .position(userLocation)
                 .title("My Location"));
+
+        Log.d(TAG, "onMapReady: " + userLocation);
 
         // Business Location
         LatLng businessCoordinates = new LatLng(mBusiness.getCoordinates().getLatitude(),
