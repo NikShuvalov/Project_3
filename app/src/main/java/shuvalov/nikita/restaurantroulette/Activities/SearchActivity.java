@@ -28,7 +28,6 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPI;
@@ -41,7 +40,7 @@ import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 
 public class SearchActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private EditText mQueryEntry;
-    private Spinner mRatingSpinner, mPricingSpinner, mRadiusSpinner, mLocationSpinner;
+    private Spinner mRatingSpinner, mPricingSpinner, mRadiusSpinner;
     private Button mSearch, mRandom;
     private RecyclerView mRecyclerView;
     private SearchActivityRecyclerAdapter mAdapter;
@@ -53,8 +52,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     private SharedPreferences mSharedPreferences;
     private GoogleAPI mGoogleApi;
     private int mOrientation;
-
-    private ArrayList<Spinner> mSpinnersInCardView;
+    private InputMethodManager mInputMethodManager;
 
     private ArrayAdapter<CharSequence> mRatingAdapter, mPricingAdapter, mRadiusAdapter, mLocationAdapter;
 
@@ -74,7 +72,6 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         checkOrientation();
 
         mOptionsVisible = true;
-        mSpinnersInCardView = new ArrayList<>();
         mSharedPreferences = getSharedPreferences(OurAppConstants.USER_PREFERENCES, MODE_PRIVATE);
 
         mGoogleApiClient = mGoogleApi.callGoogleLocApi(this);
@@ -82,9 +79,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         findViews();
         mBasicCardHolder.setVisibility(View.VISIBLE);
         mRandom.setVisibility(View.VISIBLE);
-        for(Spinner spinner:mSpinnersInCardView) {
-            spinner.setEnabled(true);
-        }
+
         addAdaptersToSpinners();
         setUpRecyclerView();
         setOnClickListeners();
@@ -97,36 +92,31 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         mSearch = (Button)findViewById(R.id.basic_search);
         mRecyclerView = (RecyclerView)findViewById(R.id.search_recyclerview);
         mRandom = (Button)findViewById(R.id.random_search);
-        mLocationSpinner = (Spinner)findViewById(R.id.location_spinner);
         mBasicCardHolder =(CardView)findViewById(R.id.basic_search_card);
         mCloseView =(ImageView)findViewById(R.id.close_search);
-
-        mSpinnersInCardView.add(mRatingSpinner);
-        mSpinnersInCardView.add(mRadiusSpinner);
-        mSpinnersInCardView.add(mRatingSpinner);
-        mSpinnersInCardView.add(mPricingSpinner);
     }
 
     public void addAdaptersToSpinners(){
         mRatingAdapter = ArrayAdapter.createFromResource(this, R.array.rating_array,android.R.layout.simple_spinner_item);
         mPricingAdapter = ArrayAdapter.createFromResource(this, R.array.price_array,android.R.layout.simple_spinner_item);
         mRadiusAdapter = ArrayAdapter.createFromResource(this, R.array.radius_array,android.R.layout.simple_spinner_item);
-        mLocationAdapter = ArrayAdapter.createFromResource(this, R.array.location_array, android.R.layout.simple_spinner_item);
 
         mRatingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mPricingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mRadiusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mLocationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         mRatingSpinner.setAdapter(mRatingAdapter);
         mPricingSpinner.setAdapter(mPricingAdapter);
         mRadiusSpinner.setAdapter(mRadiusAdapter);
-        mLocationSpinner.setAdapter(mLocationAdapter);
+
+        mRatingSpinner.setSelection(2);
+        mPricingSpinner.setSelection(1);
+        mRadiusSpinner.setSelection(4);
+
 
         mRatingSpinner.setOnItemSelectedListener(this);
         mPricingSpinner.setOnItemSelectedListener(this);
         mRadiusSpinner.setOnItemSelectedListener(this);
-        mLocationSpinner.setOnItemSelectedListener(this);
 
     }
 
@@ -143,12 +133,12 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
 
     }
     public void setOnClickListeners(){
-        final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 
         mSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
+                mInputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
                 if(mOptionsVisible){
                     animateOptionsOffScreen();
                     mOptionsVisible=false;
@@ -167,7 +157,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         mRandom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
+                mInputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
                 if(mOptionsVisible){
                     animateOptionsOffScreen();
                     mOptionsVisible=false;
@@ -199,8 +189,17 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         mCloseView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mQueryEntry.setText("");
-
+                if (mQueryEntry.getText().toString().isEmpty()) {
+                    if(mOptionsVisible){
+                        animateOptionsOffScreen();
+                        mOptionsVisible=false;
+                        if(mInputMethodManager.isActive()){
+                            mInputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
+                        }
+                    }
+                } else {
+                    mQueryEntry.setText("");
+                }
             }
         });
     }
@@ -280,9 +279,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         Animation basicSearchAnimation = AnimationUtils.loadAnimation(this,R.anim.basic_search_in);
 
         mBasicCardHolder.setAnimation(basicSearchAnimation);
-        for(Spinner spinner:mSpinnersInCardView){
-            spinner.setEnabled(true);
-        }
+
         mBasicCardHolder.setVisibility(View.VISIBLE);
 
         Animation randomSearchAnimation;

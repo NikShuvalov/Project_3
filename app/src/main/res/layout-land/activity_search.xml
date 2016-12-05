@@ -13,18 +13,13 @@
     android:background="#dde5f5"
     tools:context="shuvalov.nikita.restaurantroulette.Activities.SearchActivity">
 
-    <Space
-        android:id="@id/middivider"
-        android:layout_width="10dp"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"/>
     <ImageView
         android:id="@+id/close_search"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
         android:tint="#444"
-        android:layout_toLeftOf="@id/middivider"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"/>
 
     <EditText
         android:id="@+id/query_entry"
@@ -159,7 +154,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/query_entry"
-        android:layout_toRightOf="@id/basic_search_card"
         android:layout_above="@id/yelp_display_requirements"/>
 
 </RelativeLayout>
