@@ -153,10 +153,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     intent = null;
                     break;
             }
-<<<<<<< HEAD
             startActivity(intent);
-=======
->>>>>>> master
         }
     };
 

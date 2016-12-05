@@ -19,6 +19,7 @@ import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.RouletteActivityRecyclerAdapter;
 import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
+import shuvalov.nikita.restaurantroulette.RouletteHelper;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPI;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 
@@ -42,7 +43,7 @@ public class RouletteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_roulette);
 
-        mRouletteList = new ArrayList<>();
+        mRouletteList = RouletteHelper.getInstance().getRandomList();
 
         setViews();
         setUpRecyclerView();
@@ -67,10 +68,7 @@ public class RouletteActivity extends AppCompatActivity {
                     SharedPreferences sharedPreferences = getSharedPreferences(USER_PREFERENCES,
                             Context.MODE_PRIVATE);
 
-                    long ratingSavedPosition = sharedPreferences.getLong(SHARED_PREF_RATING, -1);
-                    long priceSavedPosition = sharedPreferences.getLong(SHARED_PREF_PRICING, -1);
                     long radiusSavedPosition = sharedPreferences.getLong(SHARED_PREF_RADIUS, -1);
-                    long searchResultsSavedPosition = sharedPreferences.getLong(SHARED_PREF_NUM_OF_RESULTS, -1);
 
                     Location mockLocation = new Location(LOCATION_SERVICE);
                     mockLocation.setLongitude(OurAppConstants.GA_LONGITUDE);
@@ -83,8 +81,7 @@ public class RouletteActivity extends AppCompatActivity {
                     if (query == null || query.equals("")) {
                         mRouletteQuery.setError("Please enter search criteria");
                     } else {
-                        yelpAPI.getRestaurantsForRoulette(query, (int) radiusSavedPosition, ratingSavedPosition,
-                                convertPrice(priceSavedPosition), mAdapter);
+                        yelpAPI.getRestaurantsForRoulette(query, (int) radiusSavedPosition,mAdapter);
                     }
                     break;
             }

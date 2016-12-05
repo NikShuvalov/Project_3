@@ -28,6 +28,7 @@ import shuvalov.nikita.restaurantroulette.Randomizer;
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.RouletteActivityRecyclerAdapter;
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.SearchActivityRecyclerAdapter;
 import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
+import shuvalov.nikita.restaurantroulette.RouletteHelper;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.RestaurantsMainObject;
 
@@ -152,9 +153,7 @@ public class YelpAPI {
 
     }
 
-    public void getRestaurantsForRoulette(String query, int radius,
-                                          final float rating, final String price,
-                                          final RouletteActivityRecyclerAdapter adapter) {
+    public void getRestaurantsForRoulette(String query, int radius, final RouletteActivityRecyclerAdapter adapter) {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(YELP_SEARCH_BASE_URL)
@@ -176,6 +175,7 @@ public class YelpAPI {
                 mBusinessList = response.body().getBusinesses();
                 Randomizer randomizer = new Randomizer(mContext);
                 mRandomPicksList = randomizer.pickRandomFromList(mBusinessList);
+                RouletteHelper.getInstance().setRandomList(mRandomPicksList);
                 adapter.replaceList(mRandomPicksList);
                 adapter.notifyDataSetChanged();
             }
