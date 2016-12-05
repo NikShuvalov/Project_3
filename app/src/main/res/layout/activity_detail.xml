@@ -111,7 +111,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:textSize="16dp"/>
+                android:textSize="16dp"
+                android:text="(Estimate Goes Here)"/>
         </LinearLayout>
 
         <LinearLayout
