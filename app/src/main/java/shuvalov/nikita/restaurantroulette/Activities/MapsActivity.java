@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
+import shuvalov.nikita.restaurantroulette.RouletteHelper;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LAT;
@@ -30,6 +31,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     public Business mBusiness;
     public int mBusinessPosition;
+    private String origin;
+    private boolean isMystery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +45,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Gets Instance of the Business
         mBusinessPosition = getIntent().getIntExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, -1);
-        mBusiness = RestaurantSearchHelper.getInstance().getBusinessAtPosition(mBusinessPosition);
+        if (getIntent().getStringExtra("origin").equals("roulette")) {
+            mBusiness = RouletteHelper.getInstance().getBusinessAtPosition(mBusinessPosition);
+            isMystery = true;
+        } else {
+            mBusiness = RestaurantSearchHelper.getInstance().getBusinessAtPosition(mBusinessPosition);
+            isMystery = false;
+        }
     }
 
 
@@ -77,13 +86,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.d(TAG, "onMapReady: " + userLocation);
 
         // Business Location
+        String title;
+        if (isMystery) {
+            title = "???????";
+        } else {
+            title = mBusiness.getName();
+        }
+
         LatLng businessCoordinates = new LatLng(mBusiness.getCoordinates().getLatitude(),
                 mBusiness.getCoordinates().getLongitude());
         mMap.addMarker(new MarkerOptions()
                 .position(businessCoordinates)
-                .title(mBusiness.getName()));
+                .title(title));
 
         // Changes Zoom based on the distance between User Location and Business
+
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(userLocation);
         builder.include(businessCoordinates);

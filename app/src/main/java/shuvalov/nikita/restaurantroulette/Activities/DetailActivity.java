@@ -115,6 +115,7 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
             public void onClick(View view) {
                 Intent intent = new Intent(DetailActivity.this, MapsActivity.class);
                 intent.putExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, mBusinessPosition);
+                intent.putExtra("origin", "detail");
                 startActivity(intent);
             }
         });
