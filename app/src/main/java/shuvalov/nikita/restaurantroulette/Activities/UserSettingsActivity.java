@@ -1,5 +1,6 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -224,38 +225,38 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
             }
         });
 
-        Button buttonHome = (Button) findViewById(R.id.button_home);
-        Button buttonWork = (Button) findViewById(R.id.button_work);
-
-        buttonHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences sharedPreferences =  getSharedPreferences(USER_PREFERENCES,
-                        Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-
-                //ToDo: Change the 1f, 2f with actual location data from Google Location API.
-
-                editor.putFloat(SHARED_PREF_HOME_LAT, 1f);
-                editor.putFloat(SHARED_PREF_HOME_LON, 2f);
-                editor.commit();
-            }
-        });
-
-        buttonWork.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences sharedPreferences =  getSharedPreferences(USER_PREFERENCES,
-                        Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-
-                //ToDo: Change the 1f, 2f with actual location data from Google Location API.
-
-                editor.putFloat(SHARED_PREF_WORK_LAT, 1f);
-                editor.putFloat(SHARED_PREF_WORK_LON, 2f);
-                editor.commit();
-            }
-        });
+//        Button buttonHome = (Button) findViewById(R.id.button_home);
+//        Button buttonWork = (Button) findViewById(R.id.button_work);
+//
+//        buttonHome.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                SharedPreferences sharedPreferences =  getSharedPreferences(USER_PREFERENCES,
+//                        Context.MODE_PRIVATE);
+//                SharedPreferences.Editor editor = sharedPreferences.edit();
+//
+//                //ToDo: Change the 1f, 2f with actual location data from Google Location API.
+//
+//                editor.putFloat(SHARED_PREF_HOME_LAT, 1f);
+//                editor.putFloat(SHARED_PREF_HOME_LON, 2f);
+//                editor.commit();
+//            }
+//        });
+//
+//        buttonWork.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                SharedPreferences sharedPreferences =  getSharedPreferences(USER_PREFERENCES,
+//                        Context.MODE_PRIVATE);
+//                SharedPreferences.Editor editor = sharedPreferences.edit();
+//
+//                //ToDo: Change the 1f, 2f with actual location data from Google Location API.
+//
+//                editor.putFloat(SHARED_PREF_WORK_LAT, 1f);
+//                editor.putFloat(SHARED_PREF_WORK_LON, 2f);
+//                editor.commit();
+//            }
+//        });
 
         final CheckBox checkBox = (CheckBox) findViewById(R.id.deals_checkbox);
 
@@ -355,7 +356,7 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
     public static void verifyLocationPermissions(Activity activity) {
         // Check if we have write permission
         int permission = ActivityCompat.checkSelfPermission(activity,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION);
+                Manifest.permission.ACCESS_FINE_LOCATION);
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
             // We don't have permission so prompt the user

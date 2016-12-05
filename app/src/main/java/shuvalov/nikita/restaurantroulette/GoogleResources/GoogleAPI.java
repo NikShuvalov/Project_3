@@ -2,6 +2,7 @@ package shuvalov.nikita.restaurantroulette.GoogleResources;
 
 import android.content.Context;
 import android.location.Location;
+import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -45,6 +46,7 @@ public class GoogleAPI {
         Location location = LocationServices.FusedLocationApi.getLastLocation(
                 googleApiClient);
         Double userLatDouble = location.getLatitude();
+        Log.d("Actual_Double_Value", "getUserLat: " + userLatDouble);
         String userLatString = userLatDouble.toString();
         return userLatString;
     }
@@ -53,6 +55,7 @@ public class GoogleAPI {
         Location location = LocationServices.FusedLocationApi.getLastLocation(
                 googleApiClient);
         Double userLonDouble = location.getLongitude();
+        Log.d("Actual_Double_Value", "getUserLat: " + userLonDouble);
         String UserLonString = userLonDouble.toString();
         return UserLonString;
     }

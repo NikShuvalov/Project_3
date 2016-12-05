@@ -1,5 +1,6 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             String userLat = new GoogleAPI().getUserLat(mGoogleApiClient);
             String userLon = new GoogleAPI().getUserLon(mGoogleApiClient);
@@ -85,7 +86,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             editor.putString(USER_LAST_LON, userLon);
             editor.commit();
 
-            Log.d(GoogleAPIConstants.TAG, "onConnected: " + userLat + " / " + userLon);
+            Log.d("String_value", "onConnected: " + userLat);
+            Log.d("String_value", "onConnected: " + userLon);
+
         } else {
             verifyLocationPermissions(this);
         }

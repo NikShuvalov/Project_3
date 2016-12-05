@@ -83,7 +83,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .position(businessCoordinates)
                 .title(mBusiness.getName()));
 
-        // Changes Zoom based on the distance between GA Location and Business
+        // Changes Zoom based on the distance between User Location and Business
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(userLocation);
         builder.include(businessCoordinates);
