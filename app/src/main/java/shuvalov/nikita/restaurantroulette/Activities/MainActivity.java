@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
         findViews();
         setClickListener();
 
-
         //ToDo:Remove function and call once we're done with it
         setDebug();
     }
@@ -48,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public View.OnClickListener listener = new View.OnClickListener() {
+    public View.OnClickListener mListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             int id = view.getId();
@@ -68,8 +67,8 @@ public class MainActivity extends AppCompatActivity {
     };
 
     public void setClickListener () {
-        mBasicSearch.setOnClickListener(listener);
-        mDateNight.setOnClickListener(listener);
-        mRoulette.setOnClickListener(listener);
+        mBasicSearch.setOnClickListener(mListener);
+        mDateNight.setOnClickListener(mListener);
+        mRoulette.setOnClickListener(mListener);
     }
 }
