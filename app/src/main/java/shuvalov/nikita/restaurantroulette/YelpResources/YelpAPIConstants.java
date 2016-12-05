@@ -12,4 +12,18 @@ public class YelpAPIConstants {
     public static final String YELP_TOKEN_BASE_URL = "https://api.yelp.com/oauth2/";
     public static final String YELP_SEARCH_BASE_URL = "https://api.yelp.com/v3/businesses/";
 
+    //NOTIFICATION VALUES TO PASS THROUGH INTENT
+    public static final String NOTIF_IMAGE_URL = "image_url";
+    public static final String NOTIF_PHONE_NUMBER = "phone";
+    public static final String NOTIF_IS_CLOSED = "is_closed";
+    public static final String NOTIF_BUSINESS_URL = "url";
+    public static final String NOTIF_BUSINESS_ID = "id";
+    public static final String NOTIF_REVIEW_COUNT = "review_count";
+    public static final String NOTIF_RATING = "rating";
+    public static final String NOTIF_DISTANCE = "distance";
+    public static final String NOTIF_BUSINESS_NAME = "name";
+    public static final String NOTIF_ADDRESS_1 = "adress1";
+    public static final String NOTIF_CITY = "city";
+    public static final String NOTIF_LATITUTE = "lat";
+    public static final String NOTIF_LONGITUDE = "lon";
 }
