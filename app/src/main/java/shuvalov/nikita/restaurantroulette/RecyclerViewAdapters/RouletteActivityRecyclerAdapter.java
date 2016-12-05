@@ -15,6 +15,7 @@ import shuvalov.nikita.restaurantroulette.Activities.DetailActivity;
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.PicassoImageManager;
 import shuvalov.nikita.restaurantroulette.R;
+import shuvalov.nikita.restaurantroulette.Randomizer;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Category;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Location;
@@ -23,7 +24,7 @@ import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Location;
  * Created by justinwells on 12/4/16.
  */
 
-public class RouletteActivityRecyclerAdapter extends RecyclerView.Adapter<SearchResultViewHolder> {
+public class RouletteActivityRecyclerAdapter extends RecyclerView.Adapter<RouletteResultViewHolder> {
     List<Business> mBusinessList;
 
     public RouletteActivityRecyclerAdapter(List<Business> businessList) {
@@ -31,14 +32,15 @@ public class RouletteActivityRecyclerAdapter extends RecyclerView.Adapter<Search
     }
 
     @Override
-    public SearchResultViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RouletteResultViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_roulette_item, null);
-        return new SearchResultViewHolder(view);
+        return new RouletteResultViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final SearchResultViewHolder holder, final int position) {
+    public void onBindViewHolder(final RouletteResultViewHolder holder, final int position) {
         holder.bindDataToView(mBusinessList.get(position));
+
 
 
     }

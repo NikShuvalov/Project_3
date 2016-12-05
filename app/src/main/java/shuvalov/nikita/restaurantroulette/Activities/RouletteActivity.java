@@ -1,5 +1,8 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.location.Location;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,11 +10,21 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.RouletteActivityRecyclerAdapter;
+import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
+import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPI;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
+
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_NUM_OF_RESULTS;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_PRICING;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_RADIUS;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_RATING;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_PREFERENCES;
 
 public class RouletteActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
@@ -19,11 +32,17 @@ public class RouletteActivity extends AppCompatActivity {
     private FloatingActionButton mRouletteButton;
     private List<Business> mRouletteList;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_roulette);
+
+        mRouletteList = new ArrayList<>();
+
         setViews();
+        setUpRecyclerView();
 
         mRouletteButton.setOnClickListener(mListener);
     }
@@ -38,7 +57,20 @@ public class RouletteActivity extends AppCompatActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.roulette_button :
-                    //mRecyclerView =
+                    SharedPreferences sharedPreferences = getSharedPreferences(USER_PREFERENCES,
+                            Context.MODE_PRIVATE);
+                    long ratingSavedPosition = sharedPreferences.getLong(SHARED_PREF_RATING, -1);
+                    long priceSavedPosition = sharedPreferences.getLong(SHARED_PREF_PRICING, -1);
+                    long radiusSavedPosition = sharedPreferences.getLong(SHARED_PREF_RADIUS, -1);
+                    long searchResultsSavedPosition = sharedPreferences.getLong(SHARED_PREF_NUM_OF_RESULTS, -1);
+
+                    Location mockLocation = new Location(LOCATION_SERVICE);
+                    mockLocation.setLongitude(OurAppConstants.GA_LONGITUDE);
+                    mockLocation.setLatitude(OurAppConstants.GA_LATITUDE);
+
+                    YelpAPI yelpAPI = new YelpAPI(RouletteActivity.this, mockLocation);
+
+                    yelpAPI.getRestaurantsForRoulette("Pizza", (int)radiusSavedPosition, mAdapter);
                     break;
             }
         }
