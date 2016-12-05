@@ -10,89 +10,150 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="#dde5f5"
     tools:context="shuvalov.nikita.restaurantroulette.Activities.UserSettingsActivity">
 
     <TextView
-        android:text="Please Enter Values for Random Search"
+
+        android:textSize="19dp"
+        android:text="Set Defaults for Quick Search"
         android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <android.support.v7.widget.CardView
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:text="Pick minimum rating: "
-            android:layout_width="0dp"
-            android:layout_weight="0.7"
-            android:layout_height="wrap_content" />
+        <LinearLayout
+            android:padding="5dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <Spinner
-            android:layout_weight="0.3"
-            android:id="@+id/spinner_rating"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:textSize="17dp"
+                android:paddingLeft="5dp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:gravity="center_vertical"
+                android:text="Pick minimum rating: "
+                android:layout_width="0dp"
+                android:layout_weight="0.65"
+                android:layout_height="wrap_content" />
 
-    </LinearLayout>
+            <Spinner
+                android:layout_weight="0.35"
+                android:id="@+id/spinner_rating"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
 
-    <LinearLayout
-        android:orientation="horizontal"
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+    <android.support.v7.widget.CardView
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:text="Pick maximum budget: "
-            android:layout_width="0dp"
-            android:layout_weight="0.7"
-            android:layout_height="wrap_content" />
+        <LinearLayout
+            android:padding="5dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <Spinner
-            android:layout_weight="0.3"
-            android:id="@+id/spinner_pricing"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:paddingLeft="5dp"
+                android:textSize="17dp"
+                android:paddingBottom="3dp"
+                android:paddingTop="3dp"
+                android:text="Pick maximum budget: "
+                android:layout_width="0dp"
+                android:layout_weight="0.65"
+                android:layout_height="wrap_content" />
 
-    </LinearLayout>
+            <Spinner
+                android:layout_weight="0.35"
+                android:id="@+id/spinner_pricing"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
 
-    <LinearLayout
-        android:orientation="horizontal"
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:text="Pick maximum distance: "
-            android:layout_width="0dp"
-            android:layout_weight="0.7"
-            android:layout_height="wrap_content" />
+        <LinearLayout
+            android:padding="5dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <Spinner
-            android:layout_weight="0.3"
-            android:id="@+id/spinner_radius"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:paddingLeft="5dp"
+                android:paddingBottom="3dp"
+                android:textSize="17dp"
+                android:paddingTop="3dp"
+                android:text="Pick maximum distance: "
+                android:layout_width="0dp"
+                android:layout_weight="0.65"
+                android:layout_height="wrap_content" />
 
-    </LinearLayout>
+            <Spinner
+                android:layout_weight="0.35"
+                android:id="@+id/spinner_radius"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
 
-    <LinearLayout
-        android:orientation="horizontal"
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:text="Pick number of results: "
-            android:layout_width="0dp"
-            android:layout_weight="0.7"
-            android:layout_height="wrap_content" />
+        <LinearLayout
+            android:padding="5dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <Spinner
-            android:layout_weight="0.3"
-            android:id="@+id/spinner_result"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:paddingLeft="5dp"
+                android:paddingBottom="3dp"
+                android:textSize="17dp"
+                android:paddingTop="3dp"
+                android:text="Pick number of results: "
+                android:layout_width="0dp"
+                android:layout_weight="0.65"
+                android:layout_height="wrap_content" />
 
-    </LinearLayout>
+            <Spinner
+                android:layout_weight="0.35"
+                android:id="@+id/spinner_result"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
 
     <!--<TextView-->
         <!--android:text="Save My Current Location As..."-->
@@ -122,26 +183,45 @@
     <!--</LinearLayout>-->
 
     <TextView
+        android:textSize="19dp"
+        android:layout_marginTop="20dp"
         android:text="Restaurant deals"
         android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <android.support.v7.widget.CardView
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <CheckBox
-            android:id="@+id/deals_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:text="Notify me of restaurant deals"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:textSize="17dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:paddingLeft="10dp"
+                android:text="Notify me of restaurant deals"
+                android:layout_width="0dp"
+                android:layout_weight="0.87"
+                android:layout_height="wrap_content" />
 
-    </LinearLayout>
+            <CheckBox
+                android:layout_gravity="center"
+                android:id="@+id/deals_checkbox"
+                android:layout_width="0dp"
+                android:layout_weight="0.13"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
 
 </LinearLayout>
