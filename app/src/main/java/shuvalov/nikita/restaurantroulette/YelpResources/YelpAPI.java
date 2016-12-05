@@ -119,34 +119,34 @@ public class YelpAPI {
         }
     }
 
-    public void getRestaurants(String query, String price, int radius, final SearchActivityRecyclerAdapter adapter, final boolean isRandomized) {
+    public void getRestaurants(String query, long price, int radius, final SearchActivityRecyclerAdapter adapter, final boolean isRandomized) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(YELP_SEARCH_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        String priceQueryText = "";
-        if (price == null) {
-            priceQueryText = "1,2,3,4";
-        } else {
-
-            switch (price) {
-                case "$$$$":
-                    priceQueryText += "4,";
-                case "$$$":
-                    priceQueryText+="3,";
-                case "$$":
-                    priceQueryText+="2,";
-                case "$":
-                    priceQueryText+="1";
-                    break;
-            }
-        }
-
         SharedPreferences userSharedPref = mContext.getSharedPreferences(OurAppConstants.USER_PREFERENCES,MODE_PRIVATE);
 
-        double myLong = Double.parseDouble(userSharedPref.getString(OurAppConstants.USER_LAST_LON,"200"));
-        double myLat = Double.parseDouble(userSharedPref.getString(OurAppConstants.USER_LAST_LAT,"200"));
+        String priceQueryText = "";
+        if (price == -1) {
+            price = userSharedPref.getLong(OurAppConstants.SHARED_PREF_PRICING, 3);
+        }
+
+        switch ((int)price) {
+            case 3:
+                priceQueryText += "4,";
+            case 2:
+                priceQueryText+="3,";
+            case 1:
+                priceQueryText+="2,";
+            case 0:
+                priceQueryText+="1";
+                break;
+        }
+
+        SharedPreferences locationPreferences = mContext.getSharedPreferences(OurAppConstants.USER_LAST_LOCATION,MODE_PRIVATE);
+        double myLong = Double.parseDouble(locationPreferences.getString(OurAppConstants.USER_LAST_LON,"200"));
+        double myLat = Double.parseDouble(locationPreferences.getString(OurAppConstants.USER_LAST_LAT,"200"));
 
         if (myLong ==200|| myLat == 200){
             Toast.makeText(mContext, "No location found in userPreferences", Toast.LENGTH_SHORT).show();
@@ -187,13 +187,30 @@ public class YelpAPI {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        double myLong = mLastLocation.getLongitude();
-        double myLat = mLastLocation.getLatitude();
+        SharedPreferences userLocation= mContext.getSharedPreferences(OurAppConstants.USER_LAST_LOCATION, MODE_PRIVATE);
+        double myLong = Double.parseDouble(userLocation.getString(OurAppConstants.USER_LAST_LON,"200"));
+        double myLat = Double.parseDouble(userLocation.getString(OurAppConstants.USER_LAST_LAT,"200"));
         Log.d(TAG, "Lat, Long: "+myLat+","+myLong);
         YelpSearchService service = retrofit.create(YelpSearchService.class);
 
+        long price = mContext.getSharedPreferences(OurAppConstants.USER_PREFERENCES,MODE_PRIVATE).getLong(OurAppConstants.SHARED_PREF_PRICING, 3);
+        String priceQueryText = "";
+
+            switch ((int)price) {
+                case 3:
+                    priceQueryText += "4,";
+                case 2:
+                    priceQueryText+="3,";
+                case 1:
+                    priceQueryText+="2,";
+                case 0:
+                    priceQueryText+="1";
+                    break;
+        }
+
+
         //ToDo: Replace "restaurants" with Constant and/or variable based on what the search category is.
-        Call<RestaurantsMainObject> call = service.getRestaurants("Bearer " + YELP_BEARER_TOKEN, query, "restaurants",
+        Call<RestaurantsMainObject> call = service.getRestaurants("Bearer " + YELP_BEARER_TOKEN, query, priceQueryText, "restaurants",
                 40, myLat, myLong, radius*1000);//ToDo: Do we need to make a different MainObject for place of entertainment?
 
         call.enqueue(new Callback<RestaurantsMainObject>() {

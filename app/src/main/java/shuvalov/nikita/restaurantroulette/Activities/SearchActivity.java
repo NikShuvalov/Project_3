@@ -56,8 +56,9 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
 
     private ArrayAdapter<CharSequence> mRatingAdapter, mPricingAdapter, mRadiusAdapter, mLocationAdapter;
 
-    private String mPrice, mRating, mRadius = "show all";//ToDo: Change value into constant
+    private String mRating, mRadius = "show all";//ToDo: Change value into constant
     private String mLocation;
+    private long mPrice;
 
 
     //ToDo: Add a way to close options to see full list without having to search
@@ -167,7 +168,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
                 if (radius==-1){
                     radius=3;
                 }
-                yelpApi.getRestaurants(query,null,radius,mAdapter, true);
+                yelpApi.getRestaurants(query,-1,radius,mAdapter, true);
             }
         });
 
@@ -201,7 +202,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         if (adapterView.getAdapter().equals(mPricingAdapter)){
-            mPrice = (String) adapterView.getItemAtPosition(i);
+            mPrice = i;
         }else if (adapterView.getAdapter().equals(mRadiusAdapter)){
             mRadius = (String) adapterView.getItemAtPosition(i);
         }

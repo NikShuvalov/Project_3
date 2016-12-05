@@ -101,6 +101,8 @@ public class RouletteActivity extends AppCompatActivity implements GoogleApiClie
 
                     long radiusSavedPosition = sharedPreferences.getLong(SHARED_PREF_RADIUS, -1);
 
+                    Log.d("Roulette Activity", "onClick: "+radiusSavedPosition);
+
 
                     YelpAPI yelpAPI = new YelpAPI(RouletteActivity.this, mLocation);
 
