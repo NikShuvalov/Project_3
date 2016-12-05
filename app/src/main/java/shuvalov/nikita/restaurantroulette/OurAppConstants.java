@@ -28,6 +28,10 @@ public class OurAppConstants {
     public static final String USER_LAST_LAT = "user_last_lat";
     public static final String USER_LAST_LON = "user_last_lon";
 
+    public static final String ORIGIN = "origin";
+    public static final String NOTIFICATION_ORIGIN = "notification";
+    public static final String SEARCH_ORIGIN ="search";
+
     /**
      * Add constants here
      */

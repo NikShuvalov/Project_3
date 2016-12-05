@@ -15,6 +15,7 @@ public interface YelpSearchService {
     @GET("search")
     Call<RestaurantsMainObject> getRestaurants(@Header("Authorization") String bearerToken,
                                                @Query("term") String term,
+                                               @Query("price") String costs,
                                                @Query("categories") String categories,
                                                @Query("limit") int limit,
                                                @Query("latitude") Double lat,

@@ -1,7 +1,10 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -15,13 +18,21 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
+import shuvalov.nikita.restaurantroulette.RouletteHelper;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LAT;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LOCATION;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LON;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+    private static final String TAG = "MapsActivity";
 
     private GoogleMap mMap;
     public Business mBusiness;
     public int mBusinessPosition;
+    private String origin;
+    private boolean isMystery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +45,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Gets Instance of the Business
         mBusinessPosition = getIntent().getIntExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, -1);
-        mBusiness = RestaurantSearchHelper.getInstance().getBusinessAtPosition(mBusinessPosition);
+        if (getIntent().getStringExtra("origin").equals("roulette")) {
+            mBusiness = RouletteHelper.getInstance().getBusinessAtPosition(mBusinessPosition);
+            isMystery = true;
+        } else {
+            mBusiness = RestaurantSearchHelper.getInstance().getBusinessAtPosition(mBusinessPosition);
+            isMystery = false;
+        }
     }
 
 
@@ -51,21 +68,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // TODO: Change GA LAT and LON to user location
-        // User Location (temporarily using GA Lat and Lng)
-        LatLng userLocation = new LatLng(OurAppConstants.GA_LATITUDE, OurAppConstants.GA_LONGITUDE);
+        // User Location
+        SharedPreferences sharedPreferences = getSharedPreferences(USER_LAST_LOCATION,
+                Context.MODE_PRIVATE);
+
+        String userLat = sharedPreferences.getString(USER_LAST_LAT, "userLastLat");
+        String userLon = sharedPreferences.getString(USER_LAST_LON, "userLastLon");
+
+        Log.d(TAG, "onMapReady: " + userLat);
+        Log.d(TAG, "onMapReady: " + userLon);
+
+        LatLng userLocation = new LatLng(Double.parseDouble(userLat), Double.parseDouble(userLon));
         mMap.addMarker(new MarkerOptions()
                 .position(userLocation)
-                .title("General Assembly"));
+                .title("My Location"));
+
+        Log.d(TAG, "onMapReady: " + userLocation);
 
         // Business Location
+        String title;
+        if (isMystery) {
+            title = "???????";
+        } else {
+            title = mBusiness.getName();
+        }
+
         LatLng businessCoordinates = new LatLng(mBusiness.getCoordinates().getLatitude(),
                 mBusiness.getCoordinates().getLongitude());
         mMap.addMarker(new MarkerOptions()
                 .position(businessCoordinates)
-                .title(mBusiness.getName()));
+                .title(title));
 
         // Changes Zoom based on the distance between User Location and Business
+
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(userLocation);
         builder.include(businessCoordinates);

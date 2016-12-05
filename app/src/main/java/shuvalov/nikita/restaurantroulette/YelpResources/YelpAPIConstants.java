@@ -22,8 +22,25 @@ public class YelpAPIConstants {
     public static final String NOTIF_RATING = "rating";
     public static final String NOTIF_DISTANCE = "distance";
     public static final String NOTIF_BUSINESS_NAME = "name";
-    public static final String NOTIF_ADDRESS_1 = "adress1";
+    public static final String NOTIF_ADDRESS_1 = "address1";
     public static final String NOTIF_CITY = "city";
     public static final String NOTIF_LATITUTE = "lat";
     public static final String NOTIF_LONGITUDE = "lon";
+
+
+    //Query Categories
+    public static final String CATEGORY_RESTAURANTS = "restaurants";
+    public static final String CATEGORY_AMUSEMENT_PARK = "amusementparks";
+    public static final String CATEGORY_AQUARIUMS = "aquariums";
+    public static final String CATEGORY_BOWLING = "bowling";
+    public static final String CATEGORY_PARKS = "parks";
+    public static final String CATEGORY_ARTS = "arts";
+    public static final String CATEGORY_BARS= "bars";
+    public static final String CATEGORY_DANCECLUBS = "danceclubs";
+    public static final String CATEGORY_JAZZANDBLUES = "jazzandblues";
+    public static final String CATEGORY_KARAOKE = "karaoke";
+    public static final String CATEGORY_PIANOBARS = "pianobars";
+    public static final String CATEGORY_POOLHALLS = "poolhalls";
+
+
 }
