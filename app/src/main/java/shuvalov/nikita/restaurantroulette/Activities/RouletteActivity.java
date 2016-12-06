@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 
 import android.os.Bundle;
 
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -113,9 +114,10 @@ public class RouletteActivity extends AppCompatActivity implements GoogleApiClie
     private View.OnClickListener mListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
             switch (view.getId()) {
                 case R.id.roulette_button :
-
+                    vibrator.vibrate(20);
                    /* if (useDefaults()) {
                         setArgumentsToDefault();
                     }*/
@@ -203,6 +205,7 @@ public class RouletteActivity extends AppCompatActivity implements GoogleApiClie
 
 
                 case R.id.settings_button:
+                    vibrator.vibrate(20);
                     Intent intent = new Intent(RouletteActivity.this, UserSettingsActivity.class);
                     startActivity(intent);
 

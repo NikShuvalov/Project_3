@@ -1,7 +1,9 @@
 package shuvalov.nikita.restaurantroulette.RecyclerViewAdapters;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.Vibrator;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -77,7 +79,7 @@ class RouletteResultViewHolder extends RecyclerView.ViewHolder{
     }
 
     public void bindDataToView(final Business business){
-
+        final Vibrator vibrator = (Vibrator) mUberEstimate.getContext().getSystemService(Context.VIBRATOR_SERVICE);
         String uberEstimate = "Estimated Uber Cost: $13.50";
         mUberEstimate.setText(uberEstimate);
         mCost.setText(business.getPrice());
@@ -86,6 +88,7 @@ class RouletteResultViewHolder extends RecyclerView.ViewHolder{
         mRouletteCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                vibrator.vibrate(20);
                 Toast.makeText(mRouletteCard.getContext(), business.getName(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(mRouletteCard.getContext(), MapsActivity.class);
                 int position = RouletteHelper.getInstance().getPositionofBusiness(business);
