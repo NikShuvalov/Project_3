@@ -38,6 +38,8 @@ public class Location {
     @Expose
     private String zipCode;
 
+
+
     /**
      * 
      * @return
