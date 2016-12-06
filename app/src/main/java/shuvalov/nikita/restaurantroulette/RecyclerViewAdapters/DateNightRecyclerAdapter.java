@@ -21,6 +21,7 @@ import java.util.Random;
 
 import shuvalov.nikita.restaurantroulette.Activities.DateNightActivity;
 import shuvalov.nikita.restaurantroulette.Activities.DateNightSearchActivity;
+import shuvalov.nikita.restaurantroulette.DateNightHelper;
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPI;
@@ -101,15 +102,16 @@ public class DateNightRecyclerAdapter extends RecyclerView.Adapter {
         }
         //This adds cards to subsequent date location search
         else{
+            DateItemViewHolderConsequent specificHolder = (DateItemViewHolderConsequent) holder;
+            specificHolder.bindAdapterToSpinner();
+            //Do Search based on location of previous area and category picked.
+            // Add search results to DateNightHelper
 
         }
 
-            //Add search results to DateNightHelper
         }else{
-//            DateItemViewHolderConsequent specificHolder = (DateItemViewHolderConsequent) holder;
-//            specificHolder.bindAdapterToSpinner();
-            //Do Search based on location of previous area and category picked.
-            // Add search results to DateNightHelper
+            Business business = mBusinessList.get(position);
+            ((SearchResultViewHolder)holder).bindDataToView(business);
         }
     }
 
@@ -121,11 +123,14 @@ public class DateNightRecyclerAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
+        /*If looking at position of recycler that is less than size of business list then we have business data to populate it.
+        So we use the searchViewHolder to display the information.
+         */
         if(position<mBusinessList.size()){
             return 2;
-        }else if(position==0){
+        }else if(position==0){ //Otherwise, if we're in the first position use the initial querycard. Only happens if we have an empty list.
             return 0;
-        }else{
+        }else{//Otherwise, we use the consequent querycards which only take a category and additional info.
             return 1;
         }
         //ToDo: Needs another itemViewType to display picked spots in list.
