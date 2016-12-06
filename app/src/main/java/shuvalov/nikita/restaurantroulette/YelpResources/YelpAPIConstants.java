@@ -13,6 +13,7 @@ public class YelpAPIConstants {
     public static final String YELP_SEARCH_BASE_URL = "https://api.yelp.com/v3/businesses/";
 
     //NOTIFICATION VALUES TO PASS THROUGH INTENT
+    public static final String NOTIF_PRICE = "price";
     public static final String NOTIF_IMAGE_URL = "image_url";
     public static final String NOTIF_PHONE_NUMBER = "phone";
     public static final String NOTIF_IS_CLOSED = "is_closed";
