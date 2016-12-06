@@ -29,6 +29,7 @@
             android:id="@+id/business_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:padding="8dp"
             android:textSize="24dp"
             android:textStyle="bold"/>
@@ -114,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:textSize="16dp"
-                android:text="(Estimate Goes Here)"/>
+                android:text="Getting info..."/>
         </LinearLayout>
 
         <LinearLayout
