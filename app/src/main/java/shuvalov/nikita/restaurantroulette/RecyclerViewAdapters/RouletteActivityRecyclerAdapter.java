@@ -50,11 +50,15 @@ public class RouletteActivityRecyclerAdapter extends RecyclerView.Adapter<Roulet
         mBusinessList.clear();
         mBusinessList.addAll(newSearchResult);
     }
+
+    public void clearList () {
+        mBusinessList.clear();
+    }
 }
 
 class RouletteResultViewHolder extends RecyclerView.ViewHolder{
     private CardView mRouletteCard;
-    private TextView  mUberEstimate, mCost;
+    private TextView  mUberEstimate, mCost, mAddress;
     private ImageView mStar1, mStar2, mStar3, mStar4, mStar5;
 
 
@@ -68,6 +72,7 @@ class RouletteResultViewHolder extends RecyclerView.ViewHolder{
         mStar3 = (ImageView) itemView.findViewById(R.id.third_star_roulette);
         mStar4 = (ImageView) itemView.findViewById(R.id.fourth_star_roulette);
         mStar5 = (ImageView) itemView.findViewById(R.id.fifth_star_roulette);
+        mAddress = (TextView) itemView.findViewById(R.id.roulette_address);
 
     }
 
@@ -76,6 +81,7 @@ class RouletteResultViewHolder extends RecyclerView.ViewHolder{
         String uberEstimate = "Estimated Uber Cost: $13.50";
         mUberEstimate.setText(uberEstimate);
         mCost.setText(business.getPrice());
+        mAddress.setText(business.getLocation().getAddress1());
         setStars(business.getRating());
         mRouletteCard.setOnClickListener(new View.OnClickListener() {
             @Override
