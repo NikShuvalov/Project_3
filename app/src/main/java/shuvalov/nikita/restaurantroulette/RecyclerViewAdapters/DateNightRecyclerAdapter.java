@@ -43,9 +43,14 @@ public class DateNightRecyclerAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         int itemViewType = holder.getItemViewType();
         if (itemViewType==0){
+
+            //Populate categories in spinner here
             //Do Search with location that's based in the location field and category picked.
+            //Add search results to DateNightHelper
         }else{
+            //Populate categories in spinner here
             //Do Search based on location of previous area and category picked.
+            // Add search results to DateNightHelper
         }
     }
 
