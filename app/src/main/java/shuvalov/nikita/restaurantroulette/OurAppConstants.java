@@ -29,11 +29,6 @@ public class OurAppConstants {
     public static final String USER_LAST_LON = "user_last_lon";
 
 
-    //Default Settings
-    public static final long DEFAULT_MIN_RATING = 1;
-    public static final long DEFAULT_MAX_COST = 3;
-    public static final long DEFAULT_MAX_DISTANCE = 3;
-    public static final long DEFAULT_NUM_RESULTS = 3;
 
     public static final String ORIGIN = "origin";
     public static final String NOTIFICATION_ORIGIN = "notification";
