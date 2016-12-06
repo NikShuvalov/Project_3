@@ -4,42 +4,34 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPI;
-import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.RouletteActivityRecyclerAdapter;
-import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
 import shuvalov.nikita.restaurantroulette.RouletteHelper;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPI;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 
-import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_NUM_OF_RESULTS;
-import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_PRICING;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_RADIUS;
-import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_RATING;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LAT;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LOCATION;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LON;
@@ -63,6 +55,9 @@ public class RouletteActivity extends AppCompatActivity implements GoogleApiClie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_roulette);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Restaurant Roulette");
 
         GoogleAPI googleAPI = new GoogleAPI();
         mGoogleApiClient = googleAPI.callGoogleLocApi(RouletteActivity.this);
@@ -172,5 +167,14 @@ public class RouletteActivity extends AppCompatActivity implements GoogleApiClie
     protected void onStop() {
         super.onStop();
         mGoogleApiClient.disconnect();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) // Press Back Icon
+        {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
