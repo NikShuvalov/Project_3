@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="price_array">
-        <item>Show all</item>
         <item>$</item>
         <item>$$</item>
         <item>$$$</item>

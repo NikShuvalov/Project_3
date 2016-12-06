@@ -43,4 +43,7 @@ public class RestaurantSearchHelper {
     public Business getBusinessAtPosition(int position){
         return mSearchResults.get(position);
     }
+    public void addBusinessToList(Business business) {
+        mSearchResults.add(business);
+    }
 }

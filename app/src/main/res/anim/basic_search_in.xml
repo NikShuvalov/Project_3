@@ -6,7 +6,7 @@
          android:fillAfter="true">
 
         <translate
-            android:fromXDelta="100%p"
+            android:fromXDelta="-100%p"
             android:toXDelta="0"
             android:interpolator="@android:anim/decelerate_interpolator"
             android:duration="500"
