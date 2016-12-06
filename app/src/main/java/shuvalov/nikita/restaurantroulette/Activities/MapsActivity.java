@@ -97,7 +97,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mBusiness.getCoordinates().getLongitude());
         mMap.addMarker(new MarkerOptions()
                 .position(businessCoordinates)
-                .title(title)).showInfoWindow();
+                .title(title))
+                .showInfoWindow();
 
         // Changes Zoom based on the distance between User Location and Business
 

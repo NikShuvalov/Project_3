@@ -95,7 +95,7 @@ public class RouletteActivity extends AppCompatActivity implements GoogleApiClie
         mRouletteList = RouletteHelper.getInstance().getRandomList();
 
         setViews();
-        setUpRecyclerView();
+
 
         mRouletteButton.setOnClickListener(mListener);
         mSettingsButton.setOnClickListener(mListener);
@@ -118,9 +118,7 @@ public class RouletteActivity extends AppCompatActivity implements GoogleApiClie
             switch (view.getId()) {
                 case R.id.roulette_button :
                     vibrator.vibrate(20);
-                   /* if (useDefaults()) {
-                        setArgumentsToDefault();
-                    }*/
+
                     mRecyclerView.setVisibility(View.GONE);
                     final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                     inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
@@ -216,7 +214,7 @@ public class RouletteActivity extends AppCompatActivity implements GoogleApiClie
 
     public void setUpRecyclerView(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
-        mAdapter = new RouletteActivityRecyclerAdapter(mRouletteList);
+        mAdapter = new RouletteActivityRecyclerAdapter(mRouletteList, mLat, mLon);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -242,6 +240,8 @@ public class RouletteActivity extends AppCompatActivity implements GoogleApiClie
         editor.putString(USER_LAST_LON, mLon);
         editor.commit();
 
+        setUpRecyclerView();
+
     }
 
     @Override
@@ -258,6 +258,7 @@ public class RouletteActivity extends AppCompatActivity implements GoogleApiClie
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
+
     }
 
     @Override

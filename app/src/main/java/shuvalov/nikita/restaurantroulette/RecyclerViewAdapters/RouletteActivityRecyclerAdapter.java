@@ -1,9 +1,13 @@
 package shuvalov.nikita.restaurantroulette.RecyclerViewAdapters;
 
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Vibrator;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,14 +17,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import java.util.List;
 
 import shuvalov.nikita.restaurantroulette.Activities.MapsActivity;
 import shuvalov.nikita.restaurantroulette.Activities.RouletteActivity;
+import shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPI;
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.RouletteHelper;
+import shuvalov.nikita.restaurantroulette.UberResources.UberAPI;
+import shuvalov.nikita.restaurantroulette.UberResources.UberAPIConstants;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
+import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Coordinates;
+import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Location;
+
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LAT;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LOCATION;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LON;
 
 /**
  * Created by justinwells on 12/4/16.
@@ -28,9 +43,12 @@ import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 
 public class RouletteActivityRecyclerAdapter extends RecyclerView.Adapter<RouletteResultViewHolder> {
     List<Business> mBusinessList;
+    String mLat, mLon;
 
-    public RouletteActivityRecyclerAdapter(List<Business> businessList) {
+    public RouletteActivityRecyclerAdapter(List<Business> businessList, String userLat, String userLon) {
         mBusinessList = businessList;
+        mLat = userLat;
+        mLon = userLon;
     }
 
     @Override
@@ -41,7 +59,7 @@ public class RouletteActivityRecyclerAdapter extends RecyclerView.Adapter<Roulet
 
     @Override
     public void onBindViewHolder(final RouletteResultViewHolder holder, final int position) {
-        holder.bindDataToView(mBusinessList.get(position));
+        holder.bindDataToView(mBusinessList.get(position), mLat, mLon);
     }
 
     @Override
@@ -78,18 +96,42 @@ class RouletteResultViewHolder extends RecyclerView.ViewHolder{
 
     }
 
-    public void bindDataToView(final Business business){
+    public void bindDataToView(final Business business, String userLat, String userLon){
+        final Context context = mRouletteCard.getContext();
+
+        mUberEstimate.setText("Estimated Uber Cost: Loading...");
         final Vibrator vibrator = (Vibrator) mUberEstimate.getContext().getSystemService(Context.VIBRATOR_SERVICE);
-        String uberEstimate = "Estimated Uber Cost: $13.50";
-        mUberEstimate.setText(uberEstimate);
+        final String uberEstimate = "Estimated Uber Cost: ";
         mCost.setText(business.getPrice());
+
         mAddress.setText(business.getLocation().getAddress1());
         setStars(business.getRating());
+
+
+        double lat = business.getCoordinates().getLatitude();
+        double lon = business.getCoordinates().getLongitude();
+        float bizLat = (float) lat;
+        float bizLon = (float) lon;
+        UberAPI uberAPI = new UberAPI(context);
+        float userLatitude = Float.parseFloat(userLat);
+        float userLongitude = Float.parseFloat(userLon);
+
+        uberAPI.getEstimateAsString(userLatitude, userLongitude,
+                bizLat, bizLon, UberAPIConstants.UBER_SERVER_ID);
+        uberAPI.setUberApiResultListener(new UberAPI.UberApiResultListener() {
+            @Override
+            public void onUberEstimateReady(String estimate) {
+                mUberEstimate.setText(uberEstimate + " " + estimate);
+            }
+        });
+
+
+
         mRouletteCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 vibrator.vibrate(20);
-                Toast.makeText(mRouletteCard.getContext(), business.getName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, business.getName(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(mRouletteCard.getContext(), MapsActivity.class);
                 int position = RouletteHelper.getInstance().getPositionofBusiness(business);
                 intent.putExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, position);
