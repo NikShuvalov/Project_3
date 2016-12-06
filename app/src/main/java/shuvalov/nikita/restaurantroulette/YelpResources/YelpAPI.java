@@ -13,6 +13,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -22,13 +23,17 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import shuvalov.nikita.restaurantroulette.Activities.DetailActivity;
+import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.Randomizer;
+import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.RouletteActivityRecyclerAdapter;
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.SearchActivityRecyclerAdapter;
 import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
+import shuvalov.nikita.restaurantroulette.RouletteHelper;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.RestaurantsMainObject;
 
+import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_LAST_PUSHED_BUSINESS_NAME;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LAT;
@@ -46,6 +51,7 @@ import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_LATITUTE;
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_LONGITUDE;
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_PHONE_NUMBER;
+import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_PRICE;
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_RATING;
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_REVIEW_COUNT;
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.YELP_APP_SECRET;
@@ -63,14 +69,14 @@ public class YelpAPI {
     public static final String TAG = "YelpAPI_class";
     private Location mLastLocation;
     private Context mContext;
-    private List<Business> mBusinessList;
+    private List<Business> mBusinessList, mRandomPicksList;
 
     /**
      * Might not need to be an object but for now making it an object. Otherwise change methods to static
      *
      * @param context Needed for systemServices and such
      */
-    public YelpAPI(Context context, Location lastUserLocation) {
+    public YelpAPI(Context context, Location lastUserLocation) {//ToDo:Housekeeping, remove mLastLocation because it does nothing.
         mContext = context;
         mLastLocation = lastUserLocation;
     }
@@ -113,19 +119,43 @@ public class YelpAPI {
         }
     }
 
-    public void getRestaurants(String query, int radius, final SearchActivityRecyclerAdapter adapter, final boolean isRandomized) {
+    public void getRestaurants(String query, long price, int radius, final SearchActivityRecyclerAdapter adapter, final boolean isRandomized) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(YELP_SEARCH_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        double myLong = mLastLocation.getLongitude();
-        double myLat = mLastLocation.getLatitude();
+        SharedPreferences userSharedPref = mContext.getSharedPreferences(OurAppConstants.USER_PREFERENCES,MODE_PRIVATE);
+
+        String priceQueryText = "";
+        if (price == -1) {
+            price = userSharedPref.getLong(OurAppConstants.SHARED_PREF_PRICING, 3);
+        }
+
+        switch ((int)price) {
+            case 3:
+                priceQueryText += "4,";
+            case 2:
+                priceQueryText+="3,";
+            case 1:
+                priceQueryText+="2,";
+            case 0:
+                priceQueryText+="1";
+                break;
+        }
+
+        SharedPreferences locationPreferences = mContext.getSharedPreferences(OurAppConstants.USER_LAST_LOCATION,MODE_PRIVATE);
+        double myLong = Double.parseDouble(locationPreferences.getString(OurAppConstants.USER_LAST_LON,"200"));
+        double myLat = Double.parseDouble(locationPreferences.getString(OurAppConstants.USER_LAST_LAT,"200"));
+
+        if (myLong ==200|| myLat == 200){
+            Toast.makeText(mContext, "No location found in userPreferences", Toast.LENGTH_SHORT).show();
+        }
         Log.d(TAG, "Lat, Long: "+myLat+","+myLong);
         YelpSearchService service = retrofit.create(YelpSearchService.class);
 
         //ToDo: Replace "restaurants" with Constant and/or variable based on what the search category is.
-        Call<RestaurantsMainObject> call = service.getRestaurants("Bearer " + YELP_BEARER_TOKEN, query, "restaurants",
+        Call<RestaurantsMainObject> call = service.getRestaurants("Bearer " + YELP_BEARER_TOKEN, query, priceQueryText, "restaurants",
                 40, myLat, myLong, radius*1000);//ToDo: Do we need to make a different MainObject for place of entertainment?
 
         call.enqueue(new Callback<RestaurantsMainObject>() {
@@ -150,10 +180,63 @@ public class YelpAPI {
 
     }
 
+    public void getRestaurantsForRoulette(String query, int radius, final RouletteActivityRecyclerAdapter adapter) {
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(YELP_SEARCH_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        SharedPreferences userLocation= mContext.getSharedPreferences(OurAppConstants.USER_LAST_LOCATION, MODE_PRIVATE);
+        double myLong = Double.parseDouble(userLocation.getString(OurAppConstants.USER_LAST_LON,"200"));
+        double myLat = Double.parseDouble(userLocation.getString(OurAppConstants.USER_LAST_LAT,"200"));
+        Log.d(TAG, "Lat, Long: "+myLat+","+myLong);
+        YelpSearchService service = retrofit.create(YelpSearchService.class);
+
+        long price = mContext.getSharedPreferences(OurAppConstants.USER_PREFERENCES,MODE_PRIVATE).getLong(OurAppConstants.SHARED_PREF_PRICING, 3);
+        String priceQueryText = "";
+
+            switch ((int)price) {
+                case 3:
+                    priceQueryText += "4,";
+                case 2:
+                    priceQueryText+="3,";
+                case 1:
+                    priceQueryText+="2,";
+                case 0:
+                    priceQueryText+="1";
+                    break;
+        }
+
+
+        //ToDo: Replace "restaurants" with Constant and/or variable based on what the search category is.
+        Call<RestaurantsMainObject> call = service.getRestaurants("Bearer " + YELP_BEARER_TOKEN, query, priceQueryText, "restaurants",
+                40, myLat, myLong, radius*1000);//ToDo: Do we need to make a different MainObject for place of entertainment?
+
+        call.enqueue(new Callback<RestaurantsMainObject>() {
+            @Override
+            public void onResponse(Call<RestaurantsMainObject> call, Response<RestaurantsMainObject> response) {
+                mBusinessList = response.body().getBusinesses();
+                Randomizer randomizer = new Randomizer(mContext);
+                mRandomPicksList = randomizer.pickRandomFromList(mBusinessList);
+                RouletteHelper.getInstance().setRandomList(mRandomPicksList);
+                adapter.replaceList(mRandomPicksList);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<RestaurantsMainObject> call, Throwable t) {
+                //Do nothing.
+            }
+        });
+
+    }
+
     public void getRestaurantDeals() {
 
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(USER_LAST_LOCATION,
                 Context.MODE_PRIVATE);
+
         String userLat = sharedPreferences.getString(USER_LAST_LAT, "last_user_lat");
         String userLon = sharedPreferences.getString(USER_LAST_LON, "last_user_lon");
 
@@ -196,11 +279,13 @@ public class YelpAPI {
 
                         Intent intent = new Intent(mContext, DetailActivity.class);
                         //Passing all business object info
+                        intent.putExtra(OurAppConstants.ORIGIN,OurAppConstants.NOTIFICATION_ORIGIN);
                         intent.putExtra(NOTIF_IMAGE_URL, response.body().getBusinesses().get(0).getImageUrl());
                         intent.putExtra(NOTIF_PHONE_NUMBER, response.body().getBusinesses().get(0).getPhone());
                         intent.putExtra(NOTIF_IS_CLOSED, response.body().getBusinesses().get(0).getIsClosed());
                         intent.putExtra(NOTIF_BUSINESS_URL, response.body().getBusinesses().get(0).getUrl());
                         intent.putExtra(NOTIF_BUSINESS_ID, response.body().getBusinesses().get(0).getId());
+                        intent.putExtra(NOTIF_PRICE, response.body().getBusinesses().get(0).getPrice());
                         intent.putExtra(NOTIF_REVIEW_COUNT, response.body().getBusinesses().get(0).getReviewCount());
                         intent.putExtra(NOTIF_RATING, response.body().getBusinesses().get(0).getRating());
                         intent.putExtra(NOTIF_DISTANCE, response.body().getBusinesses().get(0).getDistance());
@@ -236,6 +321,53 @@ public class YelpAPI {
                 Log.d(TAG, "GET RESTAURANT DEALS FAILED");
             }
         });
+    }
+    public void getGetBusinessByCategory(String category, String query, int radius, final RouletteActivityRecyclerAdapter adapter) {
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(YELP_SEARCH_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        SharedPreferences userLocation= mContext.getSharedPreferences(OurAppConstants.USER_LAST_LOCATION, MODE_PRIVATE);
+        double myLong = Double.parseDouble(userLocation.getString(OurAppConstants.USER_LAST_LON,"200"));
+        double myLat = Double.parseDouble(userLocation.getString(OurAppConstants.USER_LAST_LAT,"200"));
+        Log.d(TAG, "Lat, Long: "+myLat+","+myLong);
+        YelpSearchService service = retrofit.create(YelpSearchService.class);
+
+        long price = mContext.getSharedPreferences(OurAppConstants.USER_PREFERENCES,MODE_PRIVATE).getLong(OurAppConstants.SHARED_PREF_PRICING, 3);
+        String priceQueryText = "";
+
+        switch ((int)price) {
+            case 3:
+                priceQueryText +="4,";
+            case 2:
+                priceQueryText+="3,";
+            case 1:
+                priceQueryText+="2,";
+            case 0:
+                priceQueryText+="1";
+                break;
+        }
+
+        Call<RestaurantsMainObject> call = service.getRestaurants("Bearer " + YELP_BEARER_TOKEN, query, priceQueryText, category,
+                40, myLat, myLong, radius*1000);
+
+        call.enqueue(new Callback<RestaurantsMainObject>() {
+            @Override
+            public void onResponse(Call<RestaurantsMainObject> call, Response<RestaurantsMainObject> response) {
+                mBusinessList = response.body().getBusinesses();
+                RestaurantSearchHelper.getInstance().setmBusinessList(mBusinessList);//ToDo:Make a separate singleton for dateNight searches if there's time.
+                adapter.replaceList(mBusinessList);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<RestaurantsMainObject> call, Throwable t) {
+                //Do nothing.
+            }
+        });
+
     }
 }
 

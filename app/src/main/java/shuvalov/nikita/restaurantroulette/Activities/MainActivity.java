@@ -12,6 +12,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         findViews();
         setClickListener();
+
 
         //ToDo:Remove function and call once we're done with it
         setDebug();
@@ -88,7 +92,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
             Log.d("String_value", "onConnected: " + userLat);
             Log.d("String_value", "onConnected: " + userLon);
-
         } else {
             verifyLocationPermissions(this);
         }
@@ -145,13 +148,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             switch (id) {
                 case R.id.search_card_holder:
                     intent = new Intent(view.getContext(), SearchActivity.class);
-                    startActivity(intent);
                     break;
                 case R.id.date_night_card_holder:
+                    intent = new Intent(view.getContext(), DateNightActivity.class);
                     break;
                 case R.id.roulette_card_holder:
+                    intent = new Intent(view.getContext(), RouletteActivity.class);
+                    break;
+                default:
+                    intent = null;
                     break;
             }
+            startActivity(intent);
         }
     };
 
@@ -159,5 +167,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mBasicSearch.setOnClickListener(mListener);
         mDateNight.setOnClickListener(mListener);
         mRoulette.setOnClickListener(mListener);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.settings) {
+            Intent intent = new Intent(this, UserSettingsActivity.class);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

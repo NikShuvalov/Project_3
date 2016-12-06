@@ -9,6 +9,22 @@ import java.util.List;
 
 public class Business {
 
+    public Business(List<Category> categories, Coordinates coordinates, Double distance, String id, String imageUrl, Boolean isClosed, Location location, String name, String phone, String price, Double rating, Integer reviewCount, String url) {
+        this.categories = categories;
+        this.coordinates = coordinates;
+        this.distance = distance;
+        this.id = id;
+        this.imageUrl = imageUrl;
+        this.isClosed = isClosed;
+        this.location = location;
+        this.name = name;
+        this.phone = phone;
+        this.price = price;
+        this.rating = rating;
+        this.reviewCount = reviewCount;
+        this.url = url;
+    }
+
     @SerializedName("image_url")
     @Expose
     private String imageUrl;

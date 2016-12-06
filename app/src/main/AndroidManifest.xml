@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="shuvalov.nikita.restaurantroulette">
+          package="shuvalov.nikita.restaurantroulette">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -16,37 +15,39 @@
         android:theme="@style/AppTheme">
         <activity android:name=".Activities.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.SearchActivity" />
-        <activity android:name=".Activities.DateNightActivity" />
-        <activity android:name=".Activities.UserSettingsActivity" />
+        <activity android:name=".Activities.SearchActivity"/>
+        <activity android:name=".Activities.DateNightActivity"/>
+        <activity android:name=".Activities.UserSettingsActivity"/>
 
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+            android:value="@integer/google_play_services_version"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBfuguXCx4guYo42mrXwRQ9RwsTTdcIOoE" />
+            android:value="AIzaSyBfuguXCx4guYo42mrXwRQ9RwsTTdcIOoE"/>
 
-        <activity android:name=".Activities.DetailActivity" />
+        <activity android:name=".Activities.DetailActivity"/>
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="2749f24bdce5e918fae2a92996bdea80e7389b3a" />
+            android:value="2749f24bdce5e918fae2a92996bdea80e7389b3a"/>
 
-        <activity android:name=".Activities.ShareActivity" />
-        <activity android:name=".Activities.DebugActivity" />
-        <activity android:name=".Activities.MapsActivity" />
+        <activity android:name=".Activities.ShareActivity"/>
+        <activity android:name=".Activities.DebugActivity"/>
+        <activity android:name=".Activities.MapsActivity"/>
 
         <service
             android:name=".YelpResources.YelpJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
 
-        <activity android:name=".Activities.RouletteActivity"></activity>
+        <activity android:name=".Activities.RouletteActivity"/>
+        <activity android:name=".Activities.DateNightSearchActivity">
+        </activity>
     </application>
 
 </manifest>
