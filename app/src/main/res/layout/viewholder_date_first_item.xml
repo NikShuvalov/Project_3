@@ -40,12 +40,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/category_spinner"
-                android:hint="City? (Default is current location)"/>
+                android:inputType="number"
+                android:hint="Zip Code"/>
+            <EditText
+                android:id="@+id/additional_query_entry"
+                android:layout_below="@id/query_entry"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Optional additional info (Pizza, Italian, Blues)"/>
             <Button
                 android:id="@+id/search_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/query_entry"
+                android:layout_below="@id/additional_query_entry"
                 android:layout_centerHorizontal="true"
                 android:text="Search"/>
 

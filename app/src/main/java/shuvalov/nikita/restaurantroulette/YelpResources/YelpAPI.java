@@ -11,6 +11,7 @@ import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -28,6 +29,7 @@ import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.Randomizer;
 
+import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.DateNightRecyclerAdapter;
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.RouletteActivityRecyclerAdapter;
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.SearchActivityRecyclerAdapter;
 import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
@@ -322,21 +324,18 @@ public class YelpAPI {
             }
         });
     }
-    public void getGetBusinessByCategory(String category, String query, int radius, final RouletteActivityRecyclerAdapter adapter) {
+    public void getGetBusinessByCategory(String category, String query, int radius, final SearchActivityRecyclerAdapter adapter, String zipCode) {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(YELP_SEARCH_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        SharedPreferences userLocation= mContext.getSharedPreferences(OurAppConstants.USER_LAST_LOCATION, MODE_PRIVATE);
-        double myLong = Double.parseDouble(userLocation.getString(OurAppConstants.USER_LAST_LON,"200"));
-        double myLat = Double.parseDouble(userLocation.getString(OurAppConstants.USER_LAST_LAT,"200"));
-        Log.d(TAG, "Lat, Long: "+myLat+","+myLong);
-        YelpSearchService service = retrofit.create(YelpSearchService.class);
+        ZipCodeYelpSearchService service = retrofit.create(ZipCodeYelpSearchService.class);
 
         long price = mContext.getSharedPreferences(OurAppConstants.USER_PREFERENCES,MODE_PRIVATE).getLong(OurAppConstants.SHARED_PREF_PRICING, 3);
         String priceQueryText = "";
+        int zipCodeAsInt= Integer.parseInt(zipCode);
 
         switch ((int)price) {
             case 3:
@@ -350,13 +349,16 @@ public class YelpAPI {
                 break;
         }
 
-        Call<RestaurantsMainObject> call = service.getRestaurants("Bearer " + YELP_BEARER_TOKEN, query, priceQueryText, category,
-                40, myLat, myLong, radius*1000);
+        Call<RestaurantsMainObject> call = service.getBusinessByZip("Bearer " + YELP_BEARER_TOKEN, query, priceQueryText, category,
+                40, zipCodeAsInt, radius*1000);
 
         call.enqueue(new Callback<RestaurantsMainObject>() {
             @Override
             public void onResponse(Call<RestaurantsMainObject> call, Response<RestaurantsMainObject> response) {
                 mBusinessList = response.body().getBusinesses();
+                if(mBusinessList.isEmpty()){
+                    Toast.makeText(mContext, "Nothing nearby found", Toast.LENGTH_SHORT).show();
+                }
                 RestaurantSearchHelper.getInstance().setmBusinessList(mBusinessList);//ToDo:Make a separate singleton for dateNight searches if there's time.
                 adapter.replaceList(mBusinessList);
                 adapter.notifyDataSetChanged();

@@ -1,5 +1,6 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import shuvalov.nikita.restaurantroulette.DateNightHelper;
@@ -20,6 +22,8 @@ import shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPI;
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.DateNightRecyclerAdapter;
+import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPI;
+import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 
 public class DateNightActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -38,9 +42,6 @@ public class DateNightActivity extends AppCompatActivity implements GoogleApiCli
         mDateItinerary = DateNightHelper.getInstance().getDateItinerary();
         mGoogleAPI = new GoogleAPI();
         mGoogleApiClient = mGoogleAPI.callGoogleLocApi(this);
-
-
-
 
         buttonLogic();
         recyclerLogic();
@@ -97,4 +98,5 @@ public class DateNightActivity extends AppCompatActivity implements GoogleApiCli
         super.onStop();
         mGoogleApiClient.disconnect();
     }
+
 }

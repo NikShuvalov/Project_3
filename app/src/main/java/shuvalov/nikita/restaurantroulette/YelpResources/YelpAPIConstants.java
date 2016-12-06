@@ -1,5 +1,7 @@
 package shuvalov.nikita.restaurantroulette.YelpResources;
 
+import java.util.ArrayList;
+
 /**
  * Created by NikitaShuvalov on 11/30/16.
  */
@@ -41,6 +43,23 @@ public class YelpAPIConstants {
     public static final String CATEGORY_KARAOKE = "karaoke";
     public static final String CATEGORY_PIANOBARS = "pianobars";
     public static final String CATEGORY_POOLHALLS = "poolhalls";
+
+    public static ArrayList<String> getCategoryList(){
+        ArrayList<String> categoryList = new ArrayList<>();
+        categoryList.add(CATEGORY_RESTAURANTS);
+        categoryList.add(CATEGORY_BARS);
+        categoryList.add(CATEGORY_ARTS);
+        categoryList.add(CATEGORY_PARKS);
+        categoryList.add(CATEGORY_JAZZANDBLUES);
+        categoryList.add(CATEGORY_KARAOKE);
+        categoryList.add(CATEGORY_PIANOBARS);
+        categoryList.add(CATEGORY_DANCECLUBS);
+        categoryList.add(CATEGORY_BOWLING);
+        categoryList.add(CATEGORY_POOLHALLS);
+        categoryList.add(CATEGORY_AQUARIUMS);
+        categoryList.add(CATEGORY_AMUSEMENT_PARK);
+        return categoryList;
+    }
 
 
 }

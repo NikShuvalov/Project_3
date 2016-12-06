@@ -1,11 +1,13 @@
 package shuvalov.nikita.restaurantroulette.RecyclerViewAdapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,10 +15,16 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import shuvalov.nikita.restaurantroulette.Activities.DateNightActivity;
+import shuvalov.nikita.restaurantroulette.Activities.DateNightSearchActivity;
+import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
+import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPI;
+import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 
 /**
@@ -25,6 +33,7 @@ import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 
 public class DateNightRecyclerAdapter extends RecyclerView.Adapter {
     List<Business> mBusinessList;
+    int mCategorySpinnerPosition;
 
     public DateNightRecyclerAdapter(List<Business> businesses){
         mBusinessList = businesses;
@@ -43,12 +52,49 @@ public class DateNightRecyclerAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        Button searchButton = (Button) holder.itemView.findViewById(R.id.search_button);
+        Spinner categorySpinner = (Spinner)holder.itemView.findViewById(R.id.category_spinner);
+        mCategorySpinnerPosition = categorySpinner.getSelectedItemPosition();
+
+        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mCategorySpinnerPosition = i;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         int itemViewType = holder.getItemViewType();
         if (itemViewType==0){
             DateItemViewHolderFirst specificHolder = (DateItemViewHolderFirst)holder;
             specificHolder.bindAdapterToSpinner();
-            //Do Search with location that's based in the location field and category picked.
+            final EditText queryEntry = (EditText) specificHolder.itemView.findViewById(R.id.query_entry);
+            final EditText additionalQueryEntry = (EditText)specificHolder.itemView.findViewById(R.id.additional_query_entry);
+            searchButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(queryEntry.getText().toString().isEmpty()) {
+                        queryEntry.setError("Can't be empty");
+                    }else{
+                        String query = "";
+                        if(!additionalQueryEntry.getText().toString().isEmpty()){
+                            query = additionalQueryEntry.getText().toString();
+                        }
+                        String zip = queryEntry.getText().toString();
+                        Intent intent = new Intent(view.getContext(),DateNightSearchActivity.class);
+                        List<String>  categories = YelpAPIConstants.getCategoryList();
+                        intent.putExtra(OurAppConstants.SEARCH_CATEGORY, categories.get(mCategorySpinnerPosition));
+                        intent.putExtra(OurAppConstants.SEARCH_QUERY, query);
+                        intent.putExtra(OurAppConstants.SEARCH_ZIP_VALUE, zip);
+                        view.getContext().startActivity(intent);
+                    }
+                }
+            });
+
             //Add search results to DateNightHelper
         }else{
 //            DateItemViewHolderConsequent specificHolder = (DateItemViewHolderConsequent) holder;
@@ -57,6 +103,7 @@ public class DateNightRecyclerAdapter extends RecyclerView.Adapter {
             // Add search results to DateNightHelper
         }
     }
+
 
     @Override
     public int getItemCount() {
@@ -77,7 +124,7 @@ public class DateNightRecyclerAdapter extends RecyclerView.Adapter {
 class DateItemViewHolderFirst extends RecyclerView.ViewHolder{
     TextView mTextView;
     Spinner mCatSpinner;
-    EditText mQueryInput;
+    EditText mQueryInput, mAdditionalQuery;
     Button mButton;
     CardView mCardContainer;
     ImageView mClose;
@@ -91,6 +138,7 @@ class DateItemViewHolderFirst extends RecyclerView.ViewHolder{
         mButton = (Button)itemView.findViewById(R.id.search_button);
         mCardContainer = (CardView)itemView.findViewById(R.id.date_item_card_holder);
         mClose = (ImageView)itemView.findViewById(R.id.close);
+        mAdditionalQuery= (EditText)itemView.findViewById(R.id.additional_query_entry);
     }
 
     public void bindAdapterToSpinner(){
@@ -107,6 +155,7 @@ class DateItemViewHolderConsequent extends RecyclerView.ViewHolder{
     Button mButton;
     CardView mCardContainer;
     ImageView mClose;
+    EditText mAdditionalQuery;
 
     public DateItemViewHolderConsequent(View itemView) {
         super(itemView);
@@ -115,6 +164,7 @@ class DateItemViewHolderConsequent extends RecyclerView.ViewHolder{
         mButton = (Button)itemView.findViewById(R.id.search_button);
         mCardContainer = (CardView)itemView.findViewById(R.id.date_item_card_holder);
         mClose = (ImageView)itemView.findViewById(R.id.close);
+        mAdditionalQuery = (EditText)itemView.findViewById(R.id.additional_query_entry);
     }
     public void bindAdapterToSpinner(){
         ArrayAdapter<CharSequence> categoryAdapter = ArrayAdapter.createFromResource(mCatSpinner.getContext(),R.array.categories,android.R.layout.simple_spinner_item);
