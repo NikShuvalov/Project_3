@@ -193,6 +193,7 @@
                 android:text="Powered by:"/>
 
             <ImageView
+                android:id="@+id/detail_yelp_logo"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:src="@drawable/yelp_trademark"/>
