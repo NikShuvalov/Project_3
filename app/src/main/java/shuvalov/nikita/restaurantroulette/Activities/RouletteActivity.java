@@ -45,6 +45,10 @@ import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPI;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.RestaurantsMainObject;
 
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.DEFAULT_MAX_COST;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.DEFAULT_MAX_DISTANCE;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.DEFAULT_MIN_RATING;
+import static shuvalov.nikita.restaurantroulette.OurAppConstants.DEFAULT_NUM_RESULTS;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_NUM_OF_RESULTS;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_PRICING;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_RADIUS;
@@ -108,6 +112,9 @@ public class RouletteActivity extends AppCompatActivity implements GoogleApiClie
             switch (view.getId()) {
                 case R.id.roulette_button :
 
+                    if (useDefaults()) {
+                        setArgumentsToDefault();
+                    }
 
                     final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                     inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
@@ -251,7 +258,30 @@ public class RouletteActivity extends AppCompatActivity implements GoogleApiClie
         mGoogleApiClient.disconnect();
     }
 
+    public boolean useDefaults () {
+        SharedPreferences sharedPreferences = getSharedPreferences(USER_PREFERENCES,
+                Context.MODE_PRIVATE);
+        long numRandoms = sharedPreferences.getLong(OurAppConstants.SHARED_PREF_NUM_OF_RESULTS, -1);
+        long maxPrice = sharedPreferences.getLong(OurAppConstants.SHARED_PREF_PRICING,-1);
+        long rating = sharedPreferences.getLong(OurAppConstants.SHARED_PREF_RATING,  -1);
+        long radius = sharedPreferences.getLong(OurAppConstants.SHARED_PREF_RADIUS, -1);
 
+        if (numRandoms != -1 && maxPrice != -1 && rating != -1 && radius != -1) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public void setArgumentsToDefault () {
+        SharedPreferences sharedPreferences = getSharedPreferences(USER_PREFERENCES,
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong(SHARED_PREF_NUM_OF_RESULTS, DEFAULT_NUM_RESULTS);
+        editor.putLong(SHARED_PREF_RADIUS, DEFAULT_MAX_DISTANCE);
+        editor.putLong(SHARED_PREF_RATING, DEFAULT_MIN_RATING);
+        editor.putLong(SHARED_PREF_PRICING, DEFAULT_MAX_COST);
+    }
 }
 
 
