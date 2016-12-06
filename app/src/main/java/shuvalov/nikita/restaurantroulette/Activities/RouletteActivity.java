@@ -18,10 +18,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import android.widget.ProgressBar;
@@ -64,7 +67,6 @@ public class RouletteActivity extends AppCompatActivity implements GoogleApiClie
     private RecyclerView mRecyclerView;
     private RouletteActivityRecyclerAdapter mAdapter;
     private FloatingActionButton mRouletteButton;
-    private ImageView mSettingsButton;
     private List<Business> mRouletteList;
     private EditText mRouletteQuery;
     private Location mLocation;
@@ -72,6 +74,7 @@ public class RouletteActivity extends AppCompatActivity implements GoogleApiClie
     private ProgressBar mProgressBar;
     private Dialog loadingDialog;
     public GoogleApiClient mGoogleApiClient;
+    private FrameLayout mFrameLayout;
 
 
 
@@ -96,16 +99,14 @@ public class RouletteActivity extends AppCompatActivity implements GoogleApiClie
 
         setViews();
 
-
         mRouletteButton.setOnClickListener(mListener);
-        mSettingsButton.setOnClickListener(mListener);
+
     }
 
     public void setViews () {
         mRecyclerView = (RecyclerView) findViewById(R.id.roulette_recycler_view);
         mRouletteButton = (FloatingActionButton) findViewById(R.id.roulette_button);
         mRouletteQuery = (EditText) findViewById(R.id.roulette_query);
-        mSettingsButton = (ImageView) findViewById(R.id.settings_button);
         mProgressBar = (ProgressBar) findViewById(R.id.roulette_progress_bar);
         mProgressBar.setVisibility(View.GONE);
 
@@ -115,100 +116,52 @@ public class RouletteActivity extends AppCompatActivity implements GoogleApiClie
         @Override
         public void onClick(View view) {
             Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-            switch (view.getId()) {
-                case R.id.roulette_button :
-                    vibrator.vibrate(OurAppConstants.VIBRATION_TIME);
+            vibrator.vibrate(OurAppConstants.VIBRATION_TIME);
 
-                    mRecyclerView.setVisibility(View.GONE);
-                    final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                    inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
+            mRecyclerView.setVisibility(View.GONE);
+            final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
-                    SharedPreferences sharedPreferences = getSharedPreferences(USER_PREFERENCES,
-                            Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = getSharedPreferences(USER_PREFERENCES,
+                    Context.MODE_PRIVATE);
 
-                    long radiusSavedPosition = sharedPreferences.getLong(SHARED_PREF_RADIUS, -1);
+            long radiusSavedPosition = sharedPreferences.getLong(SHARED_PREF_RADIUS, -1);
 
-                    Log.d("Roulette Activity", "onClick: "+radiusSavedPosition);
+            Log.d("Roulette Activity", "onClick: " + radiusSavedPosition);
 
 
-                    YelpAPI yelpAPI = new YelpAPI(RouletteActivity.this, mLocation);
+            YelpAPI yelpAPI = new YelpAPI(RouletteActivity.this, mLocation);
 
-                    String query = mRouletteQuery.getText().toString();
+            String query = mRouletteQuery.getText().toString();
 
-                    if (query == null || query.equals("")) {
-                        mRouletteQuery.setError("Please enter search criteria");
-                    } else {
+            if (query == null || query.equals("")) {
+                mRouletteQuery.setError("Please enter search criteria");
+            } else {
+                mAdapter.clearList();
+                mAdapter.notifyDataSetChanged();
+                mRecyclerView.setVisibility(View.GONE);
+                mProgressBar.setVisibility(View.VISIBLE);
 
-                        mAdapter.clearList();
-                        mAdapter.notifyDataSetChanged();
-                        mRecyclerView.setVisibility(View.GONE);
-                        mProgressBar.setVisibility(View.VISIBLE);
-
-                        yelpAPI.getRestaurantsForRoulette(query,(int) radiusSavedPosition, mAdapter)
-                                .enqueue(new Callback<RestaurantsMainObject>() {
-                                    @Override
-                                    public void onResponse(Call<RestaurantsMainObject> call, Response<RestaurantsMainObject> response) {
-                                        Randomizer randomizer = new Randomizer(RouletteActivity.this);
-                                        List<Business> mRandomPicksList = randomizer.pickRandomFromList(response.body().getBusinesses());
-                                        RouletteHelper.getInstance().setRandomList(mRandomPicksList);
-                                        mAdapter.replaceList(mRandomPicksList);
-                                        mAdapter.notifyDataSetChanged();
-                                        mProgressBar.setVisibility(View.GONE);
-                                        mRecyclerView.setVisibility(View.VISIBLE);
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<RestaurantsMainObject> call, Throwable t) {
-
-                                    }
-                                });
-                        /*
-                        AsyncTask<YelpCallObject, Void, Void> randomTask = new AsyncTask<YelpCallObject, Void, Void>() {
-                            @Override
-                            protected void onPreExecute() {
-                                super.onPreExecute();
-                                mRouletteButton.setOnClickListener(null);
-                                mRecyclerView.setVisibility(View.GONE);
-                                mProgressBar.setVisibility(View.VISIBLE);
-                                mProgressBar.setIndeterminate(true);
-
-
-                            }
+                yelpAPI.getRestaurantsForRoulette(query, (int) radiusSavedPosition, mAdapter)
+                        .enqueue(new Callback<RestaurantsMainObject>() {
 
                             @Override
-                            protected Void doInBackground(YelpCallObject... yelpCallObjects) {
-                                String query = yelpCallObjects[0].getmQuery();
-                                int radius = yelpCallObjects[0].getmRadius();
-                                RouletteActivityRecyclerAdapter adapter = yelpCallObjects[0].getmAdapter();
-                                yelpCallObjects[0].getmYelpAPI().getRestaurantsForRoulette(query, radius ,adapter);
-                                return null;
-                            }
-
-
-                            @Override
-                            protected void onPostExecute(Void aVoid) {
-                                super.onPostExecute(aVoid);
-                                mProgressBar.setIndeterminate(false);
+                            public void onResponse(Call<RestaurantsMainObject> call, Response<RestaurantsMainObject> response) {
+                                Randomizer randomizer = new Randomizer(RouletteActivity.this);
+                                List<Business> mRandomPicksList = randomizer.pickRandomFromList(response.body().getBusinesses());
+                                RouletteHelper.getInstance().setRandomList(mRandomPicksList);
+                                mAdapter.replaceList(mRandomPicksList);
+                                mAdapter.notifyDataSetChanged();
                                 mProgressBar.setVisibility(View.GONE);
                                 mRecyclerView.setVisibility(View.VISIBLE);
-                                mRouletteButton.setOnClickListener(mListener);
-
                             }
-                        };
 
-                        randomTask.execute(object);
-                            */
-                    }
-                    break;
-
-
-                case R.id.settings_button:
-                    vibrator.vibrate(OurAppConstants.VIBRATION_TIME);
-                    Intent intent = new Intent(RouletteActivity.this, UserSettingsActivity.class);
-                    startActivity(intent);
+                            @Override
+                            public void onFailure(Call<RestaurantsMainObject> call, Throwable t) {
+                                    }
+                        });
 
             }
-
         }
     };
 
@@ -270,14 +223,24 @@ public class RouletteActivity extends AppCompatActivity implements GoogleApiClie
 
 
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) // Press Back Icon
+        if (item.getItemId() == R.id.settings) {
+            Intent intent = new Intent(this, UserSettingsActivity.class);
+            startActivity(intent);
+        } else if (item.getItemId() == android.R.id.home) // Press Back Icon
         {
             finish();
         }
         return super.onOptionsItemSelected(item);
-
     }
 }
 
