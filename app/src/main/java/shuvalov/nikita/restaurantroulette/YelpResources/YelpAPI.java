@@ -196,13 +196,20 @@ public class YelpAPI {
         long price = mContext.getSharedPreferences(OurAppConstants.USER_PREFERENCES,MODE_PRIVATE).getLong(OurAppConstants.SHARED_PREF_PRICING, 3);
         String priceQueryText = "";
 
+        if (price == 4) {
+            price = 3;
+        }
+
             switch ((int)price) {
                 case 3:
                     priceQueryText += "4,";
+
                 case 2:
                     priceQueryText+="3,";
+
                 case 1:
                     priceQueryText+="2,";
+
                 case 0:
                     priceQueryText+="1";
                     break;
