@@ -110,11 +110,14 @@ class RouletteResultViewHolder extends RecyclerView.ViewHolder{
 
         double lat = business.getCoordinates().getLatitude();
         double lon = business.getCoordinates().getLongitude();
+
         float bizLat = (float) lat;
         float bizLon = (float) lon;
-        UberAPI uberAPI = new UberAPI(context);
+
         float userLatitude = Float.parseFloat(userLat);
         float userLongitude = Float.parseFloat(userLon);
+
+        UberAPI uberAPI = new UberAPI(context);
 
         uberAPI.getEstimateAsString(userLatitude, userLongitude,
                 bizLat, bizLon, UberAPIConstants.UBER_SERVER_ID);
@@ -130,7 +133,7 @@ class RouletteResultViewHolder extends RecyclerView.ViewHolder{
         mRouletteCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                vibrator.vibrate(20);
+                vibrator.vibrate(OurAppConstants.VIBRATION_TIME);
                 Toast.makeText(context, business.getName(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(mRouletteCard.getContext(), MapsActivity.class);
                 int position = RouletteHelper.getInstance().getPositionofBusiness(business);

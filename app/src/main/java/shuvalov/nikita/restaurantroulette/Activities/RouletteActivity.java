@@ -117,7 +117,7 @@ public class RouletteActivity extends AppCompatActivity implements GoogleApiClie
             Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
             switch (view.getId()) {
                 case R.id.roulette_button :
-                    vibrator.vibrate(20);
+                    vibrator.vibrate(OurAppConstants.VIBRATION_TIME);
 
                     mRecyclerView.setVisibility(View.GONE);
                     final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -203,7 +203,7 @@ public class RouletteActivity extends AppCompatActivity implements GoogleApiClie
 
 
                 case R.id.settings_button:
-                    vibrator.vibrate(20);
+                    vibrator.vibrate(OurAppConstants.VIBRATION_TIME);
                     Intent intent = new Intent(RouletteActivity.this, UserSettingsActivity.class);
                     startActivity(intent);
 

@@ -34,7 +34,7 @@ public class OurAppConstants {
     public static final String NOTIFICATION_ORIGIN = "notification";
     public static final String SEARCH_ORIGIN ="search";
 
-
+    public static final int VIBRATION_TIME = 20;
     /**
      * Add constants here
      */

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -23,6 +24,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 import shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPI;
 import shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPIConstants;
+import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 
 import static shuvalov.nikita.restaurantroulette.Activities.UserSettingsActivity.verifyLocationPermissions;
@@ -143,6 +145,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public View.OnClickListener mListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+            vibrator.vibrate(OurAppConstants.VIBRATION_TIME);
             int id = view.getId();
             Intent intent;
             switch (id) {
