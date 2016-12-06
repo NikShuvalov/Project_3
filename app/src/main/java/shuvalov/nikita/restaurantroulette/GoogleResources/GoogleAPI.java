@@ -59,4 +59,16 @@ public class GoogleAPI {
         String UserLonString = userLonDouble.toString();
         return UserLonString;
     }
+
+    public String getUpdatedUserLat (Location location) {
+        Double userNewLatDouble = location.getLatitude();
+        String userNewLatString = userNewLatDouble.toString();
+        return userNewLatString;
+    }
+
+    public String getUpdatedUserLon (Location location) {
+        Double userNewLonDouble = location.getLongitude();
+        String userNewLonString = userNewLonDouble.toString();
+        return userNewLonString;
+    }
 }

@@ -19,13 +19,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 
 import shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPI;
 import shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPIConstants;
@@ -35,22 +37,18 @@ import shuvalov.nikita.restaurantroulette.YelpResources.YelpJobService;
 
 import static shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPIConstants.PERMISSION_LOCATION;
 import static shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPIConstants.REQUEST_CODE_LOCATION_GLOC_API;
-import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_HOME_LAT;
-import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_HOME_LON;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_NOTIFICATION_CHECKED;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_NUM_OF_RESULTS;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_PRICING;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_RADIUS;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_RATING;
-import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_WORK_LAT;
-import static shuvalov.nikita.restaurantroulette.OurAppConstants.SHARED_PREF_WORK_LON;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LAT;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LOCATION;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_LAST_LON;
 import static shuvalov.nikita.restaurantroulette.OurAppConstants.USER_PREFERENCES;
 
 public class UserSettingsActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
     boolean isFirstTimeRating = true;
     boolean isFirstTimePrice = true;
     boolean isFirstTimeRadius = true;
@@ -291,6 +289,8 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
                     JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
                     jobScheduler.schedule(periodicJobInfo);
 
+                    startLocationUpdates();
+
                 } else {
                     Toast.makeText(UserSettingsActivity.this, "Kill service", Toast.LENGTH_SHORT).show();
                     SharedPreferences sharedPreferences =  getSharedPreferences(USER_PREFERENCES,
@@ -302,10 +302,24 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
                     //Kill Jobscheduler Service
                     JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
                     jobScheduler.cancelAll();
+
+                    stopLocationUpdates();
                 }
             }
         });
 
+    }
+
+    protected void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, this);
+    }
+
+    protected void startLocationUpdates() {
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setInterval(10000);
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, locationRequest, this);
     }
 
     @Override
@@ -350,7 +364,6 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
     @Override
     protected void onStop() {
         super.onStop();
-        mGoogleApiClient.disconnect();
     }
 
     public static void verifyLocationPermissions(Activity activity) {
@@ -387,5 +400,21 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
                 break;
             }
         }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        String userNewLat = new GoogleAPI().getUpdatedUserLat(location);
+        String userNewLon = new GoogleAPI().getUpdatedUserLon(location);
+
+        Log.d("LOCATION_CHANGED", "onLocationChanged: " + userNewLat);
+        Log.d("LOCATION_CHANGED", "onLocationChanged: " + userNewLon);
+
+        SharedPreferences sharedPreferences = getSharedPreferences(USER_LAST_LOCATION,
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(USER_LAST_LAT, userNewLat);
+        editor.putString(USER_LAST_LON, userNewLon);
+        editor.commit();
     }
 }

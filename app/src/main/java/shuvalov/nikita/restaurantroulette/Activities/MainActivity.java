@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             Log.d("String_value", "onConnected: " + userLat);
             Log.d("String_value", "onConnected: " + userLon);
 
+
         } else {
             verifyLocationPermissions(this);
         }
