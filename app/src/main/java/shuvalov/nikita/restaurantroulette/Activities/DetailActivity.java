@@ -1,5 +1,6 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -43,7 +44,7 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
 
     public TextView mBusinessName, mPricing, mUberEstimate,
             mPhoneNumber, mAddress, mOpenOrClosed;
-    public ImageView mBusinessImage, mShare, mPhoneButton, mMapFrame,
+    public ImageView mBusinessImage, mShare, mPhoneButton, mMapFrame, mYelpLogo,
             mFirstStar, mSecondStar, mThirdStar, mFourthStar, mFifthStar;
     public Business mBusiness;
     public int mBusinessPosition;
@@ -69,6 +70,7 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
         mShare = (ImageView) findViewById(R.id.share_image_view);
         mPhoneButton = (ImageView) findViewById(R.id.call_image_view);
         mMapFrame = (ImageView) findViewById(R.id.map_imageview);
+        mYelpLogo = (ImageView) findViewById(R.id.detail_yelp_logo);
 
         // Review Stars
         mFirstStar = (ImageView) findViewById(R.id.first_star);
@@ -76,8 +78,7 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
         mThirdStar = (ImageView) findViewById(R.id.third_star);
         mFourthStar = (ImageView) findViewById(R.id.fourth_star);
         mFifthStar = (ImageView) findViewById(R.id.fifth_star);
-        
-        // Gets Instance of the Business
+
         String origin = getIntent().getStringExtra(OurAppConstants.ORIGIN);
         if(origin.equals(OurAppConstants.NOTIFICATION_ORIGIN)){
             Log.d(TAG, "onCreate: Arrived from notification" );
@@ -107,6 +108,7 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
 
 
         }else if(origin.equals(OurAppConstants.SEARCH_ORIGIN)){
+            // Gets Instance of the Business
             mBusinessPosition = getIntent().getIntExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, -1);
             mBusiness = RestaurantSearchHelper.getInstance().getBusinessAtPosition(mBusinessPosition);
         }
@@ -117,9 +119,9 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
         mPhoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:" + mBusiness.getPhone()));
-                startActivity(intent);
+                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                callIntent.setData(Uri.parse("tel:" + mBusiness.getPhone()));
+                startActivity(callIntent);
             }
         });
 
@@ -127,9 +129,9 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
         mShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(DetailActivity.this, ShareActivity.class);
-                intent.putExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, mBusinessPosition);
-                startActivity(intent);
+                Intent shareIntent = new Intent(DetailActivity.this, ShareActivity.class);
+                shareIntent.putExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, mBusinessPosition);
+                startActivity(shareIntent);
             }
         });
 
@@ -137,10 +139,20 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
         mMapFrame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(DetailActivity.this, MapsActivity.class);
-                intent.putExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, mBusinessPosition);
-                intent.putExtra("origin", "detail");
-                startActivity(intent);
+                Intent mapIntent = new Intent(DetailActivity.this, MapsActivity.class);
+                mapIntent.putExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, mBusinessPosition);
+                mapIntent.putExtra("origin", "detail");
+                startActivity(mapIntent);
+            }
+        });
+
+        // Yelp Logo OnClickListener to Yelp
+        mYelpLogo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent yelpIntent = new Intent(Intent.ACTION_VIEW);
+                yelpIntent.setData(Uri.parse(mBusiness.getUrl()));
+                startActivity(yelpIntent);
             }
         });
 
@@ -233,7 +245,7 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             String userLat = new GoogleAPI().getUserLat(mGoogleApiClient);
             String userLon = new GoogleAPI().getUserLon(mGoogleApiClient);
