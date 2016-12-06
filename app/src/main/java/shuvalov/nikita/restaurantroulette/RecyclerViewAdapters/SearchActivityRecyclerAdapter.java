@@ -10,14 +10,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
+import shuvalov.nikita.restaurantroulette.Activities.DateNightSearchActivity;
 import shuvalov.nikita.restaurantroulette.Activities.DetailActivity;
 import shuvalov.nikita.restaurantroulette.Activities.SearchActivity;
+import shuvalov.nikita.restaurantroulette.DateNightHelper;
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.PicassoImageManager;
 import shuvalov.nikita.restaurantroulette.R;
+import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 
 /**
@@ -53,6 +57,18 @@ public class SearchActivityRecyclerAdapter extends RecyclerView.Adapter<SearchRe
                 holder.mHolderLayout.getContext().startActivity(intent);
             }
         });
+        if(holder.itemView.getContext().getClass().equals(DateNightSearchActivity.class)){
+            holder.mAddButton.setVisibility(View.VISIBLE);
+            holder.mAddButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    List<Business> results =RestaurantSearchHelper.getInstance().getSearchResults();
+                    Business selectedBusiness = results.get(position);
+                    DateNightHelper.getInstance().addBusinessToItinerary(selectedBusiness);
+                    ((Activity)view.getContext()).finish();
+                }
+            });
+        }
 
     }
 
@@ -68,7 +84,7 @@ public class SearchActivityRecyclerAdapter extends RecyclerView.Adapter<SearchRe
 
 class SearchResultViewHolder extends RecyclerView.ViewHolder{
     TextView mNameView, mDescView, mPrice;
-    ImageView mPicture;
+    ImageView mPicture, mAddButton;
     RelativeLayout mHolderLayout;
     LinearLayout mStarRatingHolder;
 
@@ -80,6 +96,7 @@ class SearchResultViewHolder extends RecyclerView.ViewHolder{
         mHolderLayout = (RelativeLayout)itemView.findViewById(R.id.holder_layout);
         mPicture = (ImageView)itemView.findViewById(R.id.picture);
         mStarRatingHolder = (LinearLayout)itemView.findViewById(R.id.star_rating_container);
+        mAddButton = (ImageView)itemView.findViewById(R.id.add_button);
     }
 
     public void bindDataToView(Business business){
@@ -103,7 +120,6 @@ class SearchResultViewHolder extends RecyclerView.ViewHolder{
 
         PicassoImageManager picassoImageManager = new PicassoImageManager(mPicture.getContext(), mPicture);
         picassoImageManager.setImageFromUrl(business.getImageUrl());
-
     }
 
     //Unnecessarily complicated method to set imageResource for stars.

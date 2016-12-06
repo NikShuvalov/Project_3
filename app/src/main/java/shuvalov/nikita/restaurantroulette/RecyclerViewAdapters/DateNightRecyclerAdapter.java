@@ -46,47 +46,51 @@ public class DateNightRecyclerAdapter extends RecyclerView.Adapter {
         }else if (viewType==1&& mBusinessList.size()>0){//The second view appears after we have an initial business.
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_date_consequent_item, null);
             return new DateItemViewHolderConsequent(view);
+        } else if (viewType==2){
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_search_form,null);
+            return new SearchResultViewHolder(view);
         }
         return null;//If all is well, this shouldn't happen. If there are issues just make a new viewholder to put on the bottom.
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Button searchButton = (Button) holder.itemView.findViewById(R.id.search_button);
-        Spinner categorySpinner = (Spinner)holder.itemView.findViewById(R.id.category_spinner);
-        mCategorySpinnerPosition = categorySpinner.getSelectedItemPosition();
+        if(holder.getItemViewType()<=1){
+            Button searchButton = (Button) holder.itemView.findViewById(R.id.search_button);
+            Spinner categorySpinner = (Spinner)holder.itemView.findViewById(R.id.category_spinner);
+            mCategorySpinnerPosition = categorySpinner.getSelectedItemPosition();
+            categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    mCategorySpinnerPosition = i;
+                }
 
-        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mCategorySpinnerPosition = i;
-            }
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
+                }
+            });
         int itemViewType = holder.getItemViewType();
-        if (itemViewType==0){
-            DateItemViewHolderFirst specificHolder = (DateItemViewHolderFirst)holder;
+
+            //If nothing in DateNightList singleton at the moment, then we start off with the initial search Card.
+        if (itemViewType==0) {
+            DateItemViewHolderFirst specificHolder = (DateItemViewHolderFirst) holder;
             specificHolder.bindAdapterToSpinner();
             final EditText queryEntry = (EditText) specificHolder.itemView.findViewById(R.id.query_entry);
-            final EditText additionalQueryEntry = (EditText)specificHolder.itemView.findViewById(R.id.additional_query_entry);
+            final EditText additionalQueryEntry = (EditText) specificHolder.itemView.findViewById(R.id.additional_query_entry);
             searchButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(queryEntry.getText().toString().isEmpty()) {
+                    if (queryEntry.getText().toString().isEmpty()) {
                         queryEntry.setError("Can't be empty");
-                    }else{
+                    } else {
                         String query = "";
-                        if(!additionalQueryEntry.getText().toString().isEmpty()){
+                        if (!additionalQueryEntry.getText().toString().isEmpty()) {
                             query = additionalQueryEntry.getText().toString();
                         }
                         String zip = queryEntry.getText().toString();
-                        Intent intent = new Intent(view.getContext(),DateNightSearchActivity.class);
-                        List<String>  categories = YelpAPIConstants.getCategoryList();
+                        Intent intent = new Intent(view.getContext(), DateNightSearchActivity.class);
+                        List<String> categories = YelpAPIConstants.getCategoryList();
                         intent.putExtra(OurAppConstants.SEARCH_CATEGORY, categories.get(mCategorySpinnerPosition));
                         intent.putExtra(OurAppConstants.SEARCH_QUERY, query);
                         intent.putExtra(OurAppConstants.SEARCH_ZIP_VALUE, zip);
@@ -94,6 +98,11 @@ public class DateNightRecyclerAdapter extends RecyclerView.Adapter {
                     }
                 }
             });
+        }
+        //This adds cards to subsequent date location search
+        else{
+
+        }
 
             //Add search results to DateNightHelper
         }else{
@@ -112,7 +121,9 @@ public class DateNightRecyclerAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        if(position==0){
+        if(position<mBusinessList.size()){
+            return 2;
+        }else if(position==0){
             return 0;
         }else{
             return 1;
@@ -174,4 +185,8 @@ class DateItemViewHolderConsequent extends RecyclerView.ViewHolder{
         mCatSpinner.setSelection(randomCat);
     }
 }
+
+
+
+
 

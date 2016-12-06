@@ -148,10 +148,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
                     mOptionsVisible=false;
                 }
 
-                Location mockLocation = new Location(LOCATION_SERVICE);
-                mockLocation.setLongitude(OurAppConstants.GA_LONGITUDE);
-                mockLocation.setLatitude(OurAppConstants.GA_LATITUDE);
-                YelpAPI yelpApi = new YelpAPI(view.getContext(), mockLocation);
+                YelpAPI yelpApi = new YelpAPI(view.getContext());
                 String query = mQueryEntry.getText().toString();
                 mQueryEntry.setText("");
                 yelpApi.getRestaurants(query, mPrice,Integer.parseInt(mRadius),mAdapter, false);
@@ -167,10 +164,8 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
                     mOptionsVisible=false;
                 }
 
-                Location mockLocation = new Location(LOCATION_SERVICE);
-                mockLocation.setLongitude(OurAppConstants.GA_LONGITUDE);
-                mockLocation.setLatitude(OurAppConstants.GA_LATITUDE);
-                YelpAPI yelpApi = new YelpAPI(view.getContext(), mockLocation);
+
+                YelpAPI yelpApi = new YelpAPI(view.getContext());
                 String query = mQueryEntry.getText().toString();
                 SharedPreferences sharedPreferences = getSharedPreferences(OurAppConstants.USER_PREFERENCES, MODE_PRIVATE);
                 int radius = (int)sharedPreferences.getLong(OurAppConstants.SHARED_PREF_RADIUS,-1);
