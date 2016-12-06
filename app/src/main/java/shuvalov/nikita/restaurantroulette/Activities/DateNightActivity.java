@@ -41,12 +41,14 @@ public class DateNightActivity extends AppCompatActivity implements GoogleApiCli
 
 
 
+
         buttonLogic();
         recyclerLogic();
     }
 
     public void buttonLogic(){
         mFinalize = (Button)findViewById(R.id.finalize);
+        mFinalize.setVisibility(View.GONE);//Starts off as invisible until there's something to finalize.
         mFinalize.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

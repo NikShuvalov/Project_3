@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="categories">
+        <item>Restaurants</item>
+        <item>Bars/Pubs</item>
+        <item>Arts(Cinema/Theaters/Venues/etc)</item>
+        <item>Parks</item>
+        <item>Jazz and Blues</item>
+        <item>Karaoke</item>
+        <item>Piano Bars</item>
+        <item>Dance clubs</item>
+        <item>Bowling</item>
+        <item>Pool Halls</item>
+        <item>Aquariums</item>
+        <item>Amusement Parks</item>
+
+    </string-array>
+</resources>

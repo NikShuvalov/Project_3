@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,6 +14,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Random;
 
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
@@ -41,14 +43,16 @@ public class DateNightRecyclerAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
         int itemViewType = holder.getItemViewType();
         if (itemViewType==0){
-
-            //Populate categories in spinner here
+            DateItemViewHolderFirst specificHolder = (DateItemViewHolderFirst)holder;
+            specificHolder.bindAdapterToSpinner();
             //Do Search with location that's based in the location field and category picked.
             //Add search results to DateNightHelper
         }else{
-            //Populate categories in spinner here
+//            DateItemViewHolderConsequent specificHolder = (DateItemViewHolderConsequent) holder;
+//            specificHolder.bindAdapterToSpinner();
             //Do Search based on location of previous area and category picked.
             // Add search results to DateNightHelper
         }
@@ -56,7 +60,7 @@ public class DateNightRecyclerAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return mBusinessList.size()+1;//It's plus one because there's always one more card than their are datecards.
+        return mBusinessList.size()+1;//It's plus one because there's always one more card than there are datecards.
     }
 
     @Override
@@ -66,7 +70,9 @@ public class DateNightRecyclerAdapter extends RecyclerView.Adapter {
         }else{
             return 1;
         }
+        //ToDo: Needs another itemViewType to display picked spots in list.
     }
+
 }
 class DateItemViewHolderFirst extends RecyclerView.ViewHolder{
     TextView mTextView;
@@ -85,7 +91,13 @@ class DateItemViewHolderFirst extends RecyclerView.ViewHolder{
         mButton = (Button)itemView.findViewById(R.id.search_button);
         mCardContainer = (CardView)itemView.findViewById(R.id.date_item_card_holder);
         mClose = (ImageView)itemView.findViewById(R.id.close);
+    }
 
+    public void bindAdapterToSpinner(){
+        ArrayAdapter<CharSequence> categoryAdapter = ArrayAdapter.createFromResource(mCatSpinner.getContext(),R.array.categories,android.R.layout.simple_spinner_item);
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mCatSpinner.setAdapter(categoryAdapter);
+        mCatSpinner.setSelection(0);
     }
 }
 
@@ -103,6 +115,13 @@ class DateItemViewHolderConsequent extends RecyclerView.ViewHolder{
         mButton = (Button)itemView.findViewById(R.id.search_button);
         mCardContainer = (CardView)itemView.findViewById(R.id.date_item_card_holder);
         mClose = (ImageView)itemView.findViewById(R.id.close);
+    }
+    public void bindAdapterToSpinner(){
+        ArrayAdapter<CharSequence> categoryAdapter = ArrayAdapter.createFromResource(mCatSpinner.getContext(),R.array.categories,android.R.layout.simple_spinner_item);
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mCatSpinner.setAdapter(categoryAdapter);
+        int randomCat = new Random().nextInt(11)+1;//We have 12 choices, this picks a random one between 0 and 10 (11 choices) but adds plus 1 so that the default isn't restaurant.
+        mCatSpinner.setSelection(randomCat);
     }
 }
 

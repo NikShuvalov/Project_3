@@ -23,6 +23,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import shuvalov.nikita.restaurantroulette.Activities.DetailActivity;
+import shuvalov.nikita.restaurantroulette.DateNightHelper;
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.Randomizer;
@@ -320,6 +321,53 @@ public class YelpAPI {
                 Log.d(TAG, "GET RESTAURANT DEALS FAILED");
             }
         });
+    }
+    public void getGetBusinessByCategory(String category, String query, int radius, final RouletteActivityRecyclerAdapter adapter) {
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(YELP_SEARCH_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        SharedPreferences userLocation= mContext.getSharedPreferences(OurAppConstants.USER_LAST_LOCATION, MODE_PRIVATE);
+        double myLong = Double.parseDouble(userLocation.getString(OurAppConstants.USER_LAST_LON,"200"));
+        double myLat = Double.parseDouble(userLocation.getString(OurAppConstants.USER_LAST_LAT,"200"));
+        Log.d(TAG, "Lat, Long: "+myLat+","+myLong);
+        YelpSearchService service = retrofit.create(YelpSearchService.class);
+
+        long price = mContext.getSharedPreferences(OurAppConstants.USER_PREFERENCES,MODE_PRIVATE).getLong(OurAppConstants.SHARED_PREF_PRICING, 3);
+        String priceQueryText = "";
+
+        switch ((int)price) {
+            case 3:
+                priceQueryText +="4,";
+            case 2:
+                priceQueryText+="3,";
+            case 1:
+                priceQueryText+="2,";
+            case 0:
+                priceQueryText+="1";
+                break;
+        }
+
+        Call<RestaurantsMainObject> call = service.getRestaurants("Bearer " + YELP_BEARER_TOKEN, query, priceQueryText, category,
+                40, myLat, myLong, radius*1000);
+
+        call.enqueue(new Callback<RestaurantsMainObject>() {
+            @Override
+            public void onResponse(Call<RestaurantsMainObject> call, Response<RestaurantsMainObject> response) {
+                mBusinessList = response.body().getBusinesses();
+                RestaurantSearchHelper.getInstance().setmBusinessList(mBusinessList);//ToDo:Make a separate singleton for dateNight searches if there's time.
+                adapter.replaceList(mBusinessList);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<RestaurantsMainObject> call, Throwable t) {
+                //Do nothing.
+            }
+        });
+
     }
 }
 
