@@ -1,5 +1,6 @@
 package shuvalov.nikita.restaurantroulette.RecyclerViewAdapters;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import shuvalov.nikita.restaurantroulette.Activities.DetailActivity;
+import shuvalov.nikita.restaurantroulette.Activities.SearchActivity;
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.PicassoImageManager;
 import shuvalov.nikita.restaurantroulette.R;
