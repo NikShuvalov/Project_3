@@ -171,8 +171,8 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
                 YelpAPI yelpApi = new YelpAPI(view.getContext());
                 String query = mQueryEntry.getText().toString();
                 SharedPreferences sharedPreferences = getSharedPreferences(OurAppConstants.USER_PREFERENCES, MODE_PRIVATE);
-                int radius = (int)sharedPreferences.getLong(OurAppConstants.SHARED_PREF_RADIUS,-1);
-                if (radius==-1){
+                int radius = (int)sharedPreferences.getLong(OurAppConstants.SHARED_PREF_RADIUS,-1)+1;
+                if (radius==0){
                     radius=3;
                 }
                 yelpApi.getRestaurants(query,-1,radius,mAdapter, true);

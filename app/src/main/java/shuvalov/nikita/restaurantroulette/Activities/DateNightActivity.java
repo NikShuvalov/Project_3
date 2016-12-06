@@ -1,6 +1,7 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +69,10 @@ public class DateNightActivity extends AppCompatActivity implements GoogleApiCli
                 if(DateNightHelper.getInstance().getDateItinerary().size()==0) {
                     mFinalize.setVisibility(View.GONE);
                     Toast.makeText(DateNightActivity.this, "There is nothing in itinerary", Toast.LENGTH_SHORT).show();
+                }else{
+                    Intent intent = new Intent(DateNightActivity.this, MapsActivity.class);
+                    intent.putExtra(OurAppConstants.ORIGIN, OurAppConstants.DATE_NIGHT_ORIGIN);
+                    startActivity(intent);
                 }
                 //Finish up here, make an activity to go to MapActivity with markers on each location.
             }

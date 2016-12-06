@@ -32,6 +32,7 @@ public class OurAppConstants {
     public static final String ORIGIN = "origin";
     public static final String NOTIFICATION_ORIGIN = "notification";
     public static final String SEARCH_ORIGIN ="search";
+    public static final String DATE_NIGHT_ORIGIN = "date night";
 
     //Constants for Intent to dateNightSearchActivity
     public static final String SEARCH_ZIP_VALUE = "zip code value";

@@ -11,10 +11,15 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.List;
+
+import shuvalov.nikita.restaurantroulette.DateNightHelper;
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
@@ -32,7 +37,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public Business mBusiness;
     public int mBusinessPosition;
     private String origin;
-    private boolean isMystery;
+    private boolean isMystery, mDateNight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +50,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Gets Instance of the Business
         mBusinessPosition = getIntent().getIntExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, -1);
-        if (getIntent().getStringExtra("origin").equals("roulette")) {
+        if (getIntent().getStringExtra("origin").equals("roulette")) { //ToDo: Change to constant values.
             mBusiness = RouletteHelper.getInstance().getBusinessAtPosition(mBusinessPosition);
             isMystery = true;
-        } else {
+        } else if (getIntent().getStringExtra(OurAppConstants.ORIGIN).equals(OurAppConstants.DATE_NIGHT_ORIGIN)){
+            mDateNight = true;
+        }else {
             mBusiness = RestaurantSearchHelper.getInstance().getBusinessAtPosition(mBusinessPosition);
             isMystery = false;
         }
@@ -68,47 +75,75 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // User Location
-        SharedPreferences sharedPreferences = getSharedPreferences(USER_LAST_LOCATION,
-                Context.MODE_PRIVATE);
+        if(mDateNight){
+            populateDateNightMap(googleMap);
+        }else {
 
-        String userLat = sharedPreferences.getString(USER_LAST_LAT, "userLastLat");
-        String userLon = sharedPreferences.getString(USER_LAST_LON, "userLastLon");
 
-        Log.d(TAG, "onMapReady: " + userLat);
-        Log.d(TAG, "onMapReady: " + userLon);
+            // User Location
+            SharedPreferences sharedPreferences = getSharedPreferences(USER_LAST_LOCATION,
+                    Context.MODE_PRIVATE);
 
-        LatLng userLocation = new LatLng(Double.parseDouble(userLat), Double.parseDouble(userLon));
-        mMap.addMarker(new MarkerOptions()
-                .position(userLocation)
-                .title("My Location")).showInfoWindow();
+            String userLat = sharedPreferences.getString(USER_LAST_LAT, "userLastLat");
+            String userLon = sharedPreferences.getString(USER_LAST_LON, "userLastLon");
 
-        Log.d(TAG, "onMapReady: " + userLocation);
+            Log.d(TAG, "onMapReady: " + userLat);
+            Log.d(TAG, "onMapReady: " + userLon);
 
-        // Business Location
-        String title;
-        if (isMystery) {
-            title = "???????";
-        } else {
-            title = mBusiness.getName();
+            LatLng userLocation = new LatLng(Double.parseDouble(userLat), Double.parseDouble(userLon));
+            mMap.addMarker(new MarkerOptions()
+                    .position(userLocation)
+                    .title("My Location")).showInfoWindow();
+
+            Log.d(TAG, "onMapReady: " + userLocation);
+
+            // Business Location
+            String title;
+            if (isMystery) {
+                title = "???????";
+            } else {
+                title = mBusiness.getName();
+            }
+
+            LatLng businessCoordinates = new LatLng(mBusiness.getCoordinates().getLatitude(),
+                    mBusiness.getCoordinates().getLongitude());
+            mMap.addMarker(new MarkerOptions()
+                    .position(businessCoordinates)
+                    .title(title))
+                    .showInfoWindow();
+
+            // Changes Zoom based on the distance between User Location and Business
+
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            builder.include(userLocation);
+            builder.include(businessCoordinates);
+            LatLngBounds bounds = builder.build();
+
+            CameraUpdate latLngBounds = CameraUpdateFactory.newLatLngBounds(bounds, 150);
+
+            mMap.animateCamera(latLngBounds);
         }
+    }
 
-        LatLng businessCoordinates = new LatLng(mBusiness.getCoordinates().getLatitude(),
-                mBusiness.getCoordinates().getLongitude());
-        mMap.addMarker(new MarkerOptions()
-                .position(businessCoordinates)
-                .title(title))
-                .showInfoWindow();
-
-        // Changes Zoom based on the distance between User Location and Business
-
+    public void populateDateNightMap(GoogleMap googleMap){
+        List<Business> dateItinerary = DateNightHelper.getInstance().getDateItinerary();
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        builder.include(userLocation);
-        builder.include(businessCoordinates);
+        int i =0;
+
+        for(Business business: dateItinerary){
+            LatLng latLng = new LatLng(business.getCoordinates().getLatitude(), business.getCoordinates().getLongitude());
+            i++;
+            googleMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                    .snippet("Place #"+i)
+                    .title(business.getName()))
+                    .showInfoWindow();
+
+            builder.include(latLng);
+        }
         LatLngBounds bounds = builder.build();
-
         CameraUpdate latLngBounds = CameraUpdateFactory.newLatLngBounds(bounds, 150);
-
         mMap.animateCamera(latLngBounds);
     }
 }
