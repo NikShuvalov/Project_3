@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -40,6 +41,9 @@ public class DateNightActivity extends AppCompatActivity implements GoogleApiCli
     protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_date_night);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Date Night Itinerary");
 
         mDateItinerary = DateNightHelper.getInstance().getDateItinerary();
         mGoogleAPI = new GoogleAPI();
@@ -117,6 +121,13 @@ public class DateNightActivity extends AppCompatActivity implements GoogleApiCli
         super.onResume();
         buttonLogic();
         recyclerLogic();
-
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) // Press Back Icon
+        {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

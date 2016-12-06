@@ -81,7 +81,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng userLocation = new LatLng(Double.parseDouble(userLat), Double.parseDouble(userLon));
         mMap.addMarker(new MarkerOptions()
                 .position(userLocation)
-                .title("My Location"));
+                .title("My Location")).showInfoWindow();
 
         Log.d(TAG, "onMapReady: " + userLocation);
 
@@ -97,7 +97,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mBusiness.getCoordinates().getLongitude());
         mMap.addMarker(new MarkerOptions()
                 .position(businessCoordinates)
-                .title(title));
+                .title(title))
+                .showInfoWindow();
 
         // Changes Zoom based on the distance between User Location and Business
 
@@ -107,6 +108,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLngBounds bounds = builder.build();
 
         CameraUpdate latLngBounds = CameraUpdateFactory.newLatLngBounds(bounds, 150);
+
         mMap.animateCamera(latLngBounds);
     }
 }

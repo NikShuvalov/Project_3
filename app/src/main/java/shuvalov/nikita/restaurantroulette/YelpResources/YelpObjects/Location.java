@@ -6,6 +6,16 @@ import com.google.gson.annotations.SerializedName;
 
 public class Location {
 
+    public Location(String address1, String address2, String address3, String city, String country, String state, String zipCode) {
+        this.address1 = address1;
+        this.address2 = address2;
+        this.address3 = address3;
+        this.city = city;
+        this.country = country;
+        this.state = state;
+        this.zipCode = zipCode;
+    }
+
     @SerializedName("address1")
     @Expose
     private String address1;
@@ -27,6 +37,8 @@ public class Location {
     @SerializedName("zip_code")
     @Expose
     private String zipCode;
+
+
 
     /**
      * 

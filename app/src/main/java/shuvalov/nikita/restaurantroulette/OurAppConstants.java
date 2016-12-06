@@ -39,6 +39,7 @@ public class OurAppConstants {
     public static final String SEARCH_CATEGORY = "search Category";
     public static final String SEARCH_QUERY = "search query";
 
+    public static final int VIBRATION_TIME = 10;
     /**
      * Add constants here
      */

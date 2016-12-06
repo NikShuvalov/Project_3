@@ -6,12 +6,18 @@ import com.google.gson.annotations.SerializedName;
 
 public class Coordinates {
 
+
     @SerializedName("latitude")
     @Expose
     private Double latitude;
     @SerializedName("longitude")
     @Expose
     private Double longitude;
+
+    public Coordinates(Double latitude, Double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 
     /**
      * 

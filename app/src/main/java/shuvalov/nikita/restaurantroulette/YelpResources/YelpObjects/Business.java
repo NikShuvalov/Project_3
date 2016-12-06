@@ -9,6 +9,22 @@ import java.util.List;
 
 public class Business {
 
+    public Business(List<Category> categories, Coordinates coordinates, Double distance, String id, String imageUrl, Boolean isClosed, Location location, String name, String phone, String price, Double rating, Integer reviewCount, String url) {
+        this.categories = categories;
+        this.coordinates = coordinates;
+        this.distance = distance;
+        this.id = id;
+        this.imageUrl = imageUrl;
+        this.isClosed = isClosed;
+        this.location = location;
+        this.name = name;
+        this.phone = phone;
+        this.price = price;
+        this.rating = rating;
+        this.reviewCount = reviewCount;
+        this.url = url;
+    }
+
     @SerializedName("image_url")
     @Expose
     private String imageUrl;
@@ -48,6 +64,24 @@ public class Business {
     @SerializedName("name")
     @Expose
     private String name;
+
+    public Business(String imageUrl, String phone, String price, Boolean isClosed, Location location,
+                    String url, String id, Integer reviewCount, List<Category> categories, Double rating,
+                    Coordinates coordinates, Double distance, String name) {
+        this.imageUrl = imageUrl;
+        this.phone = phone;
+        this.price = price;
+        this.isClosed = isClosed;
+        this.location = location;
+        this.url = url;
+        this.id = id;
+        this.reviewCount = reviewCount;
+        this.categories = categories;
+        this.rating = rating;
+        this.coordinates = coordinates;
+        this.distance = distance;
+        this.name = name;
+    }
 
     /**
      * 

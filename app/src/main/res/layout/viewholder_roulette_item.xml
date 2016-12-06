@@ -7,6 +7,7 @@
     android:id="@+id/mystery_restaurant"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:elevation="100dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -67,8 +68,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
-            android:id="@id/roulette_uber_estimate"
+            android:id="@+id/roulette_address"
+            android:layout_centerHorizontal="true"
+            android:textSize="25dp"
             android:layout_below="@id/roulette_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@id/roulette_uber_estimate"
+            android:layout_below="@id/roulette_address"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"

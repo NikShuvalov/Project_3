@@ -1,5 +1,6 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,24 +14,23 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Display;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.squareup.picasso.Picasso;
 
 import shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPI;
-import shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPIConstants;
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.PicassoImageManager;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
-import shuvalov.nikita.restaurantroulette.UberResources.UberAPI;
-import shuvalov.nikita.restaurantroulette.UberResources.UberAPIConstants;
+import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
+import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Coordinates;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Location;
 
 import static shuvalov.nikita.restaurantroulette.Activities.UserSettingsActivity.verifyLocationPermissions;
@@ -44,7 +44,7 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
 
     public TextView mBusinessName, mPricing, mUberEstimate,
             mPhoneNumber, mAddress, mOpenOrClosed;
-    public ImageView mBusinessImage, mShare, mPhoneButton, mMapFrame,
+    public ImageView mBusinessImage, mShare, mPhoneButton, mMapFrame, mYelpLogo,
             mFirstStar, mSecondStar, mThirdStar, mFourthStar, mFifthStar;
     public Business mBusiness;
     public int mBusinessPosition;
@@ -70,6 +70,7 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
         mShare = (ImageView) findViewById(R.id.share_image_view);
         mPhoneButton = (ImageView) findViewById(R.id.call_image_view);
         mMapFrame = (ImageView) findViewById(R.id.map_imageview);
+        mYelpLogo = (ImageView) findViewById(R.id.detail_yelp_logo);
 
         // Review Stars
         mFirstStar = (ImageView) findViewById(R.id.first_star);
@@ -77,12 +78,37 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
         mThirdStar = (ImageView) findViewById(R.id.third_star);
         mFourthStar = (ImageView) findViewById(R.id.fourth_star);
         mFifthStar = (ImageView) findViewById(R.id.fifth_star);
-        
-        // Gets Instance of the Business
+
         String origin = getIntent().getStringExtra(OurAppConstants.ORIGIN);
         if(origin.equals(OurAppConstants.NOTIFICATION_ORIGIN)){
             Log.d(TAG, "onCreate: Arrived from notification" );
+            //For Business Obj
+            String image_url = getIntent().getStringExtra(YelpAPIConstants.NOTIF_IMAGE_URL);
+            String phone_number = getIntent().getStringExtra(YelpAPIConstants.NOTIF_PHONE_NUMBER);
+            boolean is_closed = getIntent().getBooleanExtra(YelpAPIConstants.NOTIF_IS_CLOSED, false);
+            String business_url = getIntent().getStringExtra(YelpAPIConstants.NOTIF_BUSINESS_URL);
+            String business_id = getIntent().getStringExtra(YelpAPIConstants.NOTIF_BUSINESS_ID);
+            String price = getIntent().getStringExtra(YelpAPIConstants.NOTIF_PRICE);
+            int review_count = getIntent().getIntExtra(YelpAPIConstants.NOTIF_REVIEW_COUNT, 0);
+            double rating = getIntent().getDoubleExtra(YelpAPIConstants.NOTIF_RATING, 0);
+            double distance = getIntent().getDoubleExtra(YelpAPIConstants.NOTIF_DISTANCE, 0);
+            String name = getIntent().getStringExtra(YelpAPIConstants.NOTIF_BUSINESS_NAME);
+            //For Location obj
+            String address_1 = getIntent().getStringExtra(YelpAPIConstants.NOTIF_ADDRESS_1);
+            String city = getIntent().getStringExtra(YelpAPIConstants.NOTIF_CITY);
+            //For Coordinates
+            double lat = getIntent().getDoubleExtra(YelpAPIConstants.NOTIF_LATITUTE, 0);
+            double lon = getIntent().getDoubleExtra(YelpAPIConstants.NOTIF_LONGITUDE, 0);
+
+            Location location = new Location(address_1, null, null, city, null, null, null);
+            Coordinates coordinates = new Coordinates(lat, lon);
+            mBusiness = new Business(null, coordinates, distance, business_id, image_url, is_closed,
+                    location, name, phone_number, price, rating, review_count, business_url);
+            RestaurantSearchHelper.getInstance().addBusinessToList(mBusiness);
+
+
         }else if(origin.equals(OurAppConstants.SEARCH_ORIGIN)){
+            // Gets Instance of the Business
             mBusinessPosition = getIntent().getIntExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, -1);
             mBusiness = RestaurantSearchHelper.getInstance().getBusinessAtPosition(mBusinessPosition);
         }
@@ -93,9 +119,9 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
         mPhoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:" + mBusiness.getPhone()));
-                startActivity(intent);
+                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                callIntent.setData(Uri.parse("tel:" + mBusiness.getPhone()));
+                startActivity(callIntent);
             }
         });
 
@@ -103,9 +129,9 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
         mShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(DetailActivity.this, ShareActivity.class);
-                intent.putExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, mBusinessPosition);
-                startActivity(intent);
+                Intent shareIntent = new Intent(DetailActivity.this, ShareActivity.class);
+                shareIntent.putExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, mBusinessPosition);
+                startActivity(shareIntent);
             }
         });
 
@@ -113,12 +139,25 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
         mMapFrame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(DetailActivity.this, MapsActivity.class);
-                intent.putExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, mBusinessPosition);
-                intent.putExtra("origin", "detail");
-                startActivity(intent);
+                Intent mapIntent = new Intent(DetailActivity.this, MapsActivity.class);
+                mapIntent.putExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, mBusinessPosition);
+                mapIntent.putExtra("origin", "detail");
+                startActivity(mapIntent);
             }
         });
+
+        // Yelp Logo OnClickListener to Yelp
+        mYelpLogo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent yelpIntent = new Intent(Intent.ACTION_VIEW);
+                yelpIntent.setData(Uri.parse(mBusiness.getUrl()));
+                startActivity(yelpIntent);
+            }
+        });
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(mBusiness.getName());
     }
 
     public void bindDataToView(Business business) {
@@ -206,7 +245,7 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             String userLat = new GoogleAPI().getUserLat(mGoogleApiClient);
             String userLon = new GoogleAPI().getUserLon(mGoogleApiClient);
@@ -261,5 +300,14 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
     protected void onStop() {
         super.onStop();
         mGoogleApiClient.disconnect();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) // Press Back Icon
+        {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

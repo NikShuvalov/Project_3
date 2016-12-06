@@ -13,6 +13,11 @@ public class Category {
     @Expose
     private String alias;
 
+    public Category(String title, String alias) {
+        this.title = title;
+        this.alias = alias;
+    }
+
     /**
      * 
      * @return

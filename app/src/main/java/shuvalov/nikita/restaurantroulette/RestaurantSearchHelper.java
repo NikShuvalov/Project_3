@@ -44,7 +44,11 @@ public class RestaurantSearchHelper {
         return mSearchResults.get(position);
     }
 
-    public void clearSearchList(){
+    public void clearSearchList() {
         mSearchResults.clear();
+    }
+
+    public void addBusinessToList(Business business) {
+        mSearchResults.add(business);
     }
 }

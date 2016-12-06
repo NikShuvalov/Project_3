@@ -18,6 +18,7 @@ import android.transition.Fade;
 import android.transition.TransitionSet;
 import android.util.Log;
 import android.view.Display;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -68,12 +69,14 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     private String mLocation;
     private long mPrice;
 
-
     //ToDo: Add a way to close options to see full list without having to search
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Search for Restaurants");
 
         mGoogleApi = new GoogleAPI();
 
@@ -349,5 +352,14 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     }
     public void connectToYelp(){//Lazy implementation
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) // Press Back Icon
+        {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

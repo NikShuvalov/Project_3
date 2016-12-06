@@ -8,6 +8,7 @@ import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -33,6 +34,7 @@ import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
+import shuvalov.nikita.restaurantroulette.TwitterResources.TwitterAPIConstants;
 
 public class ShareActivity extends AppCompatActivity {
 
@@ -43,8 +45,10 @@ public class ShareActivity extends AppCompatActivity {
     private TextView mDialogueUserName;
     private String mTweetText, mRestaurantName;
     private boolean tweeted;
+
     private Business mBusiness;
     private Button mContinue, mLogOUt, mQuit;
+    private String key, secret;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +56,15 @@ public class ShareActivity extends AppCompatActivity {
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
         Fabric.with(this, new Twitter(authConfig));
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Share on Twitter");
+
         setContentView(R.layout.activity_share);
+
+        TwitterAPIConstants constants = new TwitterAPIConstants();
+
+        key = constants.CONSUMER_KEY;
+        secret = constants.CONSUMER_SECRET;
 
         tweeted = false;
 
@@ -91,6 +103,7 @@ public class ShareActivity extends AppCompatActivity {
         });
 
 
+
     }
 
     @Override
@@ -124,7 +137,7 @@ public class ShareActivity extends AppCompatActivity {
     }
 
     private void setViews () {
-        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(key, secret);
         Fabric.with(this, new Twitter(authConfig));
 
         TwitterSession session = Twitter.getInstance().core.getSessionManager().getActiveSession();
@@ -196,6 +209,15 @@ public class ShareActivity extends AppCompatActivity {
         }
 
         return imageURL;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) // Press Back Icon
+        {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

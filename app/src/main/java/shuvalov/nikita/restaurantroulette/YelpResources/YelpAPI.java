@@ -24,12 +24,12 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import shuvalov.nikita.restaurantroulette.Activities.DetailActivity;
-import shuvalov.nikita.restaurantroulette.DateNightHelper;
 import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.Randomizer;
 
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.DateNightRecyclerAdapter;
+
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.RouletteActivityRecyclerAdapter;
 import shuvalov.nikita.restaurantroulette.RecyclerViewAdapters.SearchActivityRecyclerAdapter;
 import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
@@ -55,6 +55,7 @@ import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_LATITUTE;
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_LONGITUDE;
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_PHONE_NUMBER;
+import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_PRICE;
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_RATING;
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.NOTIF_REVIEW_COUNT;
 import static shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants.YELP_APP_SECRET;
@@ -183,7 +184,7 @@ public class YelpAPI {
 
     }
 
-    public void getRestaurantsForRoulette(String query, int radius, final RouletteActivityRecyclerAdapter adapter) {
+    public Call<RestaurantsMainObject> getRestaurantsForRoulette(String query, int radius, final RouletteActivityRecyclerAdapter adapter) {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(YELP_SEARCH_BASE_URL)
@@ -199,13 +200,20 @@ public class YelpAPI {
         long price = mContext.getSharedPreferences(OurAppConstants.USER_PREFERENCES,MODE_PRIVATE).getLong(OurAppConstants.SHARED_PREF_PRICING, 3);
         String priceQueryText = "";
 
+        if (price == 4) {
+            price = 3;
+        }
+
             switch ((int)price) {
                 case 3:
                     priceQueryText += "4,";
+
                 case 2:
                     priceQueryText+="3,";
+
                 case 1:
                     priceQueryText+="2,";
+
                 case 0:
                     priceQueryText+="1";
                     break;
@@ -216,7 +224,9 @@ public class YelpAPI {
         Call<RestaurantsMainObject> call = service.getRestaurants("Bearer " + YELP_BEARER_TOKEN, query, priceQueryText, "restaurants",
                 40, myLat, myLong, radius*1000);//ToDo: Do we need to make a different MainObject for place of entertainment?
 
-        call.enqueue(new Callback<RestaurantsMainObject>() {
+
+        return call;
+        /*call.enqueue(new Callback<RestaurantsMainObject>() {
             @Override
             public void onResponse(Call<RestaurantsMainObject> call, Response<RestaurantsMainObject> response) {
                 mBusinessList = response.body().getBusinesses();
@@ -232,7 +242,7 @@ public class YelpAPI {
                 //Do nothing.
             }
         });
-
+        */
     }
 
     public void getRestaurantDeals() {
@@ -288,6 +298,7 @@ public class YelpAPI {
                         intent.putExtra(NOTIF_IS_CLOSED, response.body().getBusinesses().get(0).getIsClosed());
                         intent.putExtra(NOTIF_BUSINESS_URL, response.body().getBusinesses().get(0).getUrl());
                         intent.putExtra(NOTIF_BUSINESS_ID, response.body().getBusinesses().get(0).getId());
+                        intent.putExtra(NOTIF_PRICE, response.body().getBusinesses().get(0).getPrice());
                         intent.putExtra(NOTIF_REVIEW_COUNT, response.body().getBusinesses().get(0).getReviewCount());
                         intent.putExtra(NOTIF_RATING, response.body().getBusinesses().get(0).getRating());
                         intent.putExtra(NOTIF_DISTANCE, response.body().getBusinesses().get(0).getDistance());

@@ -14,9 +14,9 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/roulette_recycler_view"
         android:layout_marginLeft="3dp"
-        android:layout_marginRight="3dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_above="@+id/roulette_query" />
     <ProgressBar
         android:id="@+id/roulette_progress_bar"
         android:layout_centerInParent="true"

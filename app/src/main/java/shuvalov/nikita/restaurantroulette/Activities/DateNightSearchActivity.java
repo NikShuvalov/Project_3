@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,8 @@ public class DateNightSearchActivity extends AppCompatActivity{
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(mAdapter);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Results");
     }
     public void doYelpSearch(){
         Intent intent = getIntent();
@@ -50,6 +53,14 @@ public class DateNightSearchActivity extends AppCompatActivity{
         SharedPreferences sharedPreferences = getSharedPreferences(OurAppConstants.USER_PREFERENCES,MODE_PRIVATE);
         int radius = (int)sharedPreferences.getLong(OurAppConstants.SHARED_PREF_RADIUS,5);
         yelpAPI.getGetBusinessByCategory(category,query,radius,mAdapter,zip);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) // Press Back Icon
+        {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
