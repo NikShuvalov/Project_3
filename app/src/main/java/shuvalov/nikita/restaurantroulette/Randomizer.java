@@ -72,7 +72,7 @@ public class Randomizer {
     public List<Business> pickRandomFromList(List<Business> businessList) {
         List<Business> randomPicks = new ArrayList<>();
         Random picker = new Random();
-        for (int i = 0; i <= mNumberOfRandoms; i++) {
+        for (int i = 0; i < mNumberOfRandoms; i++) {
             if (businessList == null || businessList.size() == 0) {
                 Toast.makeText(mContext, "Not enough results to pick from", Toast.LENGTH_SHORT).show();
                 break;

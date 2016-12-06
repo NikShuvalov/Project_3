@@ -98,7 +98,7 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
         spinnerRating.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                long position = adapterView.getItemIdAtPosition(i);
+                long position = adapterView.getItemIdAtPosition(i)+1;
                 if (isFirstTimeRating) {
                     isFirstTimeRating = false;
                 } else {
@@ -134,7 +134,7 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
         spinnerPrice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Long position = adapterView.getItemIdAtPosition(i);
+                Long position = adapterView.getItemIdAtPosition(i)+1;// Added +1 to position so that it equals pricing.
                 if (isFirstTimePrice) {
                     isFirstTimePrice = false;
                 } else {
@@ -170,7 +170,7 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
         spinnerRadius.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Long position = adapterView.getItemIdAtPosition(i);
+                Long position = adapterView.getItemIdAtPosition(i)+1;//Added +1 so that position represents radius input
                 if (isFirstTimeRadius) {
                     isFirstTimeRadius = false;
                 } else {
@@ -207,7 +207,7 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
         spinnerResult.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Long position = adapterView.getItemIdAtPosition(i);
+                Long position = adapterView.getItemIdAtPosition(i)+1;//Added +1 so that value represents randomResults input.
                 if (isFirstTimeSearchResult) {
                     isFirstTimeSearchResult = false;
                 } else {
