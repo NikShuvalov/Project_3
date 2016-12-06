@@ -348,6 +348,7 @@ public class YelpAPI {
                 priceQueryText+="1";
                 break;
         }
+        Log.d(TAG, "getBusinessByCategory: "+category);
 
         Call<RestaurantsMainObject> call = service.getBusinessByZip("Bearer " + YELP_BEARER_TOKEN, query, priceQueryText, category,
                 40, zipCodeAsInt, radius*1000);

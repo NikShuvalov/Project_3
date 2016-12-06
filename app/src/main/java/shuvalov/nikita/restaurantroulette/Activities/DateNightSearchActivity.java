@@ -48,8 +48,8 @@ public class DateNightSearchActivity extends AppCompatActivity{
         String category = bundle.getString(OurAppConstants.SEARCH_CATEGORY);
         YelpAPI yelpAPI = new YelpAPI(this);
         SharedPreferences sharedPreferences = getSharedPreferences(OurAppConstants.USER_PREFERENCES,MODE_PRIVATE);
-        sharedPreferences.getLong(OurAppConstants.SHARED_PREF_RADIUS,5);
-        yelpAPI.getGetBusinessByCategory(category,query,10,mAdapter,zip);
+        int radius = (int)sharedPreferences.getLong(OurAppConstants.SHARED_PREF_RADIUS,5);
+        yelpAPI.getGetBusinessByCategory(category,query,radius,mAdapter,zip);
 
     }
 }

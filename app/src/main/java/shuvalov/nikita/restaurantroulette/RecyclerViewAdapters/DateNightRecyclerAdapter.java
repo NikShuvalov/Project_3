@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPI;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
+import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Location;
 
 /**
  * Created by NikitaShuvalov on 12/5/16.
@@ -55,7 +57,7 @@ public class DateNightRecyclerAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         if(holder.getItemViewType()<=1){
             Button searchButton = (Button) holder.itemView.findViewById(R.id.search_button);
             Spinner categorySpinner = (Spinner)holder.itemView.findViewById(R.id.category_spinner);
@@ -104,14 +106,45 @@ public class DateNightRecyclerAdapter extends RecyclerView.Adapter {
         else{
             DateItemViewHolderConsequent specificHolder = (DateItemViewHolderConsequent) holder;
             specificHolder.bindAdapterToSpinner();
+
+            final EditText additionalQueryEntry = (EditText) specificHolder.itemView.findViewById(R.id.additional_query_entry);
+
             //Do Search based on location of previous area and category picked.
-            // Add search results to DateNightHelper
+
+            searchButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Business lastBusiness = DateNightHelper.getInstance().getLastBusinessInList();
+                    Location businessLocation = lastBusiness.getLocation();
+                    String zipCode = businessLocation.getZipCode();//Search using the zip code of that business.
+                    Log.d("Date Itinerary", "Search for business at zip code: "+zipCode);
+                    String query = "";
+                    if (!additionalQueryEntry.getText().toString().isEmpty()) {
+                        query = additionalQueryEntry.getText().toString();
+                    }
+                    Intent intent = new Intent(view.getContext(), DateNightSearchActivity.class);
+                    List<String> categories = YelpAPIConstants.getCategoryList();
+                    intent.putExtra(OurAppConstants.SEARCH_CATEGORY, categories.get(mCategorySpinnerPosition));
+                    intent.putExtra(OurAppConstants.SEARCH_QUERY, query);
+                    intent.putExtra(OurAppConstants.SEARCH_ZIP_VALUE, zipCode);
+                    view.getContext().startActivity(intent);
+                }
+            });
 
         }
 
         }else{
             Business business = mBusinessList.get(position);
             ((SearchResultViewHolder)holder).bindDataToView(business);
+            ((SearchResultViewHolder) holder).mRemoveButton.setVisibility(View.VISIBLE);
+            ((SearchResultViewHolder) holder).mRemoveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    DateNightHelper.getInstance().removeBusinessAtPosition(holder.getAdapterPosition());
+                    notifyItemRemoved(holder.getAdapterPosition());
+                    ((SearchResultViewHolder) holder).mRemoveButton.setVisibility(View.GONE);
+                }
+            });
         }
     }
 
@@ -143,7 +176,6 @@ class DateItemViewHolderFirst extends RecyclerView.ViewHolder{
     EditText mQueryInput, mAdditionalQuery;
     Button mButton;
     CardView mCardContainer;
-    ImageView mClose;
 
     public DateItemViewHolderFirst(View itemView) {
         super(itemView);
@@ -153,7 +185,6 @@ class DateItemViewHolderFirst extends RecyclerView.ViewHolder{
         mQueryInput = (EditText)itemView.findViewById(R.id.query_entry);
         mButton = (Button)itemView.findViewById(R.id.search_button);
         mCardContainer = (CardView)itemView.findViewById(R.id.date_item_card_holder);
-        mClose = (ImageView)itemView.findViewById(R.id.close);
         mAdditionalQuery= (EditText)itemView.findViewById(R.id.additional_query_entry);
     }
 
@@ -170,7 +201,6 @@ class DateItemViewHolderConsequent extends RecyclerView.ViewHolder{
     Spinner mCatSpinner;
     Button mButton;
     CardView mCardContainer;
-    ImageView mClose;
     EditText mAdditionalQuery;
 
     public DateItemViewHolderConsequent(View itemView) {
@@ -179,7 +209,6 @@ class DateItemViewHolderConsequent extends RecyclerView.ViewHolder{
         mCatSpinner = (Spinner)itemView.findViewById(R.id.category_spinner);
         mButton = (Button)itemView.findViewById(R.id.search_button);
         mCardContainer = (CardView)itemView.findViewById(R.id.date_item_card_holder);
-        mClose = (ImageView)itemView.findViewById(R.id.close);
         mAdditionalQuery = (EditText)itemView.findViewById(R.id.additional_query_entry);
     }
     public void bindAdapterToSpinner(){

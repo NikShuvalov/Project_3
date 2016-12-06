@@ -41,4 +41,7 @@ public class DateNightHelper {
         mDateItinerary.clear();
         mDateItinerary.addAll(businessList);
     }
+    public Business getLastBusinessInList(){
+        return mDateItinerary.get(mDateItinerary.size()-1);
+    }
 }

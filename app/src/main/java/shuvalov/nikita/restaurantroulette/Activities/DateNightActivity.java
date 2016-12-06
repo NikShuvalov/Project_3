@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -27,7 +29,7 @@ import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 
 public class DateNightActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-    private Button mFinalize;
+    private FloatingActionButton mFinalize;
     private RecyclerView mRecyclerView;
     private DateNightRecyclerAdapter mAdapter;
     private List<Business> mDateItinerary;
@@ -43,19 +45,30 @@ public class DateNightActivity extends AppCompatActivity implements GoogleApiCli
         mGoogleAPI = new GoogleAPI();
         mGoogleApiClient = mGoogleAPI.callGoogleLocApi(this);
 
-        buttonLogic();
-        recyclerLogic();
+//        buttonLogic();
+//        recyclerLogic();
     }
 
     public void buttonLogic(){
-        mFinalize = (Button)findViewById(R.id.finalize);
-        mFinalize.setVisibility(View.GONE);//Starts off as invisible until there's something to finalize.
+        mFinalize = (FloatingActionButton) findViewById(R.id.finalize);
+        if(DateNightHelper.getInstance().getDateItinerary().size()==0){
+            mFinalize.setVisibility(View.GONE);
+        }else{
+            mFinalize.setVisibility(View.VISIBLE);
+        }
+        //Starts off as invisible until there's something to finalize.
         mFinalize.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(DateNightHelper.getInstance().getDateItinerary().size()==0) {
+                    mFinalize.setVisibility(View.GONE);
+                    Toast.makeText(DateNightActivity.this, "There is nothing in itinerary", Toast.LENGTH_SHORT).show();
+                }
                 //Finish up here, make an activity to go to MapActivity with markers on each location.
             }
         });
+
+
     }
     public void recyclerLogic(){
         mRecyclerView = (RecyclerView)findViewById(R.id.date_itinerary_recycler);
@@ -99,4 +112,11 @@ public class DateNightActivity extends AppCompatActivity implements GoogleApiCli
         mGoogleApiClient.disconnect();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        buttonLogic();
+        recyclerLogic();
+
+    }
 }

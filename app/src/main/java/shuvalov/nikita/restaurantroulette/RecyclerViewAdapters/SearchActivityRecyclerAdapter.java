@@ -84,7 +84,7 @@ public class SearchActivityRecyclerAdapter extends RecyclerView.Adapter<SearchRe
 
 class SearchResultViewHolder extends RecyclerView.ViewHolder{
     TextView mNameView, mDescView, mPrice;
-    ImageView mPicture, mAddButton;
+    ImageView mPicture, mAddButton, mRemoveButton;
     RelativeLayout mHolderLayout;
     LinearLayout mStarRatingHolder;
 
@@ -97,6 +97,7 @@ class SearchResultViewHolder extends RecyclerView.ViewHolder{
         mPicture = (ImageView)itemView.findViewById(R.id.picture);
         mStarRatingHolder = (LinearLayout)itemView.findViewById(R.id.star_rating_container);
         mAddButton = (ImageView)itemView.findViewById(R.id.add_button);
+        mRemoveButton = (ImageView)itemView.findViewById(R.id.remove_button);
     }
 
     public void bindDataToView(Business business){
