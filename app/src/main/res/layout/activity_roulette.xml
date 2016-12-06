@@ -15,14 +15,20 @@
         android:id="@+id/roulette_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+    <ProgressBar
+        android:id="@+id/roulette_progress_bar"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <EditText
         android:id="@+id/roulette_query"
         android:layout_alignParentBottom="true"
+        android:hint="What would you like to eat?"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/roulette_button"
-        android:layout_toStartOf="@+id/roulette_button" />
+        android:layout_toLeftOf="@+id/button_frame"
+        android:layout_toStartOf="@+id/button_frame" />
 
 
     <ImageView
@@ -31,16 +37,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/settings_button"
-        android:layout_above="@+id/roulette_button"
+        android:layout_above="@+id/button_frame"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/roulette_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:fabSize="mini"
+    <FrameLayout
+        android:id="@+id/button_frame"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-         />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/roulette_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fabSize="mini"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            />
+        <TextView
+            android:text="GO"
+            android:elevation="16dp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"/>
+    </FrameLayout>
+
 </RelativeLayout>
