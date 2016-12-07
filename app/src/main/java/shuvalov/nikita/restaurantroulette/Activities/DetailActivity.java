@@ -28,6 +28,8 @@ import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.PicassoImageManager;
 import shuvalov.nikita.restaurantroulette.R;
 import shuvalov.nikita.restaurantroulette.RestaurantSearchHelper;
+import shuvalov.nikita.restaurantroulette.UberResources.UberAPI;
+import shuvalov.nikita.restaurantroulette.UberResources.UberAPIConstants;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpAPIConstants;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Coordinates;
@@ -264,15 +266,15 @@ public class DetailActivity extends AppCompatActivity implements GoogleApiClient
             double businessLon = mBusiness.getCoordinates().getLongitude();
             float businessLonFloat = (float) businessLon;
 
-//            UberAPI uberAPI = new UberAPI(this);
-//            uberAPI.getEstimateAsString(Float.parseFloat(userLat), Float.parseFloat(userLon),
-//                    businessLatFloat, businessLonFloat, UberAPIConstants.UBER_SERVER_ID);
-//            uberAPI.setUberApiResultListener(new UberAPI.UberApiResultListener() {
-//                @Override
-//                public void onUberEstimateReady(String estimate) {
-//                    mUberEstimate.setText(estimate);
-//                }
-//            });
+            UberAPI uberAPI = new UberAPI(this);
+            uberAPI.getEstimateAsString(Float.parseFloat(userLat), Float.parseFloat(userLon),
+                    businessLatFloat, businessLonFloat, UberAPIConstants.UBER_SERVER_ID);
+            uberAPI.setUberApiResultListener(new UberAPI.UberApiResultListener() {
+                @Override
+                public void onUberEstimateReady(String estimate) {
+                    mUberEstimate.setText(estimate);
+                }
+            });
 
             Log.d(TAG, "onConnected: " + userLat + " / " + userLon);
         } else {
