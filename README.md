@@ -19,12 +19,12 @@
 **Links**
 
 - [Research Plan](https://docs.google.com/document/d/127VDPjg9w96fkXgNkOOlcfigmeXD1exO6DcEwZygYh0/edit)
-- [Competitive Reaserch](https://docs.google.com/spreadsheets/d/1wS7SbcI1JEKh87mHkrWMn4y4WdXAh9ZlHt8-UvtAR-E/edit#gid=0)
+- [Competitive Research](https://docs.google.com/spreadsheets/d/1wS7SbcI1JEKh87mHkrWMn4y4WdXAh9ZlHt8-UvtAR-E/edit#gid=0)
 - [User Persona](https://docs.google.com/document/d/1bfPbPumb89SfdUyAas1zJjTSFx-N7wqhhX47w88BoVU/edit?usp=sharing)
 - [User Stories](https://docs.google.com/document/d/11D-DCgPUMWaPXAfLmGSy1ry1SP9jKV0HQflYUZGzjCo/edit)
 - [Trello Board](https://trello.com/b/bWCV04wH/team-yelp-project-3-board)
- -[1st Prototype](https://popapp.in/projects/58378a0d295687bc25b2050d/preview)
- -[2nd Prototype](https://popapp.in/projects/5847fe419997791675da460e/preview)
+- [1st Prototype](https://popapp.in/projects/58378a0d295687bc25b2050d/preview)
+- [2nd Prototype](https://popapp.in/projects/5847fe419997791675da460e/preview)
 
 **Screenshots**
 <p align="center">
