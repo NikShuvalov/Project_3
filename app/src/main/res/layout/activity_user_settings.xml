@@ -107,12 +107,13 @@
                 android:paddingBottom="3dp"
                 android:textSize="17dp"
                 android:paddingTop="3dp"
-                android:text="Pick maximum distance: "
+                android:text="Pick maximum distance(km): "
                 android:layout_width="0dp"
                 android:layout_weight="0.65"
                 android:layout_height="wrap_content" />
 
             <Spinner
+                android:layout_gravity="center_vertical"
                 android:layout_weight="0.35"
                 android:id="@+id/spinner_radius"
                 android:layout_width="0dp"
@@ -185,7 +186,7 @@
     <TextView
         android:textSize="19dp"
         android:layout_marginTop="20dp"
-        android:text="Restaurant deals"
+        android:text="Restaurant Deals"
         android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

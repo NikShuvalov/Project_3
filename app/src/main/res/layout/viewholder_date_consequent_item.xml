@@ -21,13 +21,6 @@
                 android:textColor="#333"
                 android:gravity="center"
                 android:layout_centerHorizontal="true"/>
-            <ImageView
-                android:id="@+id/close"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_menu_close_clear_cancel"
-                android:layout_alignParentRight="true"
-                android:tint="#999"/>
             <Spinner
                 android:id="@+id/category_spinner"
                 android:layout_width="wrap_content"
@@ -35,11 +28,17 @@
                 android:layout_below="@id/prompt_text"
                 android:layout_alignRight="@id/prompt_text"
                 />
+            <EditText
+                android:id="@+id/additional_query_entry"
+                android:layout_below="@id/category_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Optional additional info (Pizza, Italian, Blues)"/>
             <Button
                 android:id="@+id/search_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/category_spinner"
+                android:layout_below="@id/additional_query_entry"
                 android:layout_centerHorizontal="true"
                 android:text="Search"/>
 

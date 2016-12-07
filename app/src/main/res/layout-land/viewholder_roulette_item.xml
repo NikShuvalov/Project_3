@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/mystery_restaurant"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:elevation="100dp"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical" android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal">
+            <LinearLayout
+                android:id="@+id/stars"
+                android:layout_alignLeft="@+id/roulette_uber_estimate"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/first_star_roulette"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:src="@drawable/blank_star_rating"/>
+
+                <ImageView
+                    android:id="@+id/second_star_roulette"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:src="@drawable/blank_star_rating"/>
+
+                <ImageView
+                    android:id="@+id/third_star_roulette"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:src="@drawable/blank_star_rating"/>
+
+                <ImageView
+                    android:id="@+id/fourth_star_roulette"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:src="@drawable/blank_star_rating"/>
+
+                <ImageView
+                    android:id="@+id/fifth_star_roulette"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:src="@drawable/blank_star_rating"/>
+            </LinearLayout>
+            <TextView
+                android:id="@+id/roulette_price"
+                android:layout_gravity="center_horizontal"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/stars"
+                android:textSize="25dp"
+                android:text="$$$$"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/roulette_address"
+                android:layout_centerHorizontal="true"
+                android:textSize="25dp"
+                android:layout_below="@id/roulette_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@id/roulette_uber_estimate"
+                android:layout_below="@id/roulette_address"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+    <Space
+        android:layout_below="@id/mystery_restaurant"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"/>
+</RelativeLayout>

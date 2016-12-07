@@ -1,7 +1,9 @@
 package shuvalov.nikita.restaurantroulette.Activities;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -10,10 +12,15 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.ChangeTransform;
+import android.transition.Explode;
+import android.transition.Fade;
+import android.transition.TransitionSet;
 import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -54,6 +61,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
     private GoogleAPI mGoogleApi;
     private int mOrientation;
     private InputMethodManager mInputMethodManager;
+    private ImageView mYelpLogo;
 
     private ArrayAdapter<CharSequence> mRatingAdapter, mPricingAdapter, mRadiusAdapter, mLocationAdapter;
 
@@ -96,6 +104,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         mRandom = (Button)findViewById(R.id.random_search);
         mBasicCardHolder =(CardView)findViewById(R.id.basic_search_card);
         mCloseView =(ImageView)findViewById(R.id.close_search);
+        mYelpLogo = (ImageView)findViewById(R.id.yelp_logo);
     }
 
     public void addAdaptersToSpinners(){
@@ -142,10 +151,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
                     mOptionsVisible=false;
                 }
 
-                Location mockLocation = new Location(LOCATION_SERVICE);
-                mockLocation.setLongitude(OurAppConstants.GA_LONGITUDE);
-                mockLocation.setLatitude(OurAppConstants.GA_LATITUDE);
-                YelpAPI yelpApi = new YelpAPI(view.getContext(), mockLocation);
+                YelpAPI yelpApi = new YelpAPI(view.getContext());
                 String query = mQueryEntry.getText().toString();
                 mQueryEntry.setText("");
                 yelpApi.getRestaurants(query, mPrice,Integer.parseInt(mRadius),mAdapter, false);
@@ -161,14 +167,12 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
                     mOptionsVisible=false;
                 }
 
-                Location mockLocation = new Location(LOCATION_SERVICE);
-                mockLocation.setLongitude(OurAppConstants.GA_LONGITUDE);
-                mockLocation.setLatitude(OurAppConstants.GA_LATITUDE);
-                YelpAPI yelpApi = new YelpAPI(view.getContext(), mockLocation);
+
+                YelpAPI yelpApi = new YelpAPI(view.getContext());
                 String query = mQueryEntry.getText().toString();
                 SharedPreferences sharedPreferences = getSharedPreferences(OurAppConstants.USER_PREFERENCES, MODE_PRIVATE);
-                int radius = (int)sharedPreferences.getLong(OurAppConstants.SHARED_PREF_RADIUS,-1);
-                if (radius==-1){
+                int radius = (int)sharedPreferences.getLong(OurAppConstants.SHARED_PREF_RADIUS,-1)+1;
+                if (radius==0){
                     radius=3;
                 }
                 yelpApi.getRestaurants(query,-1,radius,mAdapter, true);
@@ -198,6 +202,14 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
                 } else {
                     mQueryEntry.setText("");
                 }
+            }
+        });
+        mYelpLogo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent yelpIntent =new Intent(Intent.ACTION_VIEW);
+                yelpIntent.setData(Uri.parse("https://www.yelp.com/"));
+                startActivity(yelpIntent);
             }
         });
     }
@@ -337,6 +349,8 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         mOrientation=mDisplay.getRotation();
 
         Log.d("ORIENTATION_TEST", "getOrientation(): " + mOrientation);
+    }
+    public void connectToYelp(){//Lazy implementation
 
     }
 

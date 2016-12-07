@@ -134,7 +134,7 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
         spinnerPrice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Long position = adapterView.getItemIdAtPosition(i);
+                Long position = adapterView.getItemIdAtPosition(i);// Added +1 to position so that it equals pricing.
                 if (isFirstTimePrice) {
                     isFirstTimePrice = false;
                 } else {
@@ -170,7 +170,7 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
         spinnerRadius.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Long position = adapterView.getItemIdAtPosition(i);
+                Long position = adapterView.getItemIdAtPosition(i);//Added +1 so that position represents radius input
                 if (isFirstTimeRadius) {
                     isFirstTimeRadius = false;
                 } else {
@@ -207,7 +207,7 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
         spinnerResult.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Long position = adapterView.getItemIdAtPosition(i);
+                Long position = adapterView.getItemIdAtPosition(i);//Added +1 so that value represents randomResults input.
                 if (isFirstTimeSearchResult) {
                     isFirstTimeSearchResult = false;
                 } else {
@@ -286,7 +286,7 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
                     JobInfo periodicJobInfo = new JobInfo.Builder(OurAppConstants.PERIODIC_JOB_ID,
                             new ComponentName(UserSettingsActivity.this, YelpJobService.class))
                             .setExtras(periodicPersistableBundle)
-                            .setPeriodic(10000) //RUN IT EVERY 10 secs
+                            .setPeriodic(900000) //RUN IT EVERY 15 minutes
                             .build();
 
                     JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
@@ -320,7 +320,7 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
 
     protected void startLocationUpdates() {
         LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setInterval(10000);
+        locationRequest.setInterval(300000); //Update loc every 5 mins.
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, locationRequest, this);
     }

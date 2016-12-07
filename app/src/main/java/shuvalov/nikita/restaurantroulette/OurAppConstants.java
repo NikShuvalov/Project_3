@@ -28,13 +28,18 @@ public class OurAppConstants {
     public static final String USER_LAST_LAT = "user_last_lat";
     public static final String USER_LAST_LON = "user_last_lon";
 
-
-
+    //Constants to keep track of where certain intents are coming from.
     public static final String ORIGIN = "origin";
     public static final String NOTIFICATION_ORIGIN = "notification";
     public static final String SEARCH_ORIGIN ="search";
+    public static final String DATE_NIGHT_ORIGIN = "date night";
 
+    //Constants for Intent to dateNightSearchActivity
+    public static final String SEARCH_ZIP_VALUE = "zip code value";
+    public static final String SEARCH_CATEGORY = "search Category";
+    public static final String SEARCH_QUERY = "search query";
 
+    public static final int VIBRATION_TIME = 10;
     /**
      * Add constants here
      */

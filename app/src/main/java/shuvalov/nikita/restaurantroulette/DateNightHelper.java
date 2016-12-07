@@ -3,6 +3,7 @@ package shuvalov.nikita.restaurantroulette;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 
@@ -12,6 +13,7 @@ import shuvalov.nikita.restaurantroulette.YelpResources.YelpObjects.Business;
 
 public class DateNightHelper {
     private ArrayList<Business> mDateItinerary;
+
 
     private static DateNightHelper mDateNightHelper;
 
@@ -34,5 +36,12 @@ public class DateNightHelper {
 
     public void removeBusinessAtPosition(int position){
         mDateItinerary.remove(position);
+    }
+    public void replaceList(List<Business> businessList){
+        mDateItinerary.clear();
+        mDateItinerary.addAll(businessList);
+    }
+    public Business getLastBusinessInList(){
+        return mDateItinerary.get(mDateItinerary.size()-1);
     }
 }

@@ -41,16 +41,16 @@ public class Randomizer {
         if (context!= null){
             SharedPreferences sharedPreferences = context.getSharedPreferences(OurAppConstants.USER_PREFERENCES, Context.MODE_PRIVATE);
 
-            mNumberOfRandoms = sharedPreferences.getLong(OurAppConstants.SHARED_PREF_NUM_OF_RESULTS, -1);
-            mMaxPricy = sharedPreferences.getLong(OurAppConstants.SHARED_PREF_PRICING,-1);
-            mMinRating = sharedPreferences.getLong(OurAppConstants.SHARED_PREF_RATING,  -1);
-            if(mMinRating==-1){
+            mNumberOfRandoms = sharedPreferences.getLong(OurAppConstants.SHARED_PREF_NUM_OF_RESULTS, -1)+1;
+            mMaxPricy = sharedPreferences.getLong(OurAppConstants.SHARED_PREF_PRICING,-1)+1;
+            mMinRating = sharedPreferences.getLong(OurAppConstants.SHARED_PREF_RATING,  -1)+1;
+            if(mMinRating==0){
                 mMinRating=3;
             }
-            if(mMaxPricy==-1){
+            if(mMaxPricy==0){
                 mMaxPricy = 2;
             }
-            if (mNumberOfRandoms==-1){
+            if (mNumberOfRandoms==0){
                 mNumberOfRandoms=3;
             }
             mContext = context;
@@ -72,7 +72,7 @@ public class Randomizer {
     public List<Business> pickRandomFromList(List<Business> businessList) {
         List<Business> randomPicks = new ArrayList<>();
         Random picker = new Random();
-        for (int i = 0; i <= mNumberOfRandoms; i++) {
+        for (int i = 0; i < mNumberOfRandoms; i++) {
             if (businessList == null || businessList.size() == 0) {
                 Toast.makeText(mContext, "Not enough results to pick from", Toast.LENGTH_SHORT).show();
                 break;

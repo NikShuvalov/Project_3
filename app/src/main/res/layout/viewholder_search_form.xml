@@ -98,6 +98,28 @@
             android:layout_margin="5dp"
             />
     </LinearLayout>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/add_button"
+        android:src="@android:drawable/ic_input_add"
+        android:tint="#000829"
+        android:background="#c8dcdc00"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"
+        android:alpha="0.6"/>
+    <!--Don't Change Visibility ^ here, it's there for a reason-->
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/remove_button"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:tint="#646464"
+        android:background="#c8ffffff"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"/>
+    <!--Don't Change Visibility ^ here, it's there for a reason-->
 </RelativeLayout>
     </android.support.v7.widget.CardView>
 

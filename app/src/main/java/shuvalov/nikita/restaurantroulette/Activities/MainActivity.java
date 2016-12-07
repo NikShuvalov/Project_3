@@ -2,13 +2,18 @@ package shuvalov.nikita.restaurantroulette.Activities;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Vibrator;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
@@ -23,6 +28,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 import shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPI;
 import shuvalov.nikita.restaurantroulette.GoogleResources.GoogleAPIConstants;
+import shuvalov.nikita.restaurantroulette.OurAppConstants;
 import shuvalov.nikita.restaurantroulette.R;
 
 import static shuvalov.nikita.restaurantroulette.Activities.UserSettingsActivity.verifyLocationPermissions;
@@ -52,10 +58,31 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         //ToDo:Remove function and call once we're done with it
         setDebug();
 
-        //Location call:
-        GoogleAPI googleAPI = new GoogleAPI();
-        mGoogleApiClient = googleAPI.callGoogleLocApi(this);
+        if (isLocationServiceEnabled()) {
+            //Location call:
+            GoogleAPI googleAPI = new GoogleAPI();
+            mGoogleApiClient = googleAPI.callGoogleLocApi(this);
+        } else {
 
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Location Services are Off")
+                    .setMessage("Location services are needed for this app. Please tap 'Allow' and enable location services.")
+                    .setPositiveButton("Allow", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent myIntent = new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(myIntent);
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            finish();
+                        }
+                    });
+            AlertDialog dialogNotification = builder.create();
+            dialogNotification.show();
+        }
     }
 
     public void findViews(){
@@ -80,18 +107,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onConnected(@Nullable Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            String userLat = new GoogleAPI().getUserLat(mGoogleApiClient);
-            String userLon = new GoogleAPI().getUserLon(mGoogleApiClient);
+                String userLat = new GoogleAPI().getUserLat(mGoogleApiClient);
+                String userLon = new GoogleAPI().getUserLon(mGoogleApiClient);
 
-            SharedPreferences sharedPreferences = getSharedPreferences(USER_LAST_LOCATION,
-                    Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(USER_LAST_LAT, userLat);
-            editor.putString(USER_LAST_LON, userLon);
-            editor.commit();
+                SharedPreferences sharedPreferences = getSharedPreferences(USER_LAST_LOCATION,
+                        Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(USER_LAST_LAT, userLat);
+                editor.putString(USER_LAST_LON, userLon);
+                editor.commit();
 
-            Log.d("String_value", "onConnected: " + userLat);
-            Log.d("String_value", "onConnected: " + userLon);
+                Log.d("String_value", "onConnected: " + userLat);
+                Log.d("String_value", "onConnected: " + userLon);
         } else {
             verifyLocationPermissions(this);
         }
@@ -110,13 +137,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onStart() {
         super.onStart();
-        mGoogleApiClient.connect();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mGoogleApiClient.disconnect();
+        if (mGoogleApiClient !=null) {
+            mGoogleApiClient.disconnect();
+        }
     }
 
     @Override
@@ -143,6 +174,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public View.OnClickListener mListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+            Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+            vibrator.vibrate(OurAppConstants.VIBRATION_TIME);
             int id = view.getId();
             Intent intent;
             switch (id) {
@@ -184,4 +217,27 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public boolean isLocationServiceEnabled(){
+        LocationManager locationManager = null;
+        boolean gps_enabled= false,network_enabled = false;
+
+        if(locationManager ==null)
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        try{
+            gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        }catch(Exception ex){
+            //do nothing...
+        }
+
+        try{
+            network_enabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        }catch(Exception ex){
+            //do nothing...
+        }
+
+        return gps_enabled || network_enabled;
+
+    }
+
 }

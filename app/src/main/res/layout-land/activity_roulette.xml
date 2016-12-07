@@ -10,13 +10,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="shuvalov.nikita.restaurantroulette.Activities.RouletteActivity">
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/roulette_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+
     <ProgressBar
         android:id="@+id/roulette_progress_bar"
         android:layout_centerInParent="true"
@@ -41,7 +35,6 @@
         android:layout_alignParentRight="true"
         >
         <android.support.design.widget.FloatingActionButton
-            android:clickable="true"
             android:id="@+id/roulette_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -59,6 +52,12 @@
             android:textColor="#ffffff"/>
     </FrameLayout>
 
-
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/roulette_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
