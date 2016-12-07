@@ -14,7 +14,7 @@ public class TestMockData {
     public List<Business> mockBusinessSetForRandomizer(){
         List<Business> mockBusinessList = new ArrayList<>();
 
-        //Using a new Randomizer(context,3,"$$") should only return the noted businesses
+        //Using a new Randomizer(3,2) should only return the noted businesses
         mockBusinessList.add(new Business("Adam's Apples",3.5,"$$"));//Return this
         mockBusinessList.add(new Business("Bethany's Beats",4.0,"$$"));//Return this
         mockBusinessList.add(new Business ("Carol's Carrots", 2.5,"$$"));

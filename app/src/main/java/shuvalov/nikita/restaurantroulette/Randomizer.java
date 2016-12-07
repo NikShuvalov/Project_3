@@ -34,6 +34,16 @@ public class Randomizer {
     }
 
     /**
+     * This randomizer is purely for testing purposes.
+     * @param minRating
+     */
+    public Randomizer(long minRating, long maxExpensiveness){
+        mMinRating = minRating;
+        mMaxPricy = maxExpensiveness;
+        mNumberOfRandoms = 3;
+    }
+
+    /**
      *Optional constructor if user doesn't explicitly state rating and expensiveness
      * @param context Takes context to get sharedPreferences, if there's no shared Preferences pass null
      */
@@ -74,13 +84,15 @@ public class Randomizer {
         Random picker = new Random();
         for (int i = 0; i < mNumberOfRandoms; i++) {
             if (businessList == null || businessList.size() == 0) {
-                Toast.makeText(mContext, "Not enough results to pick from", Toast.LENGTH_SHORT).show();
+                if(mContext!=null){
+                    Toast.makeText(mContext, "Not enough results to pick from", Toast.LENGTH_SHORT).show();
+                }
                 break;
             }
 
             int randomIndex = picker.nextInt(businessList.size());
             Business randomBusiness = businessList.get(randomIndex);
-            if (randomBusiness.getRating() < mMinRating || randomBusiness.getPrice() != null && randomBusiness.getPrice().length() >= mMaxPricy) {
+            if ((randomBusiness.getPrice() != null && randomBusiness.getPrice().length() > mMaxPricy) ||randomBusiness.getRating() <= mMinRating ) {
                 i--;
             } else {
                 randomPicks.add(randomBusiness);
