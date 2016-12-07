@@ -109,6 +109,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mBusiness.getCoordinates().getLongitude());
             mMap.addMarker(new MarkerOptions()
                     .position(businessCoordinates)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                     .title(title))
                     .showInfoWindow();
 

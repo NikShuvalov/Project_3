@@ -134,7 +134,6 @@ class RouletteResultViewHolder extends RecyclerView.ViewHolder{
             @Override
             public void onClick(View view) {
                 vibrator.vibrate(OurAppConstants.VIBRATION_TIME);
-                Toast.makeText(context, business.getName(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(mRouletteCard.getContext(), MapsActivity.class);
                 int position = RouletteHelper.getInstance().getPositionofBusiness(business);
                 intent.putExtra(OurAppConstants.BUSINESS_POSITION_INTENT_KEY, position);
