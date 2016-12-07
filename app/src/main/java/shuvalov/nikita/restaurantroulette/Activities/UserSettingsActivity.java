@@ -286,7 +286,7 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
                     JobInfo periodicJobInfo = new JobInfo.Builder(OurAppConstants.PERIODIC_JOB_ID,
                             new ComponentName(UserSettingsActivity.this, YelpJobService.class))
                             .setExtras(periodicPersistableBundle)
-                            .setPeriodic(900000) //RUN IT EVERY 15 minutes
+                            .setPeriodic(10000) //SHOULD IT EVERY 15 minutes, making it 10 secs for test purposes.
                             .build();
 
                     JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
