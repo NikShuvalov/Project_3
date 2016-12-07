@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         findViews();
         setClickListener();
 
-
         //ToDo:Remove function and call once we're done with it
         setDebug();
 
