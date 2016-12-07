@@ -10,13 +10,15 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/background_light"
     tools:context="shuvalov.nikita.restaurantroulette.Activities.DateNightActivity">
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/finalize"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:src="@drawable/date_fab_icon"
+        android:src="@drawable/fab_blue_icon"
+        android:scaleType="fitXY"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
