@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
@@ -18,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         GoogleApiClient.OnConnectionFailedListener{
     CardView mBasicSearch, mDateNight, mRoulette;
     private GoogleApiClient mGoogleApiClient;
+    private ImageView mImageView;
 
     //ToDo:Remove debug Button once we're done with it
     Button mDebugButton;
@@ -65,6 +68,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mDateNight = (CardView)findViewById(R.id.date_night_card_holder);
         mRoulette = (CardView)findViewById(R.id.roulette_card_holder);
         mDebugButton = (Button)findViewById(R.id.debug_button);
+        mImageView = (ImageView)findViewById(R.id.searchcard_image);
+
+        mImageView.setBackgroundResource(R.drawable.chatterbox_animation);
+
+        AnimationDrawable frameAnimation = (AnimationDrawable)mImageView.getBackground();
+        frameAnimation.start();
     }
 
     public void setDebug(){
