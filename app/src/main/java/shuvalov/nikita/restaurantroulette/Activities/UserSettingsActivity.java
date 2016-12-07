@@ -286,7 +286,7 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
                     JobInfo periodicJobInfo = new JobInfo.Builder(OurAppConstants.PERIODIC_JOB_ID,
                             new ComponentName(UserSettingsActivity.this, YelpJobService.class))
                             .setExtras(periodicPersistableBundle)
-                            .setPeriodic(10000) //RUN IT EVERY 10 secs
+                            .setPeriodic(900000) //RUN IT EVERY 15 minutes
                             .build();
 
                     JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
@@ -320,7 +320,7 @@ public class UserSettingsActivity extends AppCompatActivity implements GoogleApi
 
     protected void startLocationUpdates() {
         LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setInterval(10000);
+        locationRequest.setInterval(300000); //Update loc every 5 mins.
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, locationRequest, this);
     }
