@@ -130,12 +130,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         int i =0;
 
+        SharedPreferences locationPreferences = getSharedPreferences(OurAppConstants.USER_LAST_LOCATION,MODE_PRIVATE);
+
+        String userLat = locationPreferences.getString(USER_LAST_LAT, "userLastLat");
+        String userLon = locationPreferences.getString(USER_LAST_LON, "userLastLon");
+
+        LatLng userLocation = new LatLng(Double.parseDouble(userLat),Double.parseDouble(userLon));
+
+        googleMap.addMarker(new MarkerOptions()
+                .position(userLocation)
+                .title("You are here"))
+                .showInfoWindow();
+
+        builder.include(userLocation);
+
         for(Business business: dateItinerary){
             LatLng latLng = new LatLng(business.getCoordinates().getLatitude(), business.getCoordinates().getLongitude());
             i++;
             googleMap.addMarker(new MarkerOptions()
                     .position(latLng)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))//ToDo:Color code each place
                     .snippet("Place #"+i)
                     .title(business.getName()))
                     .showInfoWindow();

@@ -156,6 +156,7 @@ public class YelpAPI {
             Toast.makeText(mContext, "No location found in userPreferences", Toast.LENGTH_SHORT).show();
         }
         Log.d(TAG, "Lat, Long: "+myLat+","+myLong);
+        Log.d(TAG, "Radius: "+radius*1000+", priceQueryText: "+priceQueryText);
         YelpSearchService service = retrofit.create(YelpSearchService.class);
 
         //ToDo: Replace "restaurants" with Constant and/or variable based on what the search category is.
@@ -329,6 +330,8 @@ public class YelpAPI {
             }
         });
     }
+
+    //FixMe:If there's time, have the consequent searches take in coords instead of zip code.
     public void getGetBusinessByCategory(String category, String query, int radius, final SearchActivityRecyclerAdapter adapter, String zipCode) {
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -354,6 +357,8 @@ public class YelpAPI {
                 break;
         }
         Log.d(TAG, "getBusinessByCategory: "+category);
+        Log.d(TAG, "Radius: "+radius*1000+", priceQueryText: "+priceQueryText);
+
 
         Call<RestaurantsMainObject> call = service.getBusinessByZip("Bearer " + YELP_BEARER_TOKEN, query, priceQueryText, category,
                 40, zipCodeAsInt, radius*1000);

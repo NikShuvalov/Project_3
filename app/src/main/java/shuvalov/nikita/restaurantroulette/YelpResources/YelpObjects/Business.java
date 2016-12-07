@@ -25,6 +25,13 @@ public class Business {
         this.url = url;
     }
 
+    //Constructor used for Randomizer testing
+    public Business(String name, Double rating,String price){
+        this.name=name;
+        this.rating = rating;
+        this.price = price;
+    }
+
     @SerializedName("image_url")
     @Expose
     private String imageUrl;
