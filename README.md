@@ -23,6 +23,8 @@
 - [User Persona](https://docs.google.com/document/d/1bfPbPumb89SfdUyAas1zJjTSFx-N7wqhhX47w88BoVU/edit?usp=sharing)
 - [User Stories](https://docs.google.com/document/d/11D-DCgPUMWaPXAfLmGSy1ry1SP9jKV0HQflYUZGzjCo/edit)
 - [Trello Board](https://trello.com/b/bWCV04wH/team-yelp-project-3-board)
+ -[1st Prototype](https://popapp.in/projects/58378a0d295687bc25b2050d/preview)
+ -[2nd Prototype](https://popapp.in/projects/5847fe419997791675da460e/preview)
 
 **Screenshots**
 <p align="center">
