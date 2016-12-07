@@ -42,8 +42,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private GoogleApiClient mGoogleApiClient;
     private ImageView mImageView;
 
-    //ToDo:Remove debug Button once we're done with it
-    Button mDebugButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +51,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         findViews();
         setClickListener();
-
-
-        //ToDo:Remove function and call once we're done with it
-        setDebug();
 
         //Location call:
         GoogleAPI googleAPI = new GoogleAPI();
@@ -67,23 +62,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mBasicSearch = (CardView) findViewById(R.id.search_card_holder);
         mDateNight = (CardView)findViewById(R.id.date_night_card_holder);
         mRoulette = (CardView)findViewById(R.id.roulette_card_holder);
-        mDebugButton = (Button)findViewById(R.id.debug_button);
         mImageView = (ImageView)findViewById(R.id.searchcard_image);
 
         mImageView.setBackgroundResource(R.drawable.chatterbox_animation);
 
         AnimationDrawable frameAnimation = (AnimationDrawable)mImageView.getBackground();
         frameAnimation.start();
-    }
-
-    public void setDebug(){
-        mDebugButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent debugIntent = new Intent(view.getContext(),DebugActivity.class);
-                startActivity(debugIntent);
-            }
-        });
     }
 
 
